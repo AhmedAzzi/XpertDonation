@@ -1,0 +1,367 @@
+<UserControl x:Class="XpertPharm5Donation.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WorkspaceBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══ LEFT PANEL - TILES ══════════════════════════════════════ -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="32,28,24,28">
+
+                <!-- Header -->
+                <TextBlock Text="Tableau de Bord XpertPharm5"
+                           FontFamily="Segoe UI Light"
+                           FontSize="24"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="Système de gestion des pharmacies"
+                           FontFamily="Segoe UI"
+                           FontSize="13"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           Margin="0,0,0,28"/>
+
+                <!-- Tiles Grid -->
+                <UniformGrid Columns="2">
+
+                    <!-- Vente Comptoir (Yellow) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#FCD34D" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Vente Comptoir" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="#1E293B" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#FBBF24"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Journal Ventes (Green) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#4ADE80" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="📊" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Journal des ventes" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#22C55E"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Entrées Stock (Red) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#F87171" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="📦" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Entrées stock" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#EF4444"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Assistant Commandes (Lime) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#84CC16" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="🛍️" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Assistant Commandes" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#65A30D"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Liste Utilisateurs (Green) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#34D399" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="👥" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Liste des Users" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#10B981"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Journal Encaissements (Purple) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#A78BFA" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="💰" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Journal Encaissements" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#9333EA"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Produits (Dark) -->
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#1F2937" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="📋" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Produits" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#374151"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Hanquants (Red) -->
+                    <Button Height="160" Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#DC2626" CornerRadius="8"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Hanquants" FontFamily="Segoe UI Semibold" FontSize="16"
+                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#B91C1C"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </UniformGrid>
+
+                <!-- Support Section -->
+                <StackPanel Margin="0,40,0,0">
+                    <TextBlock Text="Support Technique"
+                               FontFamily="Segoe UI Semibold"
+                               FontSize="12"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+                    <TextBlock Text="0770 58 51 45 /46 /47 /48 49"
+                               FontFamily="Segoe UI"
+                               FontSize="11"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="0561 68 59 22 /23/ 24/ 25/ 26/ 27"
+                               FontFamily="Segoe UI"
+                               FontSize="11"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ═══ RIGHT PANEL - INDICATORS ════════════════════════════════ -->
+        <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0">
+            <StackPanel Margin="20,24,20,24">
+
+                <TextBlock Text="Indicateurs"
+                           FontFamily="Segoe UI Semibold"
+                           FontSize="13"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           Margin="0,0,0,16"/>
+
+                <!-- Manquants Card -->
+                <Border Background="#DBEAFE" CornerRadius="6" Padding="12,12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📊" FontSize="24" Margin="0,0,12,0"/>
+                            <TextBlock Text="Manquants"
+                                       FontFamily="Segoe UI Semibold"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                        </StackPanel>
+                        <TextBlock Text="0"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#1D6CB5"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Liste Manquants -->
+                <Border Background="#E0E7FF" CornerRadius="6" Padding="12,12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Liste des manquants"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="1857"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#4F46E5"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Lots Périmés -->
+                <Border Background="#FEE2E2" CornerRadius="6" Padding="12,12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚠️" FontSize="24" Margin="0,0,12,0"/>
+                            <TextBlock Text="Lots périmés"
+                                       FontFamily="Segoe UI Semibold"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                        </StackPanel>
+                        <TextBlock Text="0"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#DC2626"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Lots Périmés 30j -->
+                <Border Background="#FEF3C7" CornerRadius="6" Padding="12,12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Lots périmés dans 30 jours"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="15"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#D97706"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Lots Périmés 60j -->
+                <Border Background="#FEF3C7" CornerRadius="6" Padding="12,12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Lots périmés dans 60 jours"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="45"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#D97706"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Lots Périmés 90j -->
+                <Border Background="#FEF3C7" CornerRadius="6" Padding="12,12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Lots périmés dans 90 jours"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="65"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#D97706"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Règlement Fournisseur -->
+                <Border Background="#FEE2E2" CornerRadius="6" Padding="12,12">
+                    <StackPanel>
+                        <TextBlock Text="Règlement fournisseur à préps"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="0"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="18"
+                                   Foreground="#DC2626"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

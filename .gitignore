@@ -1,0 +1,9 @@
+[Bb]in/
+[Oo]bj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.dotSettings.user
+*.patch
+*.diff

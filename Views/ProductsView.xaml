@@ -1,0 +1,122 @@
+<UserControl x:Class="XpertPharm5Donation.Views.ProductsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
+             Background="{StaticResource WorkspaceBrush}">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <conv:BoolToTextConverter x:Key="BoolText"/>
+        <conv:StockColorConverter x:Key="StockColor"/>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="White" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Width="260" Style="{StaticResource SearchBoxStyle}"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                    <Button Content="🔍 Rechercher" Command="{Binding SearchCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}" Width="120" Margin="0,0,10,0"/>
+                    <Button Content="⟳ Actualiser" Command="{Binding LoadCommand}"
+                            Style="{StaticResource GhostButtonStyle}" Width="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="✏ Modifier" Command="{Binding ShowEditDrugFormCommand}" Style="{StaticResource GhostButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Content="🗑 Supprimer" Command="{Binding DeleteDrugCommand}" Style="{StaticResource DangerButtonStyle}" Margin="0,0,10,0"/>
+                    <Button Content="➕ Nouveau produit" Command="{Binding ShowAddDrugFormCommand}" Style="{StaticResource PrimaryButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="0" Margin="0,78,0,0" Padding="12,8" CornerRadius="4" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1">
+            <TextBlock Text="Le catalogue produits est independant du stock : supprimer le stock ne supprime pas la fiche produit."
+                       Foreground="#1D4ED8" FontSize="12"/>
+        </Border>
+
+
+        <Border Grid.Row="2" Background="White" CornerRadius="6" ClipToBounds="True" Margin="0,18,0,0">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="6" Opacity="0.05" ShadowDepth="1"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="{StaticResource PrimaryBrush}" Padding="16,0">
+                    <TextBlock Text="Catalogue des produits donnés" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Center"/>
+                </Border>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Drugs}" SelectedItem="{Binding SelectedDrug}"
+                          AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                          HeadersVisibility="Column" SelectionMode="Single"
+                          RowHeight="34" BorderThickness="0" Background="Transparent">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Produit" Binding="{Binding Name}" Width="280"/>
+                        <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="220"/>
+                        <DataGridTextColumn Header="Forme" Binding="{Binding Form}" Width="120"/>
+                        <DataGridTextColumn Header="Nb Lots" Binding="{Binding StockBatches.Count}" Width="90"/>
+                        <DataGridTextColumn Header="Stock valide" Binding="{Binding TotalValidStock}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Stock total" Binding="{Binding TotalAvailableStock}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="3" Margin="0,16,0,0" Padding="12,8" CornerRadius="4">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#F0FDF4"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                            <Setter Property="Background" Value="#FEF2F2"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI" FontSize="13">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="#15803D"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,394 @@
+<UserControl x:Class="XpertPharm5Donation.Views.PosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
+             Background="{StaticResource WorkspaceBrush}">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <conv:DateToStringConverter     x:Key="DateStr"/>
+        <conv:NullToStringConverter     x:Key="NullStr"/>
+        <conv:StockColorConverter       x:Key="StockColor"/>
+        <conv:ExpiryColorConverter      x:Key="ExpiryColor"/>
+        <conv:ZeroToVisibilityConverter x:Key="ZeroVis"/>
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="F3" Command="{Binding ScanBarcodeCommand}"/>
+        <KeyBinding Key="Enter" Command="{Binding AddToCartCommand}"/>
+        <KeyBinding Key="F8" Command="{Binding ValidateCommand}"/>
+        <KeyBinding Key="Escape" Command="{Binding CancelCommand}"/>
+        <KeyBinding Key="Delete" Command="{Binding RemoveItemCommand}"/>
+    </UserControl.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Top inputs -->
+            <RowDefinition Height="*"/>     <!-- Cart table -->
+            <RowDefinition Height="Auto"/>  <!-- Actions bar -->
+            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- Loading overlay -->
+        <Border Grid.RowSpan="4" Panel.ZIndex="999" Background="#80000000"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolVis}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Traitement en cours..." FontFamily="Segoe UI Semibold"
+                           FontSize="18" Foreground="White"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ TOP SECTION ═════════════════════════════════════════════ -->
+        <Grid Grid.Row="0" Background="White">
+            <Grid.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="8" Opacity="0.07" ShadowDepth="2"/>
+            </Grid.Effect>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Input Fields -->
+            <Grid Grid.Column="0" Margin="20,14,16,14">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Barcode -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Code Barre [F3] :"
+                           Style="{StaticResource LabelStyle}" FontWeight="SemiBold"/>
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="BarcodeBox"
+                         Text="{Binding BarcodeInput, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource BarcodeInputStyle}"
+                         KeyDown="BarcodeBox_KeyDown"
+                         ToolTip="Scanner ou saisir le code barre puis appuyer sur Entrée"/>
+                <Button Grid.Row="0" Grid.Column="3" Content="🔍  Rechercher"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding ScanBarcodeCommand}"
+                        Margin="0,0,0,0" Height="32"/>
+
+                <!-- Product Search -->
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Produit [F4] :"
+                           Style="{StaticResource LabelStyle}" FontWeight="SemiBold"/>
+                <ComboBox Grid.Row="2" Grid.Column="1"
+                          x:Name="ProductCombo"
+                          Style="{StaticResource ComboStyle}"
+                          IsEditable="True"
+                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding DrugSuggestions}"
+                          DisplayMemberPath="Name"
+                          KeyUp="ProductCombo_KeyUp"
+                          SelectionChanged="ProductCombo_SelectionChanged"
+                          ToolTip="Taper pour rechercher un médicament"/>
+
+                <!-- Quantity -->
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Quantité :"
+                           Style="{StaticResource LabelStyle}" FontWeight="SemiBold"/>
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                    <Button Content=" ▼ " FontFamily="Segoe UI Symbol" Height="32" Width="32" Style="{StaticResource GhostButtonStyle}"
+                            Click="BtnDecQty_Click"/>
+                    <TextBox Style="{StaticResource QuantityInputStyle}" Margin="4,0"
+                             Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                             PreviewTextInput="QuantityBox_PreviewTextInput"/>
+                    <Button Content=" ▲ " Height="32" Width="32" Style="{StaticResource GhostButtonStyle}"
+                            Click="BtnIncQty_Click"/>
+                    <Button Content="➕  Ajouter  [Entrée]" Margin="12,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding AddToCartCommand}"
+                            Height="32"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Right: Drug Info Panel (LCD style) -->
+            <Border Grid.Column="1" Background="{StaticResource InfoPanelBgBrush}"
+                    Margin="0,0,0,0" Padding="16,12">
+                <Grid>
+                    <StackPanel Visibility="{Binding SelectedDrug, Converter={StaticResource BoolVis}}">
+                        <!-- Drug Name -->
+                        <TextBlock Text="{Binding SelectedDrug.Name}"
+                                   FontFamily="Segoe UI Semibold" FontSize="13.5"
+                                   Foreground="{StaticResource InfoGoldBrush}"
+                                   TextWrapping="Wrap" Margin="0,0,0,10"/>
+                        <Separator Background="#1E3A5F" Margin="0,0,0,10"/>
+
+                        <!-- Info rows -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="4"/>
+                                <RowDefinition Height="22"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Réf. Sys."
+                                       Style="{StaticResource LabelStyle}" Foreground="{StaticResource InfoSlateLabel}" FontSize="11"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding SelectedDrug.Id}"
+                                       Foreground="{StaticResource InfoGreenBrush}" FontFamily="Segoe UI Semibold" FontSize="12" VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Lot / Code"
+                                       Style="{StaticResource LabelStyle}" Foreground="{StaticResource InfoSlateLabel}" FontSize="11"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedStockBatch.BatchNumber, Converter={StaticResource NullStr}}"
+                                           Foreground="{StaticResource InfoGoldBrush}" FontFamily="Segoe UI Semibold" FontSize="12" Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding SelectedStockBatch.Barcode, Converter={StaticResource NullStr}}"
+                                           Foreground="{StaticResource InfoGreenBrush}" FontFamily="Consolas" FontSize="11"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Péremption"
+                                       Style="{StaticResource LabelStyle}" Foreground="{StaticResource InfoSlateLabel}" FontSize="11"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1"
+                                       Text="{Binding SelectedStockBatch.ExpirationDate, StringFormat=dd/MM/yyyy, TargetNullValue='N/A'}"
+                                       Foreground="{StaticResource InfoGreenBrush}" FontFamily="Segoe UI Semibold" FontSize="12" VerticalAlignment="Center"/>
+
+                            <Separator Grid.Row="3" Grid.ColumnSpan="2" Background="#1E3A5F" Margin="0,2"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Stock Dispo."
+                                       Style="{StaticResource LabelStyle}" Foreground="{StaticResource InfoSlateLabel}" FontSize="11"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1"
+                                       Text="{Binding SelectedDrugRemaining}"
+                                       FontFamily="Segoe UI Semibold" FontSize="18" VerticalAlignment="Center">
+                                <TextBlock.Foreground>
+                                    <Binding Path="SelectedDrugRemaining" Converter="{StaticResource StockColor}"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+
+                            <!-- EXPIRED BADGE -->
+                            <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Background="{StaticResource DangerBrush}" CornerRadius="4" Padding="6,2"
+                                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                                    Visibility="{Binding SelectedStockBatch.IsExpired, Converter={StaticResource BoolVis}}">
+                                <TextBlock Text="LOT PÉRIMÉ" FontFamily="Segoe UI Semibold"
+                                           FontSize="10" Foreground="White" ToolTip="Ce lot spécifique est périmé !"/>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Empty state -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Visibility="{Binding SelectedDrug, Converter={StaticResource BoolVis}, ConverterParameter=Invert}">
+                        <TextBlock Text="💊" FontSize="32" HorizontalAlignment="Center" Opacity="0.4"/>
+                        <TextBlock Text="Scanner ou rechercher" FontFamily="Segoe UI" FontSize="12"
+                                   Foreground="#4A6A90" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                        <TextBlock Text="un médicament" FontFamily="Segoe UI" FontSize="12"
+                                   Foreground="#4A6A90" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ═══ CART TABLE ══════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" Margin="0,8,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Column Header Bar -->
+            <Border Grid.Row="0" Background="{StaticResource TableHeaderBrush}" Padding="10,0">
+                <Grid Height="34">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="130"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="#" Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="PRODUIT" Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="QTÉ" Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="DATE EXP." Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="LOT" Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="5" Text="STATUT" Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="6" Text="STOCK DISPO." Foreground="White" FontFamily="Segoe UI Semibold"
+                               FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Cart Items List -->
+            <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <Grid>
+                    <!-- Empty cart placeholder -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Visibility="{Binding CartItems.Count, Converter={StaticResource ZeroVis}}">
+                        <TextBlock Text="Le panier est vide" FontFamily="Segoe UI" FontSize="15"
+                                   Foreground="#CBD5E1" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Scanner un code barre ou sélectionner un produit" FontFamily="Segoe UI"
+                                   FontSize="12" Foreground="#E2E8F0" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <ListView x:Name="CartList"
+                              ItemsSource="{Binding CartItems}"
+                              SelectedItem="{Binding SelectedCartItem}"
+                              SelectionMode="Single"
+                              BorderThickness="0"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              VirtualizingPanel.IsVirtualizing="True">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="BorderBrush" Value="#F1F5F9"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#DBEAFE"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#EFF6FF"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding AlternationIndex}" Value="1">
+                                        <Setter Property="Background" Value="#F8FAFC"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="36" Margin="10,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="130"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Row number via converter workaround -->
+                                    <TextBlock Grid.Column="0" Text="▶" FontSize="10"
+                                               Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding DrugName}"
+                                               FontFamily="Segoe UI" FontSize="13"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Quantity}"
+                                               FontFamily="Segoe UI Semibold" FontSize="14"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="3"
+                                               Text="{Binding ExpirationDate, Converter={StaticResource DateStr}}"
+                                               FontFamily="Segoe UI" FontSize="12"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Foreground>
+                                            <Binding Path="ExpirationDate" Converter="{StaticResource ExpiryColor}"/>
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="4" Text="{Binding BatchNumber, Converter={StaticResource NullStr}}"
+                                               FontFamily="Segoe UI" FontSize="12"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Background="#DCFCE7" CornerRadius="4" Padding="8,2">
+                                        <TextBlock Text="DON" FontFamily="Segoe UI Semibold"
+                                                   FontSize="10" Foreground="#15803D"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="6" Text="{Binding AvailableStock}"
+                                               FontFamily="Segoe UI Semibold" FontSize="13"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Foreground>
+                                            <Binding Path="AvailableStock" Converter="{StaticResource StockColor}"/>
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ═══ ACTION BAR ══════════════════════════════════════════════ -->
+        <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0" Padding="16,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: summary -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Lignes : " FontFamily="Segoe UI" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalLinesInCart}" FontFamily="Segoe UI Semibold" FontSize="14"
+                               Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="   |   Unités : " FontFamily="Segoe UI" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalItemsInCart}" FontFamily="Segoe UI Semibold" FontSize="14"
+                               Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
+                    <Border Margin="20,0,0,0" Background="#EFF6FF" CornerRadius="4" Padding="10,4">
+                        <TextBlock Text="GRATUIT — DON" FontFamily="Segoe UI Semibold"
+                                   FontSize="11" Foreground="{StaticResource AccentBrush}"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Right: action buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Pour supprimer une ligne : [Suppr]   |   Pour modifier une quantité : double-cliquer"
+                               FontFamily="Segoe UI" FontSize="10.5" Foreground="#94A3B8"
+                               VerticalAlignment="Center" Margin="0,0,20,0"/>
+                    <Button Content="🗑  Supprimer  [Suppr]" Style="{StaticResource GhostButtonStyle}"
+                            Command="{Binding RemoveItemCommand}" Margin="0,0,6,0"/>
+                    <Button Content="⟳  Vider" Style="{StaticResource GhostButtonStyle}"
+                            Command="{Binding ClearCartCommand}" Margin="0,0,12,0"/>
+                    <Button Content="✕  Annuler  [ESC]" Style="{StaticResource DangerButtonStyle}"
+                            Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
+                    <Button Content="✓  Valider  [F8]" Style="{StaticResource SuccessButtonStyle}"
+                            Command="{Binding ValidateCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ═══ STATUS BAR ══════════════════════════════════════════════ -->
+        <Border Grid.Row="3" Padding="16,6">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#F0FDF4"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                            <Setter Property="Background" Value="#FEF2F2"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI" FontSize="12.5">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="#15803D"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+    </Grid>
+</UserControl>

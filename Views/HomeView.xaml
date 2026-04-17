@@ -1,0 +1,301 @@
+<UserControl x:Class="XpertPharm5Donation.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WorkspaceBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="260"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══ MAIN TILES ══════════════════════════════════════════════ -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="32,28,24,28">
+
+                <TextBlock Text="Bienvenue dans XpertPharm5 Donation"
+                           FontFamily="Segoe UI Light" FontSize="22"
+                           Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
+                <TextBlock Text="Système de dispensation de médicaments donnés"
+                           FontFamily="Segoe UI" FontSize="13"
+                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,28"/>
+
+                <!-- Navigation Tiles -->
+                <UniformGrid Columns="2" Rows="2">
+
+                    <!-- Comptoir -->
+                    <Button x:Name="BtnGoComptoir" Margin="0,0,10,10" Height="160"
+                            Cursor="Hand" Click="BtnGoComptoir_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#1D6CB5" CornerRadius="10"
+                                        SnapsToDevicePixels="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#1D6CB5" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="💊" FontSize="42" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Comptoir Don" FontFamily="Segoe UI Semibold" FontSize="17"
+                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                                        <TextBlock Text="Dispensation de médicaments" FontFamily="Segoe UI"
+                                                   FontSize="11.5" Foreground="#BDD5F0" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#155EA2"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Historique -->
+                    <Button x:Name="BtnGoHistory" Margin="0,0,0,10" Height="160"
+                            Cursor="Hand" Click="BtnGoHistory_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#15803D" CornerRadius="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#15803D" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="📋" FontSize="42" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Historique" FontFamily="Segoe UI Semibold" FontSize="17"
+                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                                        <TextBlock Text="Journal des dispensations" FontFamily="Segoe UI"
+                                                   FontSize="11.5" Foreground="#A7F3D0" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#166534"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Gestion Donations -->
+                    <Button x:Name="BtnGoManage" Margin="0,0,10,0" Height="160"
+                            Cursor="Hand" Click="BtnGoManage_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="tile" Background="#7C3AED" CornerRadius="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#7C3AED" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
+                                    </Border.Effect>
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="🗃️" FontSize="42" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Gestion Donations" FontFamily="Segoe UI Semibold" FontSize="17"
+                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                                        <TextBlock Text="Ajouter / modifier les stocks" FontFamily="Segoe UI"
+                                                   FontSize="11.5" Foreground="#DDD6FE" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="tile" Property="Background" Value="#6D28D9"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Alertes stock -->
+                    <Border Margin="0,0,0,0" Height="160" CornerRadius="10" Background="#DC2626">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#DC2626" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
+                        </Border.Effect>
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="⚠️" FontSize="42" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Alertes Stock" FontFamily="Segoe UI Semibold" FontSize="17"
+                                       Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="Périmés : " FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="#FECACA"/>
+                                <TextBlock Text="{Binding ExpiredLots}" FontFamily="Segoe UI Semibold"
+                                           FontSize="12" Foreground="White"/>
+                                <TextBlock Text="   •   Stock faible : " FontFamily="Segoe UI" FontSize="12"
+                                           Foreground="#FECACA"/>
+                                <TextBlock Text="{Binding LowStock}" FontFamily="Segoe UI Semibold"
+                                           FontSize="12" Foreground="White"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <!-- Summary stats bar -->
+                <Border Margin="0,20,0,0" Background="White" CornerRadius="10"
+                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="24,16">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" BlurRadius="8" Opacity="0.06" ShadowDepth="2"/>
+                    </Border.Effect>
+                    <UniformGrid Columns="3">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalDonations}" FontFamily="Segoe UI Semibold"
+                                       FontSize="28" Foreground="{StaticResource AccentBrush}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Références en stock" FontFamily="Segoe UI" FontSize="12"
+                                       Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding TotalDrugs}" FontFamily="Segoe UI Semibold"
+                                       FontSize="28" Foreground="{StaticResource SuccessBrush}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Unités disponibles" FontFamily="Segoe UI" FontSize="12"
+                                       Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding ExpiredLots}" FontFamily="Segoe UI Semibold"
+                                       FontSize="28" Foreground="{StaticResource DangerBrush}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Lots périmés" FontFamily="Segoe UI" FontSize="12"
+                                       Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ═══ RIGHT INDICATORS PANEL ══════════════════════════════════════ -->
+        <Border Grid.Column="1" Background="White"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0">
+
+                    <Border Background="{StaticResource HeaderBrush}" Padding="16,12">
+                        <TextBlock Text="Indicateurs" FontFamily="Segoe UI Semibold"
+                                   FontSize="13" Foreground="White"/>
+                    </Border>
+
+                    <!-- Indicator rows -->
+                    <Border x:Name="Ind1" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid Margin="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#DBEAFE" Width="56" Height="56">
+                                <TextBlock Text="📦" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Références totales" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource AccentBrush}"/>
+                                <TextBlock Text="{Binding TotalDonations}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#DCFCE7" Width="56" Height="56">
+                                <TextBlock Text="💊" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Unités disponibles" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource SuccessBrush}"/>
+                                <TextBlock Text="{Binding TotalDrugs}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FEE2E2" Width="56" Height="56">
+                                <TextBlock Text="🗑" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Lots périmés" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource DangerBrush}"/>
+                                <TextBlock Text="{Binding ExpiredLots}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FEF3C7" Width="56" Height="56">
+                                <TextBlock Text="⏰" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Périmés dans 30 jours" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource WarningBrush}"/>
+                                <TextBlock Text="{Binding ExpiringSoon30}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FEF3C7" Width="56" Height="56">
+                                <TextBlock Text="⏰" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Périmés dans 60 jours" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource WarningBrush}"/>
+                                <TextBlock Text="{Binding ExpiringSoon60}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FEF3C7" Width="56" Height="56">
+                                <TextBlock Text="⏰" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Périmés dans 90 jours" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource WarningBrush}"/>
+                                <TextBlock Text="{Binding ExpiringSoon90}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="56"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FEE2E2" Width="56" Height="56">
+                                <TextBlock Text="📉" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,8">
+                                <TextBlock Text="Stock faible (&lt;20)" FontFamily="Segoe UI" FontSize="11.5"
+                                           Foreground="{StaticResource DangerBrush}"/>
+                                <TextBlock Text="{Binding LowStock}" FontFamily="Segoe UI Semibold"
+                                           FontSize="20" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

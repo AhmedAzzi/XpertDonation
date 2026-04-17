@@ -1,0 +1,255 @@
+<UserControl x:Class="XpertPharm5Donation.Views.SalesCounterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WorkspaceBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="400"/>
+            <ColumnDefinition Width="380" MaxWidth="420"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══ LEFT PANEL - PRODUCT ENTRY FORM ════════════════════════ -->
+        <StackPanel Grid.Column="0" Margin="24,24,12,24">
+
+            <!-- Form Inputs -->
+            <StackPanel Margin="0,0,0,16">
+                
+                <!-- Barcode Input -->
+                <StackPanel Margin="0,0,0,16">
+                    <TextBlock Text="Code Barre [F3]:" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                    <TextBox Style="{StaticResource InputStyle}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Text=""/>
+                </StackPanel>
+
+                <!-- Price Display -->
+                <StackPanel Margin="0,0,0,16">
+                    <TextBlock Text="Prix :" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                    <TextBox Style="{StaticResource InputStyle}" 
+                             IsReadOnly="True"
+                             Text="0.00"
+                             TextAlignment="Right"/>
+                </StackPanel>
+
+                <!-- Product Selection -->
+                <StackPanel Margin="0,0,0,16">
+                    <TextBlock Text="Product [F4] :" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                    <ComboBox Height="32" 
+                              Padding="8,4"
+                              FontFamily="Segoe UI"
+                              FontSize="13"
+                              Background="White"
+                              Foreground="{StaticResource TextPrimaryBrush}"
+                              BorderBrush="{StaticResource BorderBrush}"
+                              BorderThickness="1">
+                        <ComboBoxItem IsSelected="True">Sélectionner un produit</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Quantity Input -->
+                <StackPanel>
+                    <TextBlock Text="Quantité :" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                    <TextBox Style="{StaticResource InputStyle}" 
+                             Text="0"
+                             TextAlignment="Right"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Products Table -->
+            <TextBlock Text="Produits sélectionnés" 
+                       FontFamily="Segoe UI Semibold"
+                       FontSize="13"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       Margin="0,24,0,12"/>
+
+            <DataGrid x:Name="ProductsGrid"
+                      AutoGenerateColumns="False"
+                      BorderBrush="{StaticResource BorderBrush}"
+                      BorderThickness="1"
+                      RowBackground="White"
+                      AlternatingRowBackground="{StaticResource TableAltRowBrush}"
+                      HeadersVisibility="Column"
+                      CanUserAddRows="False"
+                      Height="280">
+                
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource TableHeaderBrush}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="Padding" Value="8,6"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                        <Setter Property="Height" Value="36"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PRODUIT" Binding="{Binding ProductName}" Width="*"/>
+                    <DataGridTextColumn Header="PRIX/U" Binding="{Binding UnitPrice, StringFormat=N2}" Width="80" TextBlock.TextAlignment="Right"/>
+                    <DataGridTextColumn Header="Qté" Binding="{Binding Quantity}" Width="60" TextBlock.TextAlignment="Center"/>
+                    <DataGridTextColumn Header="Date Exp." Binding="{Binding ExpiryDate, StringFormat=d}" Width="100"/>
+                    <DataGridTextColumn Header="Lot" Binding="{Binding LotNumber}" Width="90"/>
+                    <DataGridTextColumn Header="TOTAL TTC" Binding="{Binding Total, StringFormat=N2}" Width="100" TextBlock.TextAlignment="Right"/>
+                    <DataGridTextColumn Header="Code barre" Binding="{Binding Barcode}" Width="120"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <!-- ═══ RIGHT PANEL - INFO DISPLAY ═════════════════════════════ -->
+        <Grid Grid.Column="1" Background="{StaticResource InfoPanelBgBrush}" Margin="12,0,0,0">
+            <StackPanel Margin="20,24,20,24">
+
+                <!-- Product Detail Header -->
+                <TextBlock Text="FUMACUR 200 MG B/80 COMPRIME 200 MG COMP. B/80"
+                           FontFamily="Segoe UI Semibold"
+                           FontSize="13"
+                           Foreground="#22C55E"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,20"/>
+
+                <!-- Info Grid -->
+                <StackPanel>
+                    <!-- Row 1: Lot, Qté -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Lot." Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="1470" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Qté." Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="10/107" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Row 2: Référence, Entreprise -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Réf" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="12 E 026" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Emp." Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="-" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Row 3: Péremption, Entreprise -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Périm." Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="01/12/2028" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="C.Barre" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <TextBlock Text="53511052" Style="{StaticResource ValueStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Tarif Ref -->
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock Text="Tarif Réf." Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <TextBlock Text="130.40" Style="{StaticResource ValueStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Separator -->
+                <Border Height="1" Background="#374151" Margin="0,12,0,20"/>
+
+                <!-- Summary Section -->
+                <StackPanel>
+                    <!-- Total Amount -->
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="À Payer :" 
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1"
+                                   Text="153.65"
+                                   FontFamily="Segoe UI Semibold"
+                                   FontSize="22"
+                                   Foreground="#22C55E"/>
+                    </Grid>
+
+                    <!-- Tariff Info -->
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Tarif :" Style="{StaticResource LabelStyle}"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="100%" FontFamily="Segoe UI Semibold" FontSize="11" Foreground="#22C55E" TextAlignment="Right"/>
+                                <TextBlock Text="23.25" FontFamily="Segoe UI Semibold" FontSize="11" Foreground="#94A3B8" TextAlignment="Right"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="80%" FontFamily="Segoe UI Semibold" FontSize="11" Foreground="#94A3B8" TextAlignment="Right"/>
+                                <TextBlock Text="49.33" FontFamily="Segoe UI Semibold" FontSize="11" Foreground="#94A3B8" TextAlignment="Right"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- T.Med -->
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="T.Med." Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Column="1" Text="153.65" Style="{StaticResource ValueStyle}"/>
+                    </Grid>
+
+                    <!-- Others -->
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="T.Autre." Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Column="1" Text="0.00" Style="{StaticResource ValueStyle}"/>
+                    </Grid>
+
+                    <!-- Count -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Nbr. U." Style="{StaticResource LabelStyle}"/>
+                        <TextBlock Grid.Column="1" Text="0" Style="{StaticResource ValueStyle}"/>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,231 @@
+<UserControl x:Class="XpertPharm5Donation.Views.DonationVoucherView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:XpertPharm5Donation.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="1080"
+             Background="{StaticResource WorkspaceBrush}">
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="F8" Command="{Binding ValidateVoucherCommand}"/>
+        <KeyBinding Key="Escape" Command="{Binding CancelCommand}"/>
+    </UserControl.InputBindings>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ═══ HEADER INFO ═══════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+            <Border.Effect>
+                <DropShadowEffect Color="#111" BlurRadius="10" Opacity="0.05" Direction="270" ShadowDepth="2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Ligne 1 : Titre / Statut -->
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,0,0,16">
+                    <TextBlock Text="BON DE DON" FontFamily="Segoe UI Semibold" FontSize="20" Foreground="{StaticResource PrimaryDarkBrush}"/>
+                    <TextBlock Text="{Binding VoucherNumber, StringFormat=' N° {0}'}" FontFamily="Segoe UI" FontSize="20" Foreground="#666"/>
+                    <TextBlock Text="{Binding StatusLabel}" FontFamily="Segoe UI Semibold" FontSize="16" Margin="16,0,0,0" VerticalAlignment="Center"
+                               Foreground="{Binding IsValidated, Converter={StaticResource BoolToColorConverter}}"/>
+                    <TextBlock Text="{Binding VoucherModeLabel}" Margin="16,2,0,0" VerticalAlignment="Center" Foreground="#7F8C8D"/>
+                </StackPanel>
+
+                <!-- Ligne 2 : Champs -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,16,0">
+                    <TextBlock Text="Date de réception :" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
+                    <DatePicker SelectedDate="{Binding ReceiptDate}" IsEnabled="{Binding CanEdit}" Style="{StaticResource ModernDatePickerStyle}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,16,0">
+                    <TextBlock Text="Donneur :" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding DonorName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEdit}" Style="{StaticResource FlatTextBoxStyle}" Margin="0,0,8,0" Tag="Nom du donneur"/>
+                        <ComboBox Grid.Column="1" Text="{Binding DonorType, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DonorType, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedValuePath="Content" IsEnabled="{Binding CanEdit}" Style="{StaticResource ModernComboBoxStyle}" IsEditable="True">
+                            <ComboBoxItem Content="Particulier"/>
+                            <ComboBoxItem Content="Association"/>
+                            <ComboBoxItem Content="Institution"/>
+                            <ComboBoxItem Content="Industrie"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="Notes / Observations :" FontSize="12" Foreground="#666" Margin="0,0,0,4"/>
+                    <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanEdit}" Style="{StaticResource FlatTextBoxStyle}" Tag="Informations complémentaires"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ═══ SAISIE RAPIDE LIGNE ═════════════════════════════════════════ -->
+        <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="12" Margin="0,0,0,12" Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}">
+            <Border.Effect>
+                <DropShadowEffect Color="#111" BlurRadius="10" Opacity="0.05" Direction="270" ShadowDepth="2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/> <!-- Code-barres -->
+                    <ColumnDefinition Width="250"/> <!-- Médicament -->
+                    <ColumnDefinition Width="150"/> <!-- DCI -->
+                    <ColumnDefinition Width="120"/> <!-- Lot -->
+                    <ColumnDefinition Width="120"/> <!-- Expiration -->
+                    <ColumnDefinition Width="80"/>  <!-- Qté -->
+                    <ColumnDefinition Width="*"/>   <!-- Notes -->
+                    <ColumnDefinition Width="Auto"/> <!-- Bouton -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Code-barres -->
+                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                    <TextBlock Text="Code-barres" FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBox x:Name="TxtBarcode" Text="{Binding InputBarcode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FlatTextBoxStyle}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <!-- Médicament + Auto-complete -->
+                <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                    <TextBlock Text="Médicament *" FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBox Text="{Binding InputDrugName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FlatTextBoxStyle}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding FilterSuggestionsCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <!-- Popup simplifiée -->
+                    <Popup IsOpen="{Binding IsSuggestionOpen}" StaysOpen="False" x:Name="SugPopup" MinWidth="250">
+                        <Border Background="White" BorderBrush="#DDD" BorderThickness="1" CornerRadius="4" MaxHeight="200">
+                            <ListBox ItemsSource="{Binding DrugSuggestions}" BorderThickness="0"
+                                     DisplayMemberPath="DisplayName"
+                                     MouseDoubleClick="ListBox_MouseDoubleClick" />
+                        </Border>
+                    </Popup>
+                </StackPanel>
+
+                <!-- DCI -->
+                <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                    <TextBlock Text="DCI" FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBox Text="{Binding InputDci, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FlatTextBoxStyle}"/>
+                </StackPanel>
+
+                <!-- Lot -->
+                <StackPanel Grid.Column="3" Margin="0,0,8,0">
+                    <TextBlock Text="N° Lot" FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBox Text="{Binding InputBatchNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FlatTextBoxStyle}"/>
+                </StackPanel>
+
+                <!-- Expiration -->
+                <StackPanel Grid.Column="4" Margin="0,0,8,0">
+                    <TextBlock Text="Expiration" FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <DatePicker SelectedDate="{Binding InputExpirationDate}" Style="{StaticResource ModernDatePickerStyle}"/>
+                </StackPanel>
+
+                <!-- Qté -->
+                <StackPanel Grid.Column="5" Margin="0,0,8,0">
+                    <TextBlock Text="Qté *" FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBox Text="{Binding InputQuantity, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FlatTextBoxStyle}" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Notes -->
+                <StackPanel Grid.Column="6" Margin="0,0,8,0">
+                    <TextBlock Text="Obs." FontSize="11" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBox Text="{Binding InputNotes, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource FlatTextBoxStyle}"/>
+                </StackPanel>
+
+                <!-- Bouton -->
+                <StackPanel Grid.Column="7" VerticalAlignment="Bottom">
+                    <Button Content="{Binding IsLineEditMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Mettre à jour|Ajt. Ligne'}"
+                            Command="{Binding AddLineCommand}" Style="{StaticResource ActionButtonStyle}"
+                            Background="#27AE60" Height="32" Padding="12,0"/>
+                    <Button Content="Annuler modif." Command="{Binding CancelLineEditCommand}" Margin="0,8,0,0"
+                            Visibility="{Binding IsLineEditMode, Converter={StaticResource BoolToVisConverter}}"
+                            Background="Transparent" BorderThickness="0" Foreground="#7F8C8D"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ═══ GRILLE DES LIGNES ═══════════════════════════════════════════ -->
+        <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="1">
+            <DataGrid ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLine}"
+                      AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                      HeadersVisibility="Column" SelectionMode="Single"
+                      RowHeight="32" BorderThickness="0" Background="Transparent">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Médicament" Binding="{Binding DrugName}" Width="250"/>
+                    <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="150"/>
+                    <DataGridTextColumn Header="Code Barres" Binding="{Binding Barcode}" Width="150"/>
+                    <DataGridTextColumn Header="Lot" Binding="{Binding BatchNumber}" Width="120"/>
+                    <DataGridTextColumn Header="Exp." Binding="{Binding ExpirationLabel}" Width="100"/>
+                    <DataGridTextColumn Header="Qté" Binding="{Binding Quantity}" Width="80">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*"/>
+                    
+                    <!-- Actions -->
+                    <DataGridTemplateColumn Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Command="{Binding DataContext.EditLineCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Content="✏️" Background="Transparent" BorderThickness="0" Opacity="0.7"/>
+                                    <Button Command="{Binding DataContext.RemoveLineCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}" Content="❌" Background="Transparent" BorderThickness="0" Opacity="0.7" Margin="4,0,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- ═══ FOOTER & ACTIONS ════════════════════════════════════════════ -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" Margin="0,0,24,0" VerticalAlignment="Center">
+                <TextBlock Text="Total lignes : " Foreground="#666" FontSize="14"/>
+                <TextBlock Text="{Binding TotalLines}" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource PrimaryDarkBrush}" Margin="0,0,16,0"/>
+                <TextBlock Text="Unités : " Foreground="#666" FontSize="14"/>
+                <TextBlock Text="{Binding TotalUnits}" FontFamily="Segoe UI Semibold" FontSize="16" Foreground="{StaticResource PrimaryDarkBrush}"/>
+            </StackPanel>
+
+            <Button Content="❌ Annuler (ESC)" Command="{Binding CancelCommand}"
+                    Width="140" Height="42" Margin="0,0,8,0" Background="#ECEFF1" Foreground="#546E7A" FontSize="14"/>
+                    
+            <Button Content="{Binding ValidateActionLabel}" Command="{Binding ValidateVoucherCommand}" Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}"
+                    Width="160" Height="42" Background="#2ECC71" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="14">
+                <Button.Effect>
+                    <DropShadowEffect Color="#2ECC71" BlurRadius="12" Opacity="0.3" Direction="270" ShadowDepth="3"/>
+                </Button.Effect>
+            </Button>
+        </StackPanel>
+
+        <!-- STATUS -->
+        <TextBlock Grid.Row="3" Text="{Binding StatusMessage}" VerticalAlignment="Center" HorizontalAlignment="Left"
+                   Foreground="{Binding IsStatusError, Converter={StaticResource ErrorToColorConverter}}" FontSize="14"/>
+
+    </Grid>
+</UserControl>

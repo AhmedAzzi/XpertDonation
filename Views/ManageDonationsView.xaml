@@ -1,0 +1,262 @@
+<UserControl x:Class="XpertPharm5Donation.Views.ManageDonationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
+             Background="{StaticResource WorkspaceBrush}">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <conv:BoolToTextConverter       x:Key="BoolText"/>
+        <conv:DateToStringConverter     x:Key="DateStr"/>
+        <conv:NullToStringConverter     x:Key="NullStr"/>
+        <conv:StockColorConverter       x:Key="StockColor"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Overlay de chargement -->
+        <Border Panel.ZIndex="1000" Background="#80000000"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolVis}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Chargement en cours..." Foreground="White" FontFamily="Segoe UI" FontSize="18"/>
+            </StackPanel>
+        </Border>
+
+
+        <Border Panel.ZIndex="999" Background="#33000000"
+                Visibility="{Binding IsStockFormVisible, Converter={StaticResource BoolVis}}">
+            <Border Background="White" Width="450" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    CornerRadius="8" Padding="24">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="20" Opacity="0.15"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="{Binding StockFormTitle}" FontFamily="Segoe UI Semibold" FontSize="18"/>
+
+                    <StackPanel Grid.Row="2" Margin="0,0,0,12">
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Lot / Numéro de lot" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding FormBatchNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource SearchBoxStyle}"/>
+                            </StackPanel>
+                             <StackPanel Grid.Column="2">
+                                <TextBlock Text="Code barre spécifique" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding FormBarcode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource SearchBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Date de péremption *" Style="{StaticResource LabelStyle}"/>
+                                <DatePicker SelectedDate="{Binding FormExpirationDate, UpdateSourceTrigger=PropertyChanged}" Padding="5"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Quantité reçue *" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding FormInitialQuantity, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource SearchBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Annuler" Command="{Binding CancelFormCommand}" Style="{StaticResource GhostButtonStyle}" Width="100" Margin="0,0,8,0"/>
+                        <Button Content="Enregistrer le Lot" Command="{Binding SaveStockFormCommand}" Style="{StaticResource SuccessButtonStyle}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
+
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Menu haut -->
+            <Border Grid.Row="0" Background="White" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="6" Opacity="0.05" ShadowDepth="1"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Width="250" Style="{StaticResource SearchBoxStyle}"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                        <Button Content="🔍  Rechercher" Command="{Binding SearchCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}" Width="110" Margin="0,0,10,0"/>
+                        <Button Content="⟳  Actualiser" Command="{Binding LoadCommand}"
+                                Style="{StaticResource GhostButtonStyle}" Width="110"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Content="Produit sélectionné :" Style="{StaticResource GhostButtonStyle}" IsEnabled="False" BorderThickness="0" Foreground="#64748B" FontFamily="Segoe UI Semibold" Margin="0,0,-8,0"/>
+                        <Button Content="🧹 Retirer le stock" Command="{Binding ClearSelectedDrugStockCommand}" Style="{StaticResource DangerButtonStyle}" Margin="0,0,10,0"/>
+                        <Border Width="1" Background="#E2E8F0" Margin="4,4,10,4"/>
+                        <Button Content="➕ Nouveau lot" Command="{Binding ShowAddStockFormCommand}" Style="{StaticResource PrimaryButtonStyle}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Contenu principal split -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Liste des Médicaments -->
+                <Border Grid.Column="0" Background="White" CornerRadius="6" ClipToBounds="True">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black" BlurRadius="6" Opacity="0.05" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Background="{StaticResource PrimaryBrush}" Padding="16,0">
+                            <TextBlock Text="Stock par produit" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Drugs}" SelectedItem="{Binding SelectedDrug}"
+                                  BorderThickness="0" Background="Transparent" IsReadOnly="True"
+                                  AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Médicament" Width="300" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Nb Lots" Width="80" Binding="{Binding StockBatches.Count}"/>
+                                <DataGridTemplateColumn Header="Stock Actuel (Total)" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TotalAvailableStock}" FontFamily="Segoe UI Semibold" Margin="10,0">
+                                                <TextBlock.Foreground>
+                                                    <Binding Path="TotalAvailableStock" Converter="{StaticResource StockColor}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+
+                <!-- Panel des lots -->
+                <Border Grid.Column="2" Background="White" CornerRadius="6" ClipToBounds="True">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black" BlurRadius="6" Opacity="0.05" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <Grid>
+                        <!-- Si aucun médicament sélectionné -->
+                        <StackPanel Visibility="{Binding SelectedDrug, Converter={StaticResource BoolVis}, ConverterParameter=Invert}"
+                                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="Sélectionnez un médicament pour voir ses lots"
+                                       Foreground="#CBD5E1" FontFamily="Segoe UI" TextWrapping="Wrap"
+                                       TextAlignment="Center" Width="200"/>
+                        </StackPanel>
+
+                        <!-- Si médicament sélectionné -->
+                        <Grid Visibility="{Binding SelectedDrug, Converter={StaticResource BoolVis}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Background="{StaticResource TableHeaderBrush}" Padding="16,0">
+                                <TextBlock Text="Lots en stock" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Center"/>
+                            </Border>
+                            
+                            <Border Grid.Row="1" Padding="12" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SelectedDrug.Name}" FontFamily="Segoe UI Semibold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="{Binding SelectedDrug.TotalAvailableStock, StringFormat='Stock total combiné : {0}'}" FontSize="12" Foreground="#64748B"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="➕ Ajouter Lot" Command="{Binding ShowAddStockFormCommand}" Style="{StaticResource SuccessButtonStyle}" Padding="12,6"/>
+                                </Grid>
+                            </Border>
+
+                            <DataGrid Grid.Row="2" ItemsSource="{Binding SelectedDrugStockBatches}"
+                                      BorderThickness="0" Background="Transparent" IsReadOnly="True"
+                                      AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Lot" Width="80" Binding="{Binding BatchNumber}"/>
+                                    <DataGridTextColumn Header="Code Barre" Width="110" Binding="{Binding Barcode}"/>
+                                    <DataGridTextColumn Header="Péremption" Width="80" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}"/>
+                                    <DataGridTextColumn Header="Reçu" Width="50" Binding="{Binding InitialQuantity}"/>
+                                    <DataGridTemplateColumn Header="Dispo." Width="50">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding QuantityRemaining}" FontFamily="Segoe UI Semibold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Actions" Width="*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <Button Content="✏" ToolTip="Modifier le lot"
+                                                            Command="{Binding DataContext.ShowEditStockFormCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource GhostButtonStyle}" Padding="4,0" Margin="0,0,4,0"/>
+                                                    <Button Content="🗑" ToolTip="Supprimer le lot"
+                                                            Command="{Binding DataContext.DeleteStockBatchCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource GhostButtonStyle}" Foreground="{StaticResource DangerBrush}" Padding="4,0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+            
+            <!-- Status Bar -->
+            <Border Grid.Row="2" Margin="0,16,0,0" Padding="12,8" CornerRadius="4">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#F0FDF4"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                                <Setter Property="Background" Value="#FEF2F2"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI" FontSize="13">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#15803D"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

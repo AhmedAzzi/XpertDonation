@@ -1,0 +1,273 @@
+<UserControl x:Class="XpertPharm5Donation.Views.SalesJournalView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WorkspaceBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ═══ FILTER PANEL ════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <StackPanel Margin="24,12,24,12">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    
+                    <!-- Filter Section Title -->
+                    <TextBlock Text="Filtre" 
+                               FontFamily="Segoe UI Semibold"
+                               FontSize="12"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Margin="0,0,24,0"/>
+
+                    <!-- Start Date -->
+                    <StackPanel Width="120" Margin="0,0,24,0">
+                        <TextBlock Text="Date Début :" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <TextBox Height="28" 
+                                 Padding="8,2"
+                                 Text="12/04/2025"
+                                 FontFamily="Segoe UI"
+                                 FontSize="12"
+                                 Background="White"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 BorderBrush="{StaticResource BorderBrush}"
+                                 BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- End Date -->
+                    <StackPanel Width="120" Margin="0,0,24,0">
+                        <TextBlock Text="Date Fin :" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <TextBox Height="28" 
+                                 Padding="8,2"
+                                 Text="12/04/2025"
+                                 FontFamily="Segoe UI"
+                                 FontSize="12"
+                                 Background="White"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 BorderBrush="{StaticResource BorderBrush}"
+                                 BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Client -->
+                    <StackPanel Width="160" Margin="0,0,24,0">
+                        <TextBlock Text="Client :" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <ComboBox Height="28" 
+                                  Padding="8,2"
+                                  FontFamily="Segoe UI"
+                                  FontSize="12"
+                                  Background="White"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  BorderBrush="{StaticResource BorderBrush}"
+                                  BorderThickness="1">
+                            <ComboBoxItem IsSelected="True">-</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Sort by -->
+                    <StackPanel Width="140" Margin="0,0,24,0">
+                        <TextBlock Text="Saïsie Par :" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <ComboBox Height="28" 
+                                  Padding="8,2"
+                                  FontFamily="Segoe UI"
+                                  FontSize="12"
+                                  Background="White"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  BorderBrush="{StaticResource BorderBrush}"
+                                  BorderThickness="1">
+                            <ComboBoxItem IsSelected="True">-</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Date Edit Range -->
+                    <StackPanel Width="160" Margin="0,0,24,0">
+                        <TextBlock Text="Date Éch :" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <ComboBox Height="28" 
+                                  Padding="8,2"
+                                  FontFamily="Segoe UI"
+                                  FontSize="12"
+                                  Background="White"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                  BorderBrush="{StaticResource BorderBrush}"
+                                  BorderThickness="1">
+                            <ComboBoxItem IsSelected="True">-</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Search Box -->
+                    <StackPanel Width="200" Margin="0,0,24,0">
+                        <TextBlock Text="Recherche" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <TextBox Height="28" 
+                                 Padding="8,2"
+                                 FontFamily="Segoe UI"
+                                 FontSize="12"
+                                 Background="White"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 BorderBrush="{StaticResource BorderBrush}"
+                                 BorderThickness="1"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Filter Options Row 2 -->
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                    <CheckBox Content="Inclure les échanges annés" 
+                              FontFamily="Segoe UI"
+                              FontSize="11"
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              VerticalAlignment="Center"
+                              Margin="0,0,16,0"/>
+                    <RadioButton Content="Tous" 
+                                 FontFamily="Segoe UI"
+                                 FontSize="11"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 IsChecked="True"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,16,0"/>
+                    <RadioButton Content="Payées" 
+                                 FontFamily="Segoe UI"
+                                 FontSize="11"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,16,0"/>
+                    <RadioButton Content="Impayées" 
+                                 FontFamily="Segoe UI"
+                                 FontSize="11"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ MAIN CONTENT ════════════════════════════════════════════ -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Transactions Table -->
+            <DataGrid x:Name="SalesGrid"
+                      Grid.Row="0"
+                      AutoGenerateColumns="False"
+                      BorderBrush="{StaticResource BorderBrush}"
+                      BorderThickness="0,1,0,0"
+                      RowBackground="White"
+                      AlternatingRowBackground="{StaticResource TableAltRowBrush}"
+                      HeadersVisibility="Column"
+                      CanUserAddRows="False"
+                      Margin="24,12,24,0">
+                
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource TableHeaderBrush}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="Padding" Value="8,8"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                        <Setter Property="Height" Value="36"/>
+                        <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="N° Vente" Binding="{Binding SaleNumber}" Width="90"/>
+                    <DataGridTextColumn Header="Type Vente" Binding="{Binding SaleType}" Width="140"/>
+                    <DataGridTextColumn Header="Mont. Vente" Binding="{Binding Amount, StringFormat=N2}" Width="120"/>
+                    <DataGridTextColumn Header="Motif" Binding="{Binding Reason}" Width="80"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding SaleDate, StringFormat=G}" Width="160"/>
+                    <DataGridTextColumn Header="Clients" Binding="{Binding ClientName}" Width="*"/>
+                    <DataGridTextColumn Header="Remise globale" Binding="{Binding GlobalDiscount, StringFormat=N2}" Width="130"/>
+                    <DataGridTextColumn Header="Mont. Vente (remisé)" Binding="{Binding DiscountedAmount, StringFormat=N2}" Width="140"/>
+                    <DataGridTextColumn Header="Mont. Payé" Binding="{Binding PaidAmount, StringFormat=N2}" Width="120"/>
+                    <DataGridTextColumn Header="Mont. Reste" Binding="{Binding RemainingAmount, StringFormat=N2}" Width="120"/>
+                    <DataGridTextColumn Header="Date Éche." Binding="{Binding DueDate, StringFormat=d}" Width="110"/>
+                    <DataGridTextColumn Header="Saisie Par" Binding="{Binding EnteredBy}" Width="110"/>
+                    <DataGridTextColumn Header="Saisie le" Binding="{Binding EntryDate, StringFormat=G}" Width="160"/>
+                    <DataGridTextColumn Header="Nom Machine" Binding="{Binding MachineName}" Width="130"/>
+                    <DataGridTextColumn Header="Avec" Binding="{Binding WithInfo}" Width="80"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Detail Section -->
+            <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <StackPanel Margin="24,16,24,16">
+                    <TextBlock Text="Détail de la vente"
+                               FontFamily="Segoe UI Semibold"
+                               FontSize="12"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+
+                    <DataGrid AutoGenerateColumns="False"
+                              BorderBrush="{StaticResource BorderBrush}"
+                              BorderThickness="1"
+                              RowBackground="White"
+                              AlternatingRowBackground="{StaticResource TableAltRowBrush}"
+                              HeadersVisibility="Column"
+                              CanUserAddRows="False"
+                              Height="140">
+                        
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource TableHeaderBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                                <Setter Property="FontSize" Value="11"/>
+                                <Setter Property="Padding" Value="8,6"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                <Setter Property="Height" Value="32"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="100"/>
+                            <DataGridTextColumn Header="Produit" Binding="{Binding ProductName}" Width="*"/>
+                            <DataGridTextColumn Header="Qte" Binding="{Binding Quantity}" Width="60"/>
+                            <DataGridTextColumn Header="Lot" Binding="{Binding LotNumber}" Width="100"/>
+                            <DataGridTextColumn Header="Date préemp." Binding="{Binding ExpiryDate, StringFormat=d}" Width="130"/>
+                            <DataGridTextColumn Header="Code Barre Lot" Binding="{Binding LotBarcode}" Width="120"/>
+                            <DataGridTextColumn Header="Prix Vente" Binding="{Binding SalePrice, StringFormat=N2}" Width="110"/>
+                            <DataGridTextColumn Header="Mnt. Vente" Binding="{Binding LineAmount, StringFormat=N2}" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="24,12,24,12">
+            <Button Content="Nouveau[F10]" 
+                    Padding="12,8"
+                    FontFamily="Segoe UI Semibold"
+                    FontSize="11"
+                    Background="{StaticResource AccentBrush}"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Margin="0,0,12,0"/>
+            <Button Content="Supprimer [F3]" 
+                    Padding="12,8"
+                    FontFamily="Segoe UI Semibold"
+                    FontSize="11"
+                    Background="{StaticResource DangerBrush}"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Margin="0,0,12,0"/>
+            <Button Content="Journal Détaillé" 
+                    Padding="12,8"
+                    FontFamily="Segoe UI Semibold"
+                    FontSize="11"
+                    Background="{StaticResource WarningBrush}"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Margin="0,0,12,0"/>
+            <TextBlock Text="Incluie les échanges annés" 
+                       Style="{StaticResource LabelStyle}"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

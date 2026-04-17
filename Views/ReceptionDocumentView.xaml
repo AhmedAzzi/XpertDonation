@@ -1,0 +1,311 @@
+<UserControl x:Class="XpertPharm5Donation.Views.ReceptionDocumentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource WorkspaceBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ═══ HEADER ══════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <StackPanel Margin="24,20,24,20">
+                
+                <!-- Title -->
+                <TextBlock Text="Bon de Réception N° 00428/20"
+                           FontFamily="Segoe UI Semibold"
+                           FontSize="14"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           Margin="0,0,0,16"/>
+
+                <!-- Info Grid - Row 1 -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="140"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="Auto" MinWidth="140"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="Auto" MinWidth="140"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- N° Réception -->
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="N° Réception :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" Text="00428/20" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Fournisseur -->
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                        <TextBlock Text="Fournisseur :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Date -->
+                    <StackPanel Grid.Column="2" Margin="12,0,0,0">
+                        <TextBlock Text="Date :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" Text="07/04/2025" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Magasin -->
+                    <StackPanel Grid.Column="3" Margin="12,0,0,0">
+                        <TextBlock Text="Magasin :" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox Height="28" Padding="8,2" SelectedIndex="0"
+                                  FontFamily="Segoe UI" FontSize="12" Background="White"
+                                  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <ComboBoxItem>PHARMACIE</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Type T.T.C -->
+                    <StackPanel Grid.Column="4" Margin="12,0,0,0">
+                        <TextBlock Text="Type T.T.C :" Style="{StaticResource LabelStyle}"/>
+                        <ComboBox Height="28" Padding="8,2" SelectedIndex="0"
+                                  FontFamily="Segoe UI" FontSize="12" Background="White"
+                                  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <ComboBoxItem>-</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Info Grid - Row 2 -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="140"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="Auto" MinWidth="140"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- N°BL, Num -->
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="N°BL, Num :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Num Éch -->
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                        <TextBlock Text="Num Éch :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Échéance -->
+                    <StackPanel Grid.Column="2" Margin="12,0,0,0">
+                        <TextBlock Text="Échéance :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Saisie -->
+                    <StackPanel Grid.Column="3" Margin="12,0,0,0">
+                        <TextBlock Text="Saisie :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" 
+                                 FontFamily="Segoe UI" FontSize="12" Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Info Grid - Row 3 -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="140"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Solde :" Style="{StaticResource LabelStyle}"/>
+                        <TextBox Height="28" Padding="8,2" Text="-38 980. 10" IsReadOnly="True"
+                                 FontFamily="Segoe UI" FontSize="12" Background="{StaticResource TableAltRowBrush}"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ PRODUCTS TABLE ══════════════════════════════════════════ -->
+        <StackPanel Grid.Row="1" Margin="24,16,24,16">
+            <StackPanel Margin="0,0,0,12">
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Informations générales"
+                               FontFamily="Segoe UI Semibold"
+                               FontSize="12"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <StackPanel Margin="0,0,12,0">
+                            <TextBlock Text="N° Qté Reçue" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="0" Style="{StaticResource ValueStyle}" TextAlignment="Right"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Qté U.G %" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="0" Style="{StaticResource ValueStyle}" TextAlignment="Right"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Column Headers with data -->
+                <Border Margin="0,0,0,12" Background="{StaticResource TableHeaderBrush}" Padding="8,6">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Code Barre" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10"/>
+                        <TextBlock Grid.Column="1" Text="Produit" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10"/>
+                        <TextBlock Grid.Column="2" Text="Produit (Full)" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10"/>
+                        <TextBlock Grid.Column="3" Text="Qté Reçue" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="Qté U.G" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Center"/>
+                        <TextBlock Grid.Column="5" Text="Date péremption" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10"/>
+                        <TextBlock Grid.Column="6" Text="Prix unitaire" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="7" Text="SHP" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="8" Text="PPA" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="9" Text="Taux TVA" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="10" Text="Montant H.T" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="11" Text="Code Barre Lot" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10"/>
+                    </Grid>
+                </Border>
+
+                <!-- Sample Data Row -->
+                <Border Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="8,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="9" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Column="2" Text="BIB KIDS N LARGE A/BRAS KHBL 6..." FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Column="3" Text="100" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" TextAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="0" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" TextAlignment="Center"/>
+                        <TextBlock Grid.Column="5" Text="" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Column="6" Text="600.00" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="7" Text="0.00" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="8" Text="720" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="9" Text="0.00" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="10" Text="60 000.00" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" TextAlignment="Right"/>
+                        <TextBlock Grid.Column="11" Text="67406903" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- ═══ FOOTER - SUMMARY ════════════════════════════════════════ -->
+        <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+            <Grid Margin="24,16,24,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <Button Content="Nouveau" Padding="12,8" 
+                            FontFamily="Segoe UI Semibold" FontSize="11"
+                            Background="{StaticResource AccentBrush}" Foreground="White"
+                            BorderThickness="0" Cursor="Hand" Margin="0,0,8,0"/>
+                </StackPanel>
+
+                <!-- Summary Section -->
+                <StackPanel Grid.Column="1">
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Total PPA -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Total PPA" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="72 000.00" Style="{StaticResource ValueStyle}" TextAlignment="Right"/>
+                        </StackPanel>
+
+                        <!-- Total SHP -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Total SHP" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="0.00" Style="{StaticResource ValueStyle}" TextAlignment="Right"/>
+                        </StackPanel>
+
+                        <!-- Total H.T -->
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Total H.T" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="60 000.00" Style="{StaticResource ValueStyle}" TextAlignment="Right" Foreground="#DC2626"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Total TVA -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Total TVA" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="0.00" Style="{StaticResource ValueStyle}" TextAlignment="Right"/>
+                        </StackPanel>
+
+                        <!-- Timbre -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Timbre" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="0.00" Style="{StaticResource ValueStyle}" TextAlignment="Right"/>
+                        </StackPanel>
+
+                        <!-- Total T.T.C -->
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Total T.T.C" Style="{StaticResource LabelStyle}" TextAlignment="Right"/>
+                            <TextBlock Text="60 000.00" Style="{StaticResource ValueStyle}" TextAlignment="Right" Foreground="#DC2626" FontSize="13"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
