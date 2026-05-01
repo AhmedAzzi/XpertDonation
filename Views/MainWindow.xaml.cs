@@ -49,6 +49,11 @@ namespace XpertPharm5Donation.Views
                 BtnVouchers_Click(this, new RoutedEventArgs());
                 await voucherVm.LoadVoucherAsync(id);
             };
+            stockLotsVm.EditVoucherRequested += async (id) =>
+            {
+                BtnVouchers_Click(this, new RoutedEventArgs());
+                await voucherVm.LoadVoucherAsync(id);
+            };
             journalVm.NewVoucherRequested += () =>
             {
                 BtnVouchers_Click(this, new RoutedEventArgs());

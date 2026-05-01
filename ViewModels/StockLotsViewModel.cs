@@ -25,6 +25,7 @@ namespace XpertPharm5Donation.ViewModels
 
     public class LotHistoryEntry
     {
+        public int VoucherId { get; set; }
         public string VoucherNumber { get; set; } = string.Empty;
         public string EntryType { get; set; } = string.Empty;
         public DateTime? Date { get; set; }
@@ -42,11 +43,14 @@ namespace XpertPharm5Donation.ViewModels
         public ObservableCollection<StockBatch> StockLots { get; } = [];
         public ObservableCollection<LotHistoryEntry> LotHistory { get; } = [];
 
+        public event Action<int>? EditVoucherRequested;
+
         [ObservableProperty] private string _codeBarreFilter = string.Empty;
         [ObservableProperty] private string _dciFilter = string.Empty;
         [ObservableProperty] private bool _showZeroQuantities;
         [ObservableProperty] private StockFilterType _selectedFilter = StockFilterType.All;
         [ObservableProperty] private StockBatch? _selectedLot;
+        [ObservableProperty] private LotHistoryEntry? _selectedHistoryEntry;
 
         [ObservableProperty] private bool _isBusy;
         [ObservableProperty] private string _statusMessage = string.Empty;
@@ -124,6 +128,16 @@ namespace XpertPharm5Donation.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void EditVoucher(LotHistoryEntry? entry)
+        {
+            var e = entry ?? SelectedHistoryEntry;
+            if (e != null && e.VoucherId > 0)
+            {
+                EditVoucherRequested?.Invoke(e.VoucherId);
+            }
+        }
+
         private void ApplyFilters()
         {
             var filtered = _allBatches.AsEnumerable();
@@ -193,6 +207,7 @@ namespace XpertPharm5Donation.ViewModels
                 {
                     LotHistory.Add(new LotHistoryEntry
                     {
+                        VoucherId = line.DonationVoucherId,
                         VoucherNumber = line.DonationVoucher?.VoucherNumber ?? "-",
                         EntryType = "Réception Don",
                         Date = line.DonationVoucher?.ReceiptDate,

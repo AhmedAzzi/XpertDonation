@@ -204,7 +204,13 @@
             <!-- History DataGrid -->
             <DataGrid Grid.Row="1"
                       ItemsSource="{Binding LotHistory}"
+                      SelectedItem="{Binding SelectedHistoryEntry}"
                       Style="{StaticResource AppDataGridStyle}">
+                <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick" 
+                                  Command="{Binding EditVoucherCommand}" 
+                                  CommandParameter="{Binding SelectedHistoryEntry}"/>
+                </DataGrid.InputBindings>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="N° Bon / Facture" Width="130" Binding="{Binding VoucherNumber}"/>
                     <DataGridTextColumn Header="Type" Width="100" Binding="{Binding EntryType}"/>

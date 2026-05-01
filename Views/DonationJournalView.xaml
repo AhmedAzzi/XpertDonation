@@ -96,6 +96,11 @@
                           HeadersVisibility="Column" SelectionMode="Single"
                           RowHeight="32" BorderThickness="0" Background="Transparent"
                           Style="{StaticResource AppDataGridStyle}">
+                    <DataGrid.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick" 
+                                      Command="{Binding EditVoucherCommand}" 
+                                      CommandParameter="{Binding SelectedVoucher}"/>
+                    </DataGrid.InputBindings>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="N° Bon" Binding="{Binding VoucherNumber}" Width="120"/>
                         <DataGridTextColumn Header="Type" Binding="{Binding DonorType}" Width="100"/>
