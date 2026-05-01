@@ -58,8 +58,8 @@
         </Border>
 
         <!-- ═══ NAV TABS ════════════════════════════════════════════════════ -->
-        <Border Grid.Row="1" Background="#0D2845">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+        <Border Grid.Row="1" Background="{StaticResource PrimaryDarkBrush}" >
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0"   >
                 <Button x:Name="BtnHome" Content="🏠  Page d'accueil"
                         Style="{StaticResource NavTabActiveStyle}"
                         Click="BtnHome_Click"/>
@@ -78,7 +78,7 @@
                 <Button x:Name="BtnJournal" Content="📋  Journal des bons de don"
                         Style="{StaticResource NavTabStyle}"
                         Click="BtnJournal_Click"/>
-                <Button x:Name="BtnHistory" Content="🔄  Historique Disp."
+                <Button x:Name="BtnHistory" Content="📊  Journal de Comptoir"
                         Style="{StaticResource NavTabStyle}"
                         Click="BtnHistory_Click"/>
             </StackPanel>

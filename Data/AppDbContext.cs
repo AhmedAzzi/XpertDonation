@@ -25,15 +25,6 @@ namespace XpertPharm5Donation.Data
                 e.Property(d => d.Form).HasMaxLength(100);
                 e.Property(d => d.Barcode).HasMaxLength(100);
                 e.HasIndex(d => d.Barcode).IsUnique().HasFilter("[Barcode] IS NOT NULL");
-
-                // Seed Drugs
-                e.HasData(
-                    new Drug { Id = 1, Name = "AUGMENTIN 1G COMPRIME", Dci = "Amoxicilline / Acide clavulanique", Form = "Comprimé", CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new Drug { Id = 2, Name = "PARACETAMOL 500MG COMPRIME", Dci = "Paracétamol", Form = "Comprimé", CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new Drug { Id = 3, Name = "ASPIRINE 500MG COMPRIME", Dci = "Acide acétylsalicylique", Form = "Comprimé", CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new Drug { Id = 4, Name = "DOLIPRANE 1000MG COMPRIME", Dci = "Paracétamol", Form = "Comprimé", CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new Drug { Id = 5, Name = "AMOXICILLINE 500MG GELULE", Dci = "Amoxicilline", Form = "Gélule", CreatedAt = new System.DateTime(2026, 1, 1) }
-                );
             });
 
             // ── StockBatch ───────────────────────────────────────────────────
@@ -48,17 +39,6 @@ namespace XpertPharm5Donation.Data
                  .WithOne(d => d.StockBatch)
                  .HasForeignKey(d => d.StockBatchId)
                  .OnDelete(DeleteBehavior.Cascade);
-
-                // Seed StockBatches
-                e.HasData(
-                    new StockBatch { Id = 1, DrugId = 1, BatchNumber = "LOT001", Barcode = "3400921845603", ExpirationDate = new System.DateTime(2027, 6, 30), InitialQuantity = 500, CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new StockBatch { Id = 2, DrugId = 2, BatchNumber = "LOT002", Barcode = "3400936563017", ExpirationDate = new System.DateTime(2026, 12, 31), InitialQuantity = 1000, CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new StockBatch { Id = 3, DrugId = 3, BatchNumber = "LOT003", Barcode = "3400935337700", ExpirationDate = new System.DateTime(2026, 8, 15), InitialQuantity = 300, CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new StockBatch { Id = 4, DrugId = 4, BatchNumber = "LOT004", Barcode = "3400929200506", ExpirationDate = new System.DateTime(2027, 3, 31), InitialQuantity = 200, CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new StockBatch { Id = 5, DrugId = 5, BatchNumber = "LOT005", Barcode = "3400932832022", ExpirationDate = new System.DateTime(2026, 10, 31), InitialQuantity = 400, CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new StockBatch { Id = 6, DrugId = 5, BatchNumber = "LOT006", Barcode = "LOT006BCODE", ExpirationDate = new System.DateTime(2025, 12, 31), InitialQuantity = 150, CreatedAt = new System.DateTime(2026, 1, 1) },
-                    new StockBatch { Id = 7, DrugId = 5, BatchNumber = "LOT007", Barcode = "LOT007BCODE", ExpirationDate = new System.DateTime(2027, 9, 30), InitialQuantity = 600, CreatedAt = new System.DateTime(2026, 1, 1) }
-                );
             });
 
             // ── Dispensation ─────────────────────────────────────────────────

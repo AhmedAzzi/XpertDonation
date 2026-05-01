@@ -64,27 +64,9 @@
 
             <DataGrid x:Name="ProductsGrid"
                       AutoGenerateColumns="False"
-                      BorderBrush="{StaticResource BorderBrush}"
-                      BorderThickness="1"
-                      RowBackground="White"
-                      AlternatingRowBackground="{StaticResource TableAltRowBrush}"
-                      HeadersVisibility="Column"
                       CanUserAddRows="False"
+                      Style="{StaticResource AppDataGridStyle}"
                       Height="280">
-                
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Background" Value="{StaticResource TableHeaderBrush}"/>
-                        <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
-                        <Setter Property="FontSize" Value="11"/>
-                        <Setter Property="Padding" Value="8,6"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                        <Setter Property="Height" Value="36"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="PRODUIT" Binding="{Binding ProductName}" Width="*"/>

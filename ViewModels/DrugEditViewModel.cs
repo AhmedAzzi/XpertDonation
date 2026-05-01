@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using XpertPharm5Donation.Data;
 using XpertPharm5Donation.Models;
+using System;
 
 namespace XpertPharm5Donation.ViewModels
 {
@@ -22,6 +23,7 @@ namespace XpertPharm5Donation.ViewModels
         [ObservableProperty] private bool _isBusy;
 
         public bool IsEditMode => _originalDrug != null;
+        public Drug? SavedDrug { get; private set; }
 
         public DrugEditViewModel(AppDbContext db, Drug? drug = null)
         {
@@ -58,6 +60,7 @@ namespace XpertPharm5Donation.ViewModels
                     _originalDrug.Form = string.IsNullOrWhiteSpace(Form) ? null : Form.Trim();
                     _originalDrug.Barcode = string.IsNullOrWhiteSpace(Barcode) ? null : Barcode.Trim();
                     _db.Drugs.Update(_originalDrug);
+                    SavedDrug = _originalDrug;
                 }
                 else
                 {
@@ -70,9 +73,11 @@ namespace XpertPharm5Donation.ViewModels
                         CreatedAt = DateTime.Now
                     };
                     _db.Drugs.Add(newDrug);
+                    SavedDrug = newDrug;
                 }
 
                 await _db.SaveChangesAsync();
+                if (window != null) window.DialogResult = true;
                 window?.Close();
             }
             catch (Exception ex)

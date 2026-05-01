@@ -25,6 +25,13 @@ namespace XpertPharm5Donation.Models
 
         public int InitialQuantity { get; set; }
 
+        public bool IsBlocked { get; set; }
+
+        [MaxLength(100)]
+        public string? Store { get; set; }
+
+        public bool IsPsychotrope { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation

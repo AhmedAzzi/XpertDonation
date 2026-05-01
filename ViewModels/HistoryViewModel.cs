@@ -32,6 +32,8 @@ namespace XpertPharm5Donation.ViewModels
 
         [ObservableProperty] private DateTime _startDate;
         [ObservableProperty] private DateTime _endDate;
+        [ObservableProperty] private int _totalSessions;
+        [ObservableProperty] private int _totalUnits;
 
         private SessionGroup? _selectedSession;
         public SessionGroup? SelectedSession
@@ -77,6 +79,9 @@ namespace XpertPharm5Donation.ViewModels
 
                 Sessions.Clear();
                 foreach (var g in grouped) Sessions.Add(g);
+
+                TotalSessions = Sessions.Count;
+                TotalUnits = Sessions.Sum(s => s.TotalUnits);
 
                 StatusMessage = $"{Sessions.Count} session(s) de dispensation trouvée(s).";
                 IsStatusError = false;

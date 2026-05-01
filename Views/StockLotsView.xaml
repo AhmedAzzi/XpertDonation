@@ -1,0 +1,248 @@
+<UserControl x:Class="XpertPharm5Donation.Views.StockLotsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
+             Background="{StaticResource WorkspaceBrush}">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <conv:DateToStringConverter x:Key="DateStr"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>      <!-- Filter panel -->
+            <RowDefinition Height="Auto"/>      <!-- "Lots en stock" title -->
+            <RowDefinition Height="5*"/>        <!-- Main DataGrid -->
+            <RowDefinition Height="8"/>         <!-- GridSplitter -->
+            <RowDefinition Height="2*"
+                           MinHeight="80"/>     <!-- History (header + grid) -->
+            <RowDefinition Height="Auto"/>      <!-- Footer totals -->
+            <RowDefinition Height="Auto"/>      <!-- Error message -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══ FILTER PANEL ════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <StackPanel Margin="16,10,16,6">
+                <!-- Row 1: Title + inputs + radio buttons -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>  <!-- Filtrer label -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Code Barre -->
+                        <ColumnDefinition Width="Auto"/>  <!-- DCI -->
+                        <ColumnDefinition Width="*"/>     <!-- Spacer -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Left radio column -->
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="Auto"/>  <!-- Right radio column -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Filtrer label -->
+                    <TextBlock Grid.Column="0" Text="Filtrer" 
+                               FontFamily="Segoe UI Semibold" FontSize="12"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               VerticalAlignment="Top" Margin="0,4,20,0"/>
+
+                    <!-- Code Barre -->
+                    <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                        <TextBlock Text="Code Barre" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
+                        <TextBox Width="170" Height="26" Padding="6,2"
+                                 FontFamily="Segoe UI" FontSize="12"
+                                 Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                 Text="{Binding CodeBarreFilter, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="OnFilterTextChanged"/>
+                    </StackPanel>
+
+                    <!-- DCI -->
+                    <StackPanel Grid.Column="2" Margin="0,0,16,0">
+                        <TextBlock Text="DCI" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
+                        <TextBox Width="170" Height="26" Padding="6,2"
+                                 FontFamily="Segoe UI" FontSize="12"
+                                 Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                 Text="{Binding DciFilter, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="OnFilterTextChanged"/>
+                    </StackPanel>
+
+                    <!-- Left Radio Column -->
+                    <StackPanel Grid.Column="4" Margin="0,0,0,0">
+                        <RadioButton Content="Tous" GroupName="StockFilter"
+                                     IsChecked="True"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Foreground="{StaticResource TextPrimaryBrush}"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="All"/>
+                        <RadioButton GroupName="StockFilter"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Foreground="{StaticResource TextPrimaryBrush}"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="NonExpired">
+                            <TextBlock Text="Lots non périmés"/>
+                        </RadioButton>
+                        <RadioButton GroupName="StockFilter"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="Expired">
+                            <TextBlock Foreground="#D97706">
+                                <Run Text="Lots périmés ("/>
+                                <Run Text="{Binding ExpiredCount, Mode=OneWay}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                        </RadioButton>
+                        <RadioButton GroupName="StockFilter"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Foreground="{StaticResource TextPrimaryBrush}"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="Blocked">
+                            <TextBlock>
+                                <Run Text="Lots Bloqués ("/>
+                                <Run Text="{Binding BlockedCount, Mode=OneWay}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                        </RadioButton>
+                    </StackPanel>
+
+                    <!-- Right Radio Column -->
+                    <StackPanel Grid.Column="6" Margin="0,0,0,0">
+                        <RadioButton GroupName="StockFilter"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="Exp90Days">
+                            <TextBlock Foreground="#DC2626">
+                                <Run Text="Exp. &lt; 90 Jours ("/>
+                                <Run Text="{Binding Exp90Count, Mode=OneWay}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                        </RadioButton>
+                        <RadioButton GroupName="StockFilter"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="Exp30Days">
+                            <TextBlock Foreground="#DC2626">
+                                <Run Text="Exp. &lt; 30 Jours ("/>
+                                <Run Text="{Binding Exp30Count, Mode=OneWay}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                        </RadioButton>
+                        <RadioButton GroupName="StockFilter"
+                                     FontFamily="Segoe UI" FontSize="11"
+                                     Margin="0,2" Click="FilterRadio_Click" Tag="Exp60Days">
+                            <TextBlock Foreground="#DC2626">
+                                <Run Text="Exp. &lt; 60 Jours ("/>
+                                <Run Text="{Binding Exp60Count, Mode=OneWay}"/>
+                                <Run Text=")"/>
+                            </TextBlock>
+                        </RadioButton>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Checkbox row -->
+                <CheckBox Content="Afficher les quantités nulles"
+                          IsChecked="{Binding ShowZeroQuantities}"
+                          FontFamily="Segoe UI" FontSize="11"
+                          Foreground="{StaticResource TextSecondaryBrush}"
+                          Margin="0,6,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ LOTS EN STOCK TITLE ════════════════════════════════ -->
+        <TextBlock Grid.Row="1" Text="Lots en stock"
+                   FontFamily="Segoe UI Semibold" FontSize="12"
+                   Foreground="{StaticResource TextPrimaryBrush}"
+                   Margin="16,8,16,4"/>
+
+        <!-- ═══ MAIN DATA GRID ════════════════════════════════════ -->
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding StockLots}"
+                  SelectedItem="{Binding SelectedLot}"
+                  Style="{StaticResource AppDataGridStyle}"
+                  Margin="16,0,16,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Produit" Width="*" Binding="{Binding Drug.Name}"/>
+                <DataGridTextColumn Header="Référence" Width="100" Binding="{Binding BatchNumber}"/>
+                <DataGridTextColumn Header="Date Péremp." Width="110" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}"/>
+                <DataGridTemplateColumn Header="Bloqué" Width="70">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding IsBlocked, Converter={StaticResource BoolText}, ConverterParameter='Oui|'}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Qté" Width="60" Binding="{Binding QuantityRemaining}"/>
+                <DataGridTextColumn Header="Magasin" Width="90" Binding="{Binding Store}"/>
+                <DataGridTemplateColumn Header="Psychotrope" Width="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding IsPsychotrope, Converter={StaticResource BoolText}, ConverterParameter='Oui|'}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Code Barre Lot" Width="130" Binding="{Binding Barcode}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- ═══ GRID SPLITTER ═════════════════════════════════════ -->
+        <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch" Background="#E2E8F0"
+                      ResizeDirection="Rows" ResizeBehavior="PreviousAndNext"
+                      Margin="16,0" Cursor="SizeNS">
+        </GridSplitter>
+        <TextBlock Grid.Row="3" Text="···" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="{StaticResource TextSecondaryBrush}" FontSize="14" FontWeight="Bold"
+                   IsHitTestVisible="False"/>
+
+        <!-- ═══ HISTORY SECTION (header + grid) ══════════════════ -->
+        <Grid Grid.Row="4" Margin="16,0,16,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- History header -->
+            <Border Grid.Row="0" Background="{StaticResource TableHeaderBrush}" Padding="16,6">
+                <TextBlock Text="Historique des entrées pour ce lot" 
+                           Foreground="White" FontFamily="Segoe UI Semibold" FontSize="11"/>
+            </Border>
+
+            <!-- History DataGrid -->
+            <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding LotHistory}"
+                      Style="{StaticResource AppDataGridStyle}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="N° Bon / Facture" Width="130" Binding="{Binding VoucherNumber}"/>
+                    <DataGridTextColumn Header="Type" Width="100" Binding="{Binding EntryType}"/>
+                    <DataGridTextColumn Header="Date" Width="110" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
+                    <DataGridTextColumn Header="Tiers (Donneur)" Width="*" Binding="{Binding DonorName}"/>
+                    <DataGridTextColumn Header="Qté Reçue" Width="100" Binding="{Binding QuantityReceived}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="Margin" Value="0,0,10,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- ═══ FOOTER TOTALS ════════════════════════════════════ -->
+        <Border Grid.Row="5" Padding="16,8" Background="White" 
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Totaux" FontFamily="Segoe UI Semibold" FontSize="12"
+                           Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,16,0"
+                           VerticalAlignment="Center"/>
+                <TextBlock FontFamily="Segoe UI" FontSize="12"
+                           Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center">
+                    <Run Text="Total des lots affichés : "/>
+                    <Run Text="{Binding TotalLotsDisplayed, Mode=OneWay}" FontFamily="Segoe UI Semibold"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ ERROR MESSAGE ════════════════════════════════════ -->
+        <Border Grid.Row="6" Padding="16,4" Background="White"
+                Visibility="{Binding IsStatusError, Converter={StaticResource BoolVis}}">
+            <TextBlock Text="{Binding StatusMessage}" 
+                       Foreground="{StaticResource DangerBrush}"
+                       FontFamily="Segoe UI" FontSize="11"/>
+        </Border>
+    </Grid>
+</UserControl>

@@ -15,7 +15,8 @@ namespace XpertPharm5Donation.Views
         private readonly HomeView _homeView;
         private readonly PosView _posView;
         private readonly HistoryView _historyView;
-        private readonly ManageDonationsView _stockView;
+        private readonly ManageDonationsView _manageDonationsView;
+        private readonly StockLotsView _stockLotsView;
         private readonly ProductsView _productsView;
         private readonly DonationVoucherView _voucherView;
         private readonly DonationJournalView _journalView;
@@ -24,7 +25,7 @@ namespace XpertPharm5Donation.Views
         public MainViewModel PosVM { get; }
 
         public MainWindow(HomeViewModel homeVm, MainViewModel posVm, HistoryViewModel histVm, ManageDonationsViewModel manageVm,
-                          DonationVoucherViewModel voucherVm, DonationJournalViewModel journalVm, AppDbContext db)
+                          DonationVoucherViewModel voucherVm, DonationJournalViewModel journalVm, StockLotsViewModel stockLotsVm, AppDbContext db)
         {
             InitializeComponent();
             DataContext = this;
@@ -35,9 +36,10 @@ namespace XpertPharm5Donation.Views
             _homeView    = new HomeView(homeVm);
             _posView     = new PosView(posVm);
             _historyView = new HistoryView(histVm);
-            _stockView   = new ManageDonationsView(manageVm);
+            _manageDonationsView = new ManageDonationsView(manageVm);
+            _stockLotsView = new StockLotsView(stockLotsVm);
             _productsView = new ProductsView(manageVm, db);
-            _voucherView = new DonationVoucherView(voucherVm);
+            _voucherView = new DonationVoucherView(voucherVm, db);
             _journalView = new DonationJournalView(journalVm);
 
             // Wiring events for internal navigation
@@ -46,6 +48,11 @@ namespace XpertPharm5Donation.Views
             {
                 BtnVouchers_Click(this, new RoutedEventArgs());
                 await voucherVm.LoadVoucherAsync(id);
+            };
+            journalVm.NewVoucherRequested += () =>
+            {
+                BtnVouchers_Click(this, new RoutedEventArgs());
+                voucherVm.ResetFormCommand.Execute(null);
             };
 
             manageVm.RequestNewVoucherForDrug += (drug) =>
@@ -87,13 +94,13 @@ namespace XpertPharm5Donation.Views
         }
 
         public void BtnComptoir_Click(object sender, RoutedEventArgs e)
-            => NavigateTo(_posView, "Comptoir — Dispensation Don", BtnComptoir);
+            => NavigateTo(_posView, "Comptoir Don", BtnComptoir);
 
         public void BtnHistory_Click(object sender, RoutedEventArgs e)
-            => NavigateTo(_historyView, "Historique des dispensations", BtnHistory);
+            => NavigateTo(_historyView, "Journal de Comptoir", BtnHistory);
 
         public void BtnStock_Click(object sender, RoutedEventArgs e)
-            => NavigateTo(_stockView, "Stock par lot", BtnStock);
+            => NavigateTo(_stockLotsView, "Stock", BtnStock);
 
         public void BtnProducts_Click(object sender, RoutedEventArgs e)
             => NavigateTo(_productsView, "Catalogue produits", BtnProducts);

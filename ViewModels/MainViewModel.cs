@@ -16,6 +16,8 @@ namespace XpertPharm5Donation.ViewModels
     {
         private readonly AppDbContext _db;
 
+
+
         public MainViewModel(AppDbContext db)
         {
             _db = db;
@@ -94,12 +96,13 @@ namespace XpertPharm5Donation.ViewModels
             }
         }
 
+
+
         [RelayCommand]
         private async Task SelectFromSearchAsync(Drug? drug)
         {
             if (drug == null) return;
             await SelectDrugAsync(drug);
-            SearchText = string.Empty;
         }
 
         [RelayCommand]
@@ -193,19 +196,17 @@ namespace XpertPharm5Donation.ViewModels
             if (SelectedCartItem == null) return;
             CartItems.Remove(SelectedCartItem);
             SelectedCartItem = null;
-            OnPropertyChanged(nameof(TotalItemsInCart));
-            OnPropertyChanged(nameof(TotalLinesInCart));
+            UpdateCartTotals();
             SetStatus("Ligne supprimée.", error: false);
         }
 
-        [RelayCommand]
-        private void ClearCart()
+        public void UpdateCartTotals()
         {
-            CartItems.Clear();
             OnPropertyChanged(nameof(TotalItemsInCart));
             OnPropertyChanged(nameof(TotalLinesInCart));
-            SetStatus("Panier vidé.", error: false);
         }
+
+
 
         [RelayCommand]
         private async Task ValidateAsync()
@@ -274,16 +275,18 @@ namespace XpertPharm5Donation.ViewModels
         [RelayCommand]
         private void Cancel()
         {
-            if (CartItems.Count == 0) return;
-            var result = MessageBox.Show("Annuler et vider le panier ?", "Annuler", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes)
+            if (CartItems.Count > 0)
             {
+                var result = MessageBox.Show("Annuler et vider le panier ?", "Annuler", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result != MessageBoxResult.Yes) return;
                 CartItems.Clear();
-                SelectedDrug = null;
-                OnPropertyChanged(nameof(TotalItemsInCart));
-                OnPropertyChanged(nameof(TotalLinesInCart));
-                SetStatus("Opération annulée.", error: false);
             }
+
+            SelectedDrug = null;
+            SelectedStockBatch = null;
+            SearchText = string.Empty;
+            UpdateCartTotals();
+            SetStatus("Prêt", error: false);
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────────

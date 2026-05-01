@@ -23,82 +23,42 @@
                 <UniformGrid Columns="2" Rows="2">
 
                     <!-- Comptoir -->
-                    <Button x:Name="BtnGoComptoir" Margin="0,0,10,10" Height="160"
-                            Cursor="Hand" Click="BtnGoComptoir_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="tile" Background="#1D6CB5" CornerRadius="10"
-                                        SnapsToDevicePixels="True">
-                                    <Border.Effect>
-                                        <DropShadowEffect Color="#1D6CB5" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
-                                    </Border.Effect>
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="💊" FontSize="42" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Comptoir Don" FontFamily="Segoe UI Semibold" FontSize="17"
-                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
-                                        <TextBlock Text="Dispensation de médicaments" FontFamily="Segoe UI"
-                                                   FontSize="11.5" Foreground="#BDD5F0" HorizontalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="tile" Property="Background" Value="#155EA2"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
+                    <Button x:Name="BtnGoComptoir" Margin="0,0,10,10"
+                            Style="{StaticResource TileButtonStyle}" Background="#1D6CB5" Foreground="White"
+                            Click="BtnGoComptoir_Click">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="💊" FontSize="42" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Comptoir Don" FontFamily="Segoe UI Semibold" FontSize="17"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                            <TextBlock Text="Dispensation de médicaments" FontFamily="Segoe UI"
+                                       FontSize="11.5" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" HorizontalAlignment="Center" Opacity="0.8"/>
+                        </StackPanel>
                     </Button>
 
                     <!-- Historique -->
-                    <Button x:Name="BtnGoHistory" Margin="0,0,0,10" Height="160"
-                            Cursor="Hand" Click="BtnGoHistory_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="tile" Background="#15803D" CornerRadius="10">
-                                    <Border.Effect>
-                                        <DropShadowEffect Color="#15803D" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
-                                    </Border.Effect>
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="📋" FontSize="42" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Historique" FontFamily="Segoe UI Semibold" FontSize="17"
-                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
-                                        <TextBlock Text="Journal des dispensations" FontFamily="Segoe UI"
-                                                   FontSize="11.5" Foreground="#A7F3D0" HorizontalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="tile" Property="Background" Value="#166534"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
+                    <Button x:Name="BtnGoHistory" Margin="0,0,0,10"
+                            Style="{StaticResource TileButtonStyle}" Background="#15803D" Foreground="White"
+                            Click="BtnGoHistory_Click">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="📋" FontSize="42" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Historique" FontFamily="Segoe UI Semibold" FontSize="17"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                            <TextBlock Text="Journal des dispensations" FontFamily="Segoe UI"
+                                       FontSize="11.5" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" HorizontalAlignment="Center" Opacity="0.8"/>
+                        </StackPanel>
                     </Button>
 
                     <!-- Gestion Donations -->
-                    <Button x:Name="BtnGoManage" Margin="0,0,10,0" Height="160"
-                            Cursor="Hand" Click="BtnGoManage_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="tile" Background="#7C3AED" CornerRadius="10">
-                                    <Border.Effect>
-                                        <DropShadowEffect Color="#7C3AED" BlurRadius="18" Opacity="0.35" ShadowDepth="4"/>
-                                    </Border.Effect>
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="🗃️" FontSize="42" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Gestion Donations" FontFamily="Segoe UI Semibold" FontSize="17"
-                                                   Foreground="White" HorizontalAlignment="Center" Margin="0,8,0,4"/>
-                                        <TextBlock Text="Ajouter / modifier les stocks" FontFamily="Segoe UI"
-                                                   FontSize="11.5" Foreground="#DDD6FE" HorizontalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="tile" Property="Background" Value="#6D28D9"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
+                    <Button x:Name="BtnGoManage" Margin="0,0,10,0"
+                            Style="{StaticResource TileButtonStyle}" Background="#7C3AED" Foreground="White"
+                            Click="BtnGoManage_Click">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="🗃️" FontSize="42" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Gestion Donations" FontFamily="Segoe UI Semibold" FontSize="17"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" HorizontalAlignment="Center" Margin="0,8,0,4"/>
+                            <TextBlock Text="Ajouter / modifier les stocks" FontFamily="Segoe UI"
+                                       FontSize="11.5" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" HorizontalAlignment="Center" Opacity="0.8"/>
+                        </StackPanel>
                     </Button>
 
                     <!-- Alertes stock -->

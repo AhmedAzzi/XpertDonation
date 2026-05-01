@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using XpertPharm5Donation.Data;
+using XpertPharm5Donation.Models;
 using XpertPharm5Donation.ViewModels;
 using XpertPharm5Donation.Views;
 
@@ -65,6 +66,7 @@ namespace XpertPharm5Donation
             services.AddTransient<ManageDonationsViewModel>();
             services.AddTransient<DonationVoucherViewModel>();
             services.AddTransient<DonationJournalViewModel>();
+            services.AddTransient<StockLotsViewModel>();
             services.AddTransient<SalesCounterViewModel>();
             services.AddTransient<SalesJournalViewModel>();
             services.AddTransient<DashboardViewModel>();
@@ -81,14 +83,70 @@ namespace XpertPharm5Donation
             _logger.LogInformation("Application started at {StartTime}", DateTime.Now);
             _logger.LogInformation("═══════════════════════════════════════════════════════════");
 
-            // Run EF ensure created
+            // Run EF ensure created and seed data
             try
             {
                 using var scope = _serviceProvider.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                
+                _logger.LogInformation("Initializing database...");
                 db.Database.EnsureCreated();
+                
+                // Check if we need to seed
+                if (!System.Linq.Enumerable.Any(db.Drugs))
+                {
+                    _logger.LogInformation("Database is empty. Starting seeding process...");
+                    
+                    var medicamentFilePath = System.IO.Path.Combine(AppContext.BaseDirectory, "medicament.json");
+                    if (System.IO.File.Exists(medicamentFilePath))
+                    {
+                        _logger.LogInformation("Seeding drugs from {FilePath}...", medicamentFilePath);
+                        var jsonText = System.IO.File.ReadAllText(medicamentFilePath);
+                        using var doc = System.Text.Json.JsonDocument.Parse(jsonText);
+                        var root = doc.RootElement;
+                        
+                        if (root.ValueKind == System.Text.Json.JsonValueKind.Array && root.GetArrayLength() >= 2)
+                        {
+                            var dataNode = root[1].GetProperty("data");
+                            var drugs = new System.Collections.Generic.List<Drug>();
+                            
+                            string? GetStringSafe(System.Text.Json.JsonElement el, string propName)
+                            {
+                                return el.TryGetProperty(propName, out var prop) && prop.ValueKind != System.Text.Json.JsonValueKind.Null ? prop.GetString() : null;
+                            }
 
-                // Apply dynamic schema updates without migrations
+                            foreach (var item in dataNode.EnumerateArray())
+                            {
+                                var dci = GetStringSafe(item, "DENOMINATION_COMMUNE_INTERNATIONALE");
+                                var nomMarque = GetStringSafe(item, "NOM_DE_MARQUE");
+                                var forme = GetStringSafe(item, "FORME");
+                                var dosage = GetStringSafe(item, "DOSAGE");
+                                
+                                var drugName = string.IsNullOrWhiteSpace(nomMarque) ? "Unknown" : nomMarque;
+                                if (!string.IsNullOrWhiteSpace(dosage))
+                                {
+                                    drugName += $" {dosage}";
+                                }
+
+                                drugs.Add(new Drug
+                                {
+                                    Name = drugName.Length > 300 ? drugName.Substring(0, 300) : drugName,
+                                    Dci = dci?.Length > 300 ? dci.Substring(0, 300) : dci,
+                                    Form = forme?.Length > 100 ? forme.Substring(0, 100) : forme,
+                                    Barcode = null 
+                                });
+                            }
+                            
+                            var distinctDrugs = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Select(System.Linq.Enumerable.GroupBy(drugs, d => d.Name), g => g.First()));
+                            
+                            db.Drugs.AddRange(distinctDrugs);
+                            db.SaveChanges();
+                            _logger.LogInformation("Successfully seeded {Count} unique drugs.", distinctDrugs.Count);
+                        }
+                    }
+                }
+
+                // Dynamic schema updates (Barcode column, etc.)
                 try 
                 {
                     db.Database.ExecuteSqlRaw(@"
@@ -103,18 +161,37 @@ namespace XpertPharm5Donation
                             CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_Barcode ON Drugs(Barcode) WHERE Barcode IS NOT NULL;
                         END
                     ");
+
+                    db.Database.ExecuteSqlRaw(@"
+                        IF COL_LENGTH('StockBatches', 'IsBlocked') IS NULL
+                        BEGIN
+                            ALTER TABLE StockBatches ADD IsBlocked BIT NOT NULL DEFAULT 0;
+                        END
+                    ");
+                    db.Database.ExecuteSqlRaw(@"
+                        IF COL_LENGTH('StockBatches', 'Store') IS NULL
+                        BEGIN
+                            ALTER TABLE StockBatches ADD Store NVARCHAR(100) NULL;
+                        END
+                    ");
+                    db.Database.ExecuteSqlRaw(@"
+                        IF COL_LENGTH('StockBatches', 'IsPsychotrope') IS NULL
+                        BEGIN
+                            ALTER TABLE StockBatches ADD IsPsychotrope BIT NOT NULL DEFAULT 0;
+                        END
+                    ");
                 } 
                 catch (Exception sqlEx)
                 {
-                    _logger.LogWarning(sqlEx, "Failed to dynamically add Barcode column to Drugs. It may already exist or the syntax is wrong.");
+                    _logger.LogWarning(sqlEx, "Non-critical schema update warning.");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
                     $"Erreur de connexion à la base de données :\n\n{ex.Message}\n\n" +
-                    "Vérifiez que SQL Server LocalDB est installé et que la chaîne de connexion est correcte.\n\n" +
-                    "Connexion par défaut : (localdb)\\v11.0",
+                    "Vérifiez que SQL Server LocalDB est installé.\n\n" +
+                    $"Connexion utilisée : {config.GetConnectionString("DefaultConnection")}",
                     "Erreur de base de données",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);

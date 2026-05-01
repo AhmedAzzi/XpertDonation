@@ -28,18 +28,21 @@
                 <UniformGrid Columns="2">
 
                     <!-- Vente Comptoir (Yellow) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="#1E293B">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#FCD34D" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Vente Comptoir" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="#1E293B" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -52,18 +55,21 @@
                     </Button>
 
                     <!-- Journal Ventes (Green) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#4ADE80" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="📊" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="📊" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Journal des ventes" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -76,18 +82,21 @@
                     </Button>
 
                     <!-- Entrées Stock (Red) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#F87171" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="📦" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="📦" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Entrées stock" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -100,18 +109,21 @@
                     </Button>
 
                     <!-- Assistant Commandes (Lime) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#84CC16" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="🛍️" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="🛍️" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Assistant Commandes" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -124,18 +136,21 @@
                     </Button>
 
                     <!-- Liste Utilisateurs (Green) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#34D399" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="👥" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="👥" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Liste des Users" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -148,18 +163,21 @@
                     </Button>
 
                     <!-- Journal Encaissements (Purple) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#A78BFA" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="💰" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="💰" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Journal Encaissements" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -172,18 +190,21 @@
                     </Button>
 
                     <!-- Produits (Dark) -->
-                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10">
+                    <Button Height="160" Cursor="Hand" Margin="0,0,10,10" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#1F2937" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="📋" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="📋" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Produits" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -196,18 +217,21 @@
                     </Button>
 
                     <!-- Hanquants (Red) -->
-                    <Button Height="160" Cursor="Hand">
+                    <Button Height="160" Cursor="Hand" Foreground="White">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="tile" Background="#DC2626" CornerRadius="8"
+                                        TextElement.Foreground="{TemplateBinding Foreground}"
                                         SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.15" ShadowDepth="2"/>
                                     </Border.Effect>
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="🛒" FontSize="44" HorizontalAlignment="Center" Margin="0,0,0,8"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                         <TextBlock Text="Hanquants" FontFamily="Segoe UI Semibold" FontSize="16"
-                                                   Foreground="White" HorizontalAlignment="Center"/>
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                   HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                                 <ControlTemplate.Triggers>

@@ -128,7 +128,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Border Background="{StaticResource PrimaryBrush}" Padding="16,0">
+                        <Border Style="{StaticResource SectionHeaderBorderStyle}">
                             <TextBlock Text="Stock par produit" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Center"/>
                         </Border>
 
@@ -176,7 +176,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <Border Background="{StaticResource TableHeaderBrush}" Padding="16,0">
+                            <Border Style="{StaticResource SectionHeaderBorderStyle}">
                                 <TextBlock Text="Lots en stock" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Center"/>
                             </Border>
                             

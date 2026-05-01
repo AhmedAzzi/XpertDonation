@@ -9,138 +9,149 @@
         <conv:NullToStringConverter x:Key="NullStr"/>
     </UserControl.Resources>
 
-    <Grid Margin="20,16">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/> <!-- Filters & KPIs -->
             <RowDefinition Height="12"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="*"/>    <!-- Master Grid -->
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="2*"/>   <!-- Detail Grid -->
+            <RowDefinition Height="Auto"/> <!-- Footer -->
         </Grid.RowDefinitions>
 
-        <!-- ═══ FILTER BAR ══════════════════════════════════════════════ -->
-        <Border Grid.Row="0" Background="White" CornerRadius="8" Padding="16,12"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-            <Border.Effect>
-                <DropShadowEffect Color="#000000" BlurRadius="6" Opacity="0.05" ShadowDepth="2"/>
-            </Border.Effect>
+        <!-- ═══ TOP: FILTERS & KPI ════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White" CornerRadius="4" Padding="12" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="180"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="180"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Date Début :" Style="{StaticResource LabelStyle}" Margin="0,0,8,0"/>
-                <DatePicker Grid.Column="1" SelectedDate="{Binding StartDate}"
-                            Style="{StaticResource DatePickerStyle}"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Date Début :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
+                        <DatePicker SelectedDate="{Binding StartDate}" Width="130" Height="30" BorderBrush="#DDD"/>
+                    </StackPanel>
 
-                <TextBlock Grid.Column="3" Text="Date Fin :" Style="{StaticResource LabelStyle}" Margin="0,0,8,0"/>
-                <DatePicker Grid.Column="4" SelectedDate="{Binding EndDate}"
-                            Style="{StaticResource DatePickerStyle}"/>
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Date Fin :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
+                        <DatePicker SelectedDate="{Binding EndDate}" Width="130" Height="30" BorderBrush="#DDD"/>
+                    </StackPanel>
 
-                <StackPanel Grid.Column="6" Orientation="Horizontal">
-                    <TextBlock Text="{Binding StatusMessage}" FontFamily="Segoe UI" FontSize="12"
-                               Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
-                    <Button Content="🔍  Filtrer" Style="{StaticResource PrimaryButtonStyle}"
-                            Command="{Binding FilterCommand}" Width="110"/>
+                    <Button Command="{Binding FilterCommand}" Width="110" Height="32" Margin="0,15,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="🔍" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Filtrer" FontSize="12" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- KPI CARDS -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Border Style="{StaticResource IndicatorCardStyle}" Width="130" Margin="0,0,12,0" Padding="8">
+                        <StackPanel HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,4">
+                                <TextBlock Text="📦" FontSize="11" Margin="0,0,4,0"/>
+                                <TextBlock Text="Total Sessions" FontSize="11" Foreground="{StaticResource WarningBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding TotalSessions}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource WarningBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource IndicatorCardStyle}" Width="130" Padding="8">
+                        <StackPanel HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,4">
+                                <TextBlock Text="💊" FontSize="11" Margin="0,0,4,0"/>
+                                <TextBlock Text="Unités dispensées" FontSize="11" Foreground="{StaticResource SuccessBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding TotalUnits}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- ═══ SESSIONS MASTER GRID ═══════════════════════════════════ -->
-        <Border Grid.Row="2" Background="White" CornerRadius="8"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-            <Border.Effect>
-                <DropShadowEffect Color="#000000" BlurRadius="6" Opacity="0.05" ShadowDepth="2"/>
-            </Border.Effect>
+        <Border Grid.Row="2" Background="White" CornerRadius="6" ClipToBounds="True" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="32"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="{StaticResource TableHeaderBrush}"
-                        CornerRadius="8,8,0,0" Padding="16,10">
-                    <TextBlock Text="Sessions de dispensation" FontFamily="Segoe UI Semibold"
-                               FontSize="13" Foreground="White"/>
+                <Border Style="{StaticResource SectionHeaderBorderStyle}">
+                    <TextBlock Text="Journal de Comptoir (Historique des dispensations)" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
                 </Border>
 
                 <DataGrid Grid.Row="1" x:Name="SessionsGrid"
                           Style="{StaticResource AppDataGridStyle}"
-                          ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
-                          CellStyle="{StaticResource DataGridCellStyle}"
-                          RowStyle="{StaticResource DataGridRowStyle}"
                           ItemsSource="{Binding Sessions}"
                           SelectedItem="{Binding SelectedSession}"
-                          AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                           BorderThickness="0">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date / Heure" Width="200"
-                                            Binding="{Binding DateDisplay}"
-                                            ElementStyle="{StaticResource ValueStyle}"/>
-                        <DataGridTextColumn Header="Lignes" Width="80"
-                                            Binding="{Binding TotalLines}"
-                                            ElementStyle="{StaticResource ValueStyle}"/>
-                        <DataGridTextColumn Header="Unités dispensées" Width="150"
-                                            Binding="{Binding TotalUnits}"
-                                            ElementStyle="{StaticResource ValueStyle}"/>
-                        <DataGridTextColumn Header="Session ID" Width="*"
-                                            Binding="{Binding SessionId}"
-                                            ElementStyle="{StaticResource LabelStyle}"/>
+                        <DataGridTextColumn Header="Date / Heure (Session)" Width="250" Binding="{Binding DateDisplay}"/>
+                        <DataGridTextColumn Header="Nbr de lignes" Width="120" Binding="{Binding TotalLines}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Unités dispensées" Width="150" Binding="{Binding TotalUnits}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Session ID" Width="*" Binding="{Binding SessionId}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </Border>
 
         <!-- ═══ DETAIL GRID ══════════════════════════════════════════════ -->
-        <Border Grid.Row="4" Background="White" CornerRadius="8"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-            <Border.Effect>
-                <DropShadowEffect Color="#000000" BlurRadius="6" Opacity="0.05" ShadowDepth="2"/>
-            </Border.Effect>
+        <Border Grid.Row="4" Background="White" CornerRadius="6" ClipToBounds="True" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="32"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="#1A3A6B" CornerRadius="8,8,0,0" Padding="16,10">
-                    <TextBlock Text="Détail de la session" FontFamily="Segoe UI Semibold"
-                               FontSize="13" Foreground="White"/>
+                <Border Style="{StaticResource SectionHeaderBorderStyle}">
+                    <Grid>
+                        <TextBlock Text="Détail — Médicaments dispensés" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
+                        <TextBlock Text="Sélectionnez une session ▲" Foreground="#CBD5E1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="11"/>
+                    </Grid>
                 </Border>
 
                 <DataGrid Grid.Row="1"
                           Style="{StaticResource AppDataGridStyle}"
-                          ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
-                          CellStyle="{StaticResource DataGridCellStyle}"
-                          RowStyle="{StaticResource DataGridRowStyle}"
                           ItemsSource="{Binding DetailItems}"
-                          AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                           BorderThickness="0">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Médicament" Width="*"
-                                            Binding="{Binding StockBatch.Drug.Name}"
-                                            ElementStyle="{StaticResource ValueStyle}"/>
-                        <DataGridTextColumn Header="Lot Utilisé" Width="120"
-                                            Binding="{Binding StockBatch.BatchNumber}"
-                                            ElementStyle="{StaticResource LabelStyle}"/>
-                        <DataGridTextColumn Header="Date péremption" Width="140"
-                                            Binding="{Binding StockBatch.ExpirationDate, Converter={StaticResource DateStr}}"
-                                            ElementStyle="{StaticResource LabelStyle}"/>
-                        <DataGridTextColumn Header="Qté dispensée" Width="130"
-                                            Binding="{Binding Quantity}"
-                                            ElementStyle="{StaticResource ValueStyle}"/>
-                        <DataGridTextColumn Header="Heure" Width="150"
-                                            Binding="{Binding Date, StringFormat='HH:mm:ss'}"
-                                            ElementStyle="{StaticResource LabelStyle}"/>
+                        <DataGridTextColumn Header="Médicament" Width="*" Binding="{Binding StockBatch.Drug.Name}"/>
+                        <DataGridTextColumn Header="Lot Utilisé" Width="180" Binding="{Binding StockBatch.BatchNumber}"/>
+                        <DataGridTextColumn Header="Date péremption" Width="140" Binding="{Binding StockBatch.ExpirationDate, Converter={StaticResource DateStr}}"/>
+                        <DataGridTextColumn Header="Qté dispensée" Width="130" Binding="{Binding Quantity}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Heure" Width="150" Binding="{Binding Date, StringFormat='HH:mm:ss'}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </Border>
+
+        <!-- ═══ FOOTER ═══════════════════════════════════════════════════ -->
+        <Grid Grid.Row="5" Margin="0,8,0,0">
+            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" HorizontalAlignment="Left"
+                       Foreground="{StaticResource SuccessBrush}" FontSize="12" FontWeight="SemiBold"/>
+        </Grid>
     </Grid>
 </UserControl>

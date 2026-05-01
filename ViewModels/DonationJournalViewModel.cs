@@ -17,6 +17,7 @@ namespace XpertPharm5Donation.ViewModels
 
         /// <summary>Fired when the user clicks Edit on a voucher</summary>
         public event Action<int>? EditVoucherRequested;
+        public event Action? NewVoucherRequested;
 
         public DonationJournalViewModel(AppDbContext db)
         {
@@ -103,9 +104,36 @@ namespace XpertPharm5Donation.ViewModels
         [RelayCommand]
         private void EditVoucher(DonationVoucher? voucher)
         {
-            if (voucher == null) return;
-            EditVoucherRequested?.Invoke(voucher.Id);
+            var v = voucher ?? SelectedVoucher;
+            if (v == null) return;
+            EditVoucherRequested?.Invoke(v.Id);
         }
 
+        [RelayCommand]
+        private void NewVoucher()
+        {
+            NewVoucherRequested?.Invoke();
+        }
+
+        [RelayCommand]
+        private async Task DeleteVoucherAsync()
+        {
+            if (SelectedVoucher == null) return;
+            
+            var result = MessageBox.Show($"Voulez-vous vraiment supprimer le bon n° {SelectedVoucher.VoucherNumber} ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                _db.DonationVouchers.Remove(SelectedVoucher);
+                await _db.SaveChangesAsync();
+                await LoadAsync();
+            }
+        }
+
+        [RelayCommand]
+        private void PrintVoucher()
+        {
+            if (SelectedVoucher == null) return;
+            MessageBox.Show("Impression du bon " + SelectedVoucher.VoucherNumber);
+        }
     }
 }

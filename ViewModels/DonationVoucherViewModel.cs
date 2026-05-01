@@ -18,6 +18,7 @@ namespace XpertPharm5Donation.ViewModels
         // ── Events ───────────────────────────────────────────────────────────
         /// <summary>Fired when the user wants to view the journal (after save)</summary>
         public event Action? NavigateToJournal;
+        public event Action<Drug?>? RequestDrugEdit;
 
         public DonationVoucherViewModel(AppDbContext db)
         {
@@ -55,7 +56,7 @@ namespace XpertPharm5Donation.ViewModels
         [ObservableProperty] private string _inputBatchNumber = string.Empty;
         [ObservableProperty] private DateTime? _inputExpirationDate = DateTime.Today.AddYears(1);
         [ObservableProperty] private int _inputQuantity = 1;
-        [ObservableProperty] private string _inputNotes = string.Empty;
+
         [ObservableProperty] private int? _inputDrugId;
 
         // Editing existing line
@@ -138,6 +139,24 @@ namespace XpertPharm5Donation.ViewModels
         }
 
         [RelayCommand]
+        private async Task ShowDrugDialogAsync()
+        {
+            Drug? drug = null;
+            if (InputDrugId.HasValue)
+            {
+                drug = await _db.Drugs.FirstOrDefaultAsync(d => d.Id == InputDrugId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(InputDrugName))
+            {
+                // Try to find by name if ID is missing but name is typed
+                var term = InputDrugName.Trim().ToLower();
+                drug = await _db.Drugs.FirstOrDefaultAsync(d => d.Name.ToLower() == term);
+            }
+
+            RequestDrugEdit?.Invoke(drug);
+        }
+
+        [RelayCommand]
         private async Task ScanBarcodeAsync()
         {
             if (string.IsNullOrWhiteSpace(InputBarcode)) return;
@@ -195,7 +214,6 @@ namespace XpertPharm5Donation.ViewModels
                 BatchNumber = string.IsNullOrWhiteSpace(InputBatchNumber) ? null : InputBatchNumber.Trim(),
                 ExpirationDate = InputExpirationDate,
                 Quantity = InputQuantity,
-                Notes = string.IsNullOrWhiteSpace(InputNotes) ? null : InputNotes.Trim(),
             };
 
             if (IsLineEditMode && EditingLineIndex >= 0 && EditingLineIndex < Lines.Count)
@@ -209,7 +227,6 @@ namespace XpertPharm5Donation.ViewModels
                 existing.BatchNumber = line.BatchNumber;
                 existing.ExpirationDate = line.ExpirationDate;
                 existing.Quantity = line.Quantity;
-                existing.Notes = line.Notes;
                 Lines[EditingLineIndex] = existing; // force UI refresh
                 IsLineEditMode = false;
                 EditingLineIndex = -1;
@@ -239,7 +256,6 @@ namespace XpertPharm5Donation.ViewModels
             InputBatchNumber = line.BatchNumber ?? string.Empty;
             InputExpirationDate = line.ExpirationDate;
             InputQuantity = line.Quantity;
-            InputNotes = line.Notes ?? string.Empty;
         }
 
         [RelayCommand]
@@ -285,6 +301,12 @@ namespace XpertPharm5Donation.ViewModels
         {
             InitNewVoucher();
             SetStatus("Opération annulée.", false);
+        }
+
+        [RelayCommand]
+        private void ResetForm()
+        {
+            InitNewVoucher();
         }
 
         /// <summary>Load an existing voucher for editing.</summary>
@@ -392,7 +414,6 @@ namespace XpertPharm5Donation.ViewModels
                     line.Dci = string.IsNullOrWhiteSpace(line.Dci) ? null : line.Dci.Trim();
                     line.Barcode = string.IsNullOrWhiteSpace(line.Barcode) ? null : line.Barcode.Trim();
                     line.BatchNumber = string.IsNullOrWhiteSpace(line.BatchNumber) ? null : line.BatchNumber.Trim();
-                    line.Notes = string.IsNullOrWhiteSpace(line.Notes) ? null : line.Notes.Trim();
 
                     if (line.Id == 0)
                     {
@@ -408,7 +429,6 @@ namespace XpertPharm5Donation.ViewModels
                         dbLine.BatchNumber = line.BatchNumber;
                         dbLine.ExpirationDate = line.ExpirationDate;
                         dbLine.Quantity = line.Quantity;
-                        dbLine.Notes = line.Notes;
                     }
                 }
 
@@ -510,7 +530,6 @@ namespace XpertPharm5Donation.ViewModels
             InputBatchNumber = string.Empty;
             InputExpirationDate = DateTime.Today.AddYears(1);
             InputQuantity = 1;
-            InputNotes = string.Empty;
             InputDrugId = null;
         }
 

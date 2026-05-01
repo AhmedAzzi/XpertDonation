@@ -85,10 +85,12 @@
                           x:Name="ProductCombo"
                           Style="{StaticResource ComboStyle}"
                           IsEditable="True"
+                          IsTextSearchEnabled="False"
                           Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                           ItemsSource="{Binding DrugSuggestions}"
                           DisplayMemberPath="Name"
                           KeyUp="ProductCombo_KeyUp"
+                          PreviewKeyDown="ProductCombo_PreviewKeyDown"
                           SelectionChanged="ProductCombo_SelectionChanged"
                           ToolTip="Taper pour rechercher un médicament"/>
 
@@ -96,17 +98,10 @@
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Quantité :"
                            Style="{StaticResource LabelStyle}" FontWeight="SemiBold"/>
                 <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-                    <Button Content=" ▼ " FontFamily="Segoe UI Symbol" Height="32" Width="32" Style="{StaticResource GhostButtonStyle}"
-                            Click="BtnDecQty_Click"/>
-                    <TextBox Style="{StaticResource QuantityInputStyle}" Margin="4,0"
+                    <TextBox x:Name="QuantityBox" Style="{StaticResource QuantityInputStyle}" Margin="0,0"
                              Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-                             PreviewTextInput="QuantityBox_PreviewTextInput"/>
-                    <Button Content=" ▲ " Height="32" Width="32" Style="{StaticResource GhostButtonStyle}"
-                            Click="BtnIncQty_Click"/>
-                    <Button Content="➕  Ajouter  [Entrée]" Margin="12,0,0,0"
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Command="{Binding AddToCartCommand}"
-                            Height="32"/>
+                             PreviewTextInput="QuantityBox_PreviewTextInput"
+                             KeyDown="QuantityBox_KeyDown"/>
                 </StackPanel>
             </Grid>
 
@@ -247,7 +242,8 @@
                               SelectionMode="Single"
                               BorderThickness="0"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              VirtualizingPanel.IsVirtualizing="True">
+                              VirtualizingPanel.IsVirtualizing="True"
+                              MouseDoubleClick="CartList_MouseDoubleClick">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -261,9 +257,6 @@
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="#EFF6FF"/>
                                     </Trigger>
-                                    <DataTrigger Binding="{Binding AlternationIndex}" Value="1">
-                                        <Setter Property="Background" Value="#F8FAFC"/>
-                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ListView.ItemContainerStyle>
@@ -354,9 +347,7 @@
                                FontFamily="Segoe UI" FontSize="10.5" Foreground="#94A3B8"
                                VerticalAlignment="Center" Margin="0,0,20,0"/>
                     <Button Content="🗑  Supprimer  [Suppr]" Style="{StaticResource GhostButtonStyle}"
-                            Command="{Binding RemoveItemCommand}" Margin="0,0,6,0"/>
-                    <Button Content="⟳  Vider" Style="{StaticResource GhostButtonStyle}"
-                            Command="{Binding ClearCartCommand}" Margin="0,0,12,0"/>
+                            Command="{Binding RemoveItemCommand}" Margin="0,0,12,0"/>
                     <Button Content="✕  Annuler  [ESC]" Style="{StaticResource DangerButtonStyle}"
                             Command="{Binding CancelCommand}" Margin="0,0,8,0"/>
                     <Button Content="✓  Valider  [F8]" Style="{StaticResource SuccessButtonStyle}"
