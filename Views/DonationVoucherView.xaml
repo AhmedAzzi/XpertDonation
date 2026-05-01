@@ -198,6 +198,16 @@
                   Style="{StaticResource AppDataGridStyle}"
                   Margin="16,0,16,0"
                   BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+                <DataGrid.Resources>
+                    <ContextMenu x:Key="RowContextMenu">
+                        <MenuItem Header="Imprimer code-barres" Command="{Binding DataContext.PrintBarcodeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" />
+                    </ContextMenu>
+                </DataGrid.Resources>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}" />
+                    </Style>
+                </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Médicament" Binding="{Binding DrugName}" Width="*"/>
                 <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="150"/>

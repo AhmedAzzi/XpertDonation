@@ -13,6 +13,8 @@ namespace XpertPharm5Donation.ViewModels
 {
     public partial class DonationVoucherViewModel : ObservableObject
     {
+    public RelayCommand<DonationVoucherLine> PrintBarcodeCommand => new RelayCommand<DonationVoucherLine>(OnPrintBarcode);
+
         private readonly AppDbContext _db;
 
         // ── Events ───────────────────────────────────────────────────────────
@@ -267,6 +269,31 @@ namespace XpertPharm5Donation.ViewModels
             OnPropertyChanged(nameof(TotalUnits));
             SetStatus("Ligne supprimée.", false);
         }
+
+            private void OnPrintBarcode(DonationVoucherLine? line)
+            {
+                if (line == null) return;
+                var vm = new BarcodeLabelDialogViewModel
+                {
+                    PharmacyName = "PHARMACIE ARAB", // TODO: Bind from settings
+                    BarcodeNumber = GenerateInternalBarcode(line),
+                    ProductName = line.DrugName,
+                    Price = "GRATUIT", // Or line.Price if available
+                    ExpiryDate = line.ExpirationDate?.ToString("dd-MM-yyyy"),
+                    LotNumber = line.BatchNumber
+                };
+                var dlg = new Views.BarcodeLabelDialog(vm)
+                {
+                    Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
+                };
+                dlg.ShowDialog();
+            }
+
+            private string GenerateInternalBarcode(DonationVoucherLine line)
+            {
+                // Example: use line index + voucher id for uniqueness
+                return $"{VoucherId:0000}{Lines.IndexOf(line):0000}";
+            }
 
         [RelayCommand]
         private void CancelLineEdit()

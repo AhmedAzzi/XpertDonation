@@ -1,0 +1,52 @@
+<UserControl x:Class="XpertPharm5Donation.Views.BarcodeLabelPreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="200">
+    <Border Width="200" Height="100" BorderBrush="Black" BorderThickness="1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!-- Pharmacy Name -->
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding PharmacyName}" 
+                       FontSize="8" FontWeight="Bold" HorizontalAlignment="Center" Visibility="{Binding ShowPharmacyName, Converter={StaticResource BoolToVisConverter}}"/>
+            <!-- Barcode Image -->
+            <Image Grid.Column="0" Grid.Row="1" Source="{Binding BarcodeImage}" 
+                   Width="129" Height="18" HorizontalAlignment="Center" Visibility="{Binding ShowBarcodeImage, Converter={StaticResource BoolToVisConverter}}"/>
+            <!-- Barcode Number -->
+            <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding BarcodeNumber}" 
+                       FontSize="17" HorizontalAlignment="Center" Visibility="{Binding ShowBarcodeNumber, Converter={StaticResource BoolToVisConverter}}"/>
+            <!-- Product Name -->
+            <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding ProductName}" 
+                       FontSize="9" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" Visibility="{Binding ShowProductName, Converter={StaticResource BoolToVisConverter}}"/>
+            <!-- Price -->
+            <TextBlock Grid.Column="0" Grid.Row="4" Text="{Binding Price}" 
+                       FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Bottom" Visibility="{Binding ShowPrice, Converter={StaticResource BoolToVisConverter}}"/>
+            <!-- Vertical Meta (Expiry & Lot) -->
+            <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="5" 
+                        Orientation="Vertical" VerticalAlignment="Center">
+                <TextBlock Text="{Binding ExpiryDate}" FontSize="10" Visibility="{Binding ShowExpiry, Converter={StaticResource BoolToVisConverter}}">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="180"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+                <TextBlock Text="{Binding LotNumber}" FontSize="10" Visibility="{Binding ShowLot, Converter={StaticResource BoolToVisConverter}}">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="180"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

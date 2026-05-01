@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes/Theme.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="Themes/Theme.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+                <!-- Global converters -->
+                <converters:BoolToVisConverter x:Key="BoolToVisConverter" xmlns:converters="clr-namespace:XpertPharm5Donation.Converters" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
