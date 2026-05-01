@@ -12,8 +12,8 @@ namespace XpertPharm5Donation.Views
         {
             InitializeComponent();
             DataContext = vm;
+            vm.RefreshBarcode();
 
-            // Attach print logic
             if (vm != null)
                 vm.PrintRequested += () => PrintLabel();
         }

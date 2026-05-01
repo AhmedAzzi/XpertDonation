@@ -1,21 +1,26 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ZXing;
-using System.IO;
-using System.Drawing;
+using ZXing.Common;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace XpertPharm5Donation.ViewModels
 {
     public class BarcodeLabelDialogViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        [DllImport("gdi32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool DeleteObject(IntPtr hObject);
 
-        // Fields to show/hide
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
         public bool ShowPharmacyName { get => _showPharmacyName; set { _showPharmacyName = value; OnPropertyChanged(); } }
         public bool ShowBarcodeImage { get => _showBarcodeImage; set { _showBarcodeImage = value; OnPropertyChanged(); } }
         public bool ShowBarcodeNumber { get => _showBarcodeNumber; set { _showBarcodeNumber = value; OnPropertyChanged(); } }
@@ -25,24 +30,30 @@ namespace XpertPharm5Donation.ViewModels
         public bool ShowLot { get => _showLot; set { _showLot = value; OnPropertyChanged(); } }
         public double FontSize { get => _fontSize; set { _fontSize = value; OnPropertyChanged(); } }
 
-        // Data
-        public string PharmacyName { get; set; }
-        public string BarcodeNumber { get; set; }
-        public string ProductName { get; set; }
-        public string Price { get; set; }
-        public string ExpiryDate { get; set; }
-        public string LotNumber { get; set; }
+        public string PharmacyName { get; set; } = string.Empty;
+        private string _barcodeNumber = string.Empty;
+        public string BarcodeNumber
+        {
+            get => _barcodeNumber;
+            set { _barcodeNumber = value; OnPropertyChanged(); RefreshBarcode(); }
+        }
+        public string ProductName { get; set; } = string.Empty;
+        public string Price { get; set; } = string.Empty;
+        public string ExpiryDate { get; set; } = string.Empty;
+        public string LotNumber { get; set; } = string.Empty;
 
-        public BitmapImage BarcodeImage => GenerateBarcode(BarcodeNumber);
+        private BitmapSource? _barcodeImage;
+        public BitmapSource? BarcodeImage
+        {
+            get => _barcodeImage;
+            private set { _barcodeImage = value; OnPropertyChanged(); }
+        }
 
-        // Commands
         public ICommand PrintCommand { get; }
         public ICommand CloseCommand { get; }
 
-        // Event to notify dialog to print
         public event Action? PrintRequested;
 
-        // Backing fields
         private bool _showPharmacyName = true, _showBarcodeImage = true, _showBarcodeNumber = true, _showProductName = true, _showPrice = true, _showExpiry = true, _showLot = true;
         private double _fontSize = 10;
 
@@ -53,51 +64,61 @@ namespace XpertPharm5Donation.ViewModels
             CloseCommand = new RelayCommand(Close);
         }
 
-        private BitmapImage GenerateBarcode(string code)
+        public void RefreshBarcode()
+        {
+            BarcodeImage = GenerateBarcode(_barcodeNumber);
+        }
+
+        private BitmapSource? GenerateBarcode(string? code)
         {
             if (string.IsNullOrEmpty(code)) return null;
-            var writer = new BarcodeWriter<System.Drawing.Bitmap>
+
+            var writer = new ZXing.Windows.Compatibility.BarcodeWriter
             {
                 Format = BarcodeFormat.CODE_128,
-                Options = new ZXing.Common.EncodingOptions { Height = 40, Width = 130, Margin = 0 }
+                Options = new EncodingOptions { Height = 100, Width = 300, Margin = 3, PureBarcode = true }
             };
-            using (var bitmap = writer.Write(code))
-            using (var memory = new MemoryStream())
+
+            using var bitmap = writer.Write(code);
+            IntPtr hBitmap = bitmap.GetHbitmap();
+            try
             {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
-                var image = new BitmapImage();
-                image.BeginInit();
-                image.StreamSource = memory;
-                image.CacheOption = BitmapCacheOption.OnLoad;
-                image.EndInit();
-                return image;
+                BitmapSource source = Imaging.CreateBitmapSourceFromHBitmap(
+                    hBitmap,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+                source.Freeze();
+                return source;
+            }
+            finally
+            {
+                DeleteObject(hBitmap);
             }
         }
 
-        private void Print(object obj)
+        private void Print(object? obj)
         {
             PrintRequested?.Invoke();
         }
 
-        private void Close(object obj)
+        private void Close(object? obj)
         {
             Application.Current.Windows[Application.Current.Windows.Count - 1]?.Close();
         }
     }
 
-    // Simple RelayCommand implementation
     public class RelayCommand : ICommand
     {
-        private readonly Action<object> _execute;
-        private readonly Func<object, bool> _canExecute;
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        private readonly Action<object?> _execute;
+        private readonly Func<object?, bool>? _canExecute;
+        public RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
-        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
-        public void Execute(object parameter) => _execute(parameter);
-        public event EventHandler CanExecuteChanged { add { } remove { } }
+        public bool CanExecute(object? parameter) => _canExecute == null || _canExecute(parameter);
+        public void Execute(object? parameter) => _execute(parameter);
+        public event EventHandler? CanExecuteChanged { add { } remove { } }
     }
 }
