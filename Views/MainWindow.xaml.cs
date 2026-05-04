@@ -73,6 +73,23 @@ namespace XpertPharm5Donation.Views
                 voucherVm.PrepareVoucherForDrug(drug);
             };
 
+            // Home indicator click → navigate to Stock or Products with pre-applied filter
+            homeVm.IndicatorFilterRequested += (filter) =>
+            {
+                if (filter == StockFilterType.All)
+                {
+                    // Références totales → Products catalog
+                    BtnProducts_Click(this, new RoutedEventArgs());
+                }
+                else
+                {
+                    // All others → Stock with filter
+                    BtnStock_Click(this, new RoutedEventArgs());
+                    stockLotsVm.SelectedFilter = filter;
+                    stockLotsVm.LoadCommand.Execute(null);
+                }
+            };
+
             NavigateTo(_homeView, "Page d'accueil", BtnHome);
 
             _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };

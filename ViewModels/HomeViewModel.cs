@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using XpertPharm5Donation.Data;
+using XpertPharm5Donation.ViewModels;
 
 namespace XpertPharm5Donation.ViewModels
 {
@@ -17,12 +18,23 @@ namespace XpertPharm5Donation.ViewModels
         [ObservableProperty] private int _expiringSoon30;
         [ObservableProperty] private int _expiringSoon60;
         [ObservableProperty] private int _expiringSoon90;
-        [ObservableProperty] private int _lowStock;       // Count of products with < 20 units
 
         [ObservableProperty] private int _totalDonationsThisMonth; // Bons de don validés ce mois-ci
 
         [ObservableProperty] private bool _isBusy;
         [ObservableProperty] private string _statusMessage = string.Empty;
+
+        // Event for navigation with pre-applied filter
+        public Action<StockFilterType>? IndicatorFilterRequested;
+
+        [RelayCommand]
+        public void NavigateWithFilter(object? parameter)
+        {
+            if (parameter is StockFilterType filterType)
+            {
+                IndicatorFilterRequested?.Invoke(filterType);
+            }
+        }
 
         [RelayCommand]
         public async Task LoadDashboardAsync()
@@ -65,9 +77,6 @@ namespace XpertPharm5Donation.ViewModels
 
                 ExpiringSoon90 = batches.Count(b => !b.IsExpired && b.QuantityRemaining > 0
                     && b.ExpirationDate.HasValue && b.ExpirationDate.Value.Date <= today.AddDays(90));
-
-                // 5. Low stock alerts (< 20 units total VALID stock for a drug)
-                LowStock = drugs.Count(d => d.TotalValidStock > 0 && d.TotalValidStock < 20);
 
                 StatusMessage = "Tableau de bord actualisé.";
             }

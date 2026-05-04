@@ -7,6 +7,7 @@
     <UserControl.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
         <conv:DateToStringConverter x:Key="DateStr"/>
+        <conv:EnumToBoolConverter x:Key="EnumBool"/>
     </UserControl.Resources>
 
     <Grid>
@@ -67,17 +68,19 @@
                     <!-- Left Radio Column -->
                     <StackPanel Grid.Column="4" Margin="0,0,0,0">
                         <RadioButton Content="Tous" GroupName="StockFilter"
-                                     IsChecked="True"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=All}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Foreground="{StaticResource TextPrimaryBrush}"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="All"/>
                         <RadioButton GroupName="StockFilter"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=NonExpired}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Foreground="{StaticResource TextPrimaryBrush}"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="NonExpired">
                             <TextBlock Text="Lots non périmés"/>
                         </RadioButton>
                         <RadioButton GroupName="StockFilter"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=Expired}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="Expired">
                             <TextBlock Foreground="#D97706">
@@ -87,6 +90,7 @@
                             </TextBlock>
                         </RadioButton>
                         <RadioButton GroupName="StockFilter"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=Blocked}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Foreground="{StaticResource TextPrimaryBrush}"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="Blocked">
@@ -101,6 +105,7 @@
                     <!-- Right Radio Column -->
                     <StackPanel Grid.Column="6" Margin="0,0,0,0">
                         <RadioButton GroupName="StockFilter"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=Exp90Days}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="Exp90Days">
                             <TextBlock Foreground="#DC2626">
@@ -110,6 +115,7 @@
                             </TextBlock>
                         </RadioButton>
                         <RadioButton GroupName="StockFilter"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=Exp30Days}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="Exp30Days">
                             <TextBlock Foreground="#DC2626">
@@ -119,6 +125,7 @@
                             </TextBlock>
                         </RadioButton>
                         <RadioButton GroupName="StockFilter"
+                                     IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=Exp60Days}"
                                      FontFamily="Segoe UI" FontSize="11"
                                      Margin="0,2" Click="FilterRadio_Click" Tag="Exp60Days">
                             <TextBlock Foreground="#DC2626">
