@@ -19,11 +19,27 @@ namespace XpertPharm5Donation
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool AllocConsole();
 
+        // DPI awareness
+        [DllImport("shcore.dll", SetLastError = true)]
+        private static extern bool SetProcessDpiAwareness(int awareness);
+        private const int PROCESS_PER_MONITOR_DPI_AWARE = 2;
+
+        private static void EnablePerMonitorDPI()
+        {
+            try
+            {
+                SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+            }
+            catch { /* Fallback: WPF handles DPI scaling automatically */ }
+        }
+
         private ServiceProvider? _serviceProvider;
         private ILogger<App>? _logger;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            EnablePerMonitorDPI();
+
             // Register global exception handlers
             AppDomain.CurrentDomain.UnhandledException += (s, ev) => ShowError(ev.ExceptionObject as Exception, "AppDomain.UnhandledException");
             DispatcherUnhandledException += (s, ev) => { ShowError(ev.Exception, "DispatcherUnhandledException"); ev.Handled = true; };

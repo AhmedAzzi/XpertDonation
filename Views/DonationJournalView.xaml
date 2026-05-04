@@ -27,52 +27,54 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <StackPanel Margin="0,0,12,0">
-                        <TextBlock Text="Date Début :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
-                        <DatePicker SelectedDate="{Binding FilterDateFrom}" Width="130" Height="30" BorderBrush="#DDD">
-                            <DatePicker.Resources>
-                                <Style TargetType="DatePickerTextBox">
-                                    <Setter Property="Text" Value="DD/MM/YYYY"/>
-                                </Style>
-                            </DatePicker.Resources>
-                        </DatePicker>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,0,12,0">
-                        <TextBlock Text="Date Fin :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
-                        <DatePicker SelectedDate="{Binding FilterDateTo}" Width="130" Height="30" BorderBrush="#DDD"/>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,0,12,0">
-                        <TextBlock Text="Donneur :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding FilterDonor, UpdateSourceTrigger=PropertyChanged}" Width="180" Height="30" VerticalContentAlignment="Center" BorderBrush="#DDD"/>
-                    </StackPanel>
-
-                    <Button Command="{Binding LoadCommand}" Width="100" Height="32" Margin="0,15,8,0"
-                            Style="{StaticResource PrimaryButtonStyle}">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="🔍" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Filtrer" FontSize="12" VerticalAlignment="Center"/>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" MinHeight="40">
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBlock Text="Date Début :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
+                            <DatePicker SelectedDate="{Binding FilterDateFrom}" Width="120" MinHeight="28" BorderBrush="#DDD">
+                                <DatePicker.Resources>
+                                    <Style TargetType="DatePickerTextBox">
+                                        <Setter Property="Text" Value="DD/MM/YYYY"/>
+                                    </Style>
+                                </DatePicker.Resources>
+                            </DatePicker>
                         </StackPanel>
-                    </Button>
 
-                    <Button Content="Réinitialiser" Command="{Binding ResetFiltersCommand}"
-                            Width="90" Height="30" Margin="0,15,0,0" Style="{StaticResource GhostButtonStyle}"/>
-                </StackPanel>
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBlock Text="Date Fin :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
+                            <DatePicker SelectedDate="{Binding FilterDateTo}" Width="120" MinHeight="28" BorderBrush="#DDD"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBlock Text="Donneur :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding FilterDonor, UpdateSourceTrigger=PropertyChanged}" Width="150" MinHeight="28" VerticalContentAlignment="Center" BorderBrush="#DDD"/>
+                        </StackPanel>
+
+                        <Button Command="{Binding LoadCommand}" MinWidth="90" MinHeight="30" Margin="0,15,8,0"
+                                Style="{StaticResource PrimaryButtonStyle}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="🔍" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Filtrer" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Content="Réinitialiser" Command="{Binding ResetFiltersCommand}"
+                                MinWidth="80" MinHeight="28" Margin="0,15,0,0" Style="{StaticResource GhostButtonStyle}"/>
+                    </StackPanel>
+                </ScrollViewer>
 
                 <!-- KPI CARDS -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Border Background="White" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="8" Width="100" Margin="0,0,12,0" Padding="8">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <Border Background="White" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="8" MinWidth="90" Margin="0,0,10,0" Padding="8">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Total Bons" FontSize="11" Foreground="#0066CC" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding TotalVouchers}" FontSize="22" FontWeight="Bold" Foreground="#0066CC" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalVouchers}" FontSize="20" FontWeight="Bold" Foreground="#0066CC" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
-                    <Border Background="#FFF7ED" BorderBrush="#FFEDD5" BorderThickness="1" CornerRadius="8" Width="100" Padding="8">
+                    <Border Background="#FFF7ED" BorderBrush="#FFEDD5" BorderThickness="1" CornerRadius="8" MinWidth="90" Padding="8">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Unités reçues" FontSize="11" Foreground="#9A3412" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding TotalUnitsReceived}" FontSize="22" FontWeight="Bold" Foreground="#9A3412" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding TotalUnitsReceived}" FontSize="20" FontWeight="Bold" Foreground="#9A3412" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>

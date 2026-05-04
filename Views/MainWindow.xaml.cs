@@ -21,8 +21,15 @@ namespace XpertPharm5Donation.Views
         private readonly DonationVoucherView _voucherView;
         private readonly DonationJournalView _journalView;
 
-        // Expose PosVM so Window-level F8/ESC shortcuts work
         public MainViewModel PosVM { get; }
+
+        public RelayCommand NavHomeCommand => new RelayCommand(_ => BtnHome_Click(this, new RoutedEventArgs()));
+        public RelayCommand NavComptoirCommand => new RelayCommand(_ => BtnComptoir_Click(this, new RoutedEventArgs()));
+        public RelayCommand NavStockCommand => new RelayCommand(_ => BtnStock_Click(this, new RoutedEventArgs()));
+        public RelayCommand NavProductsCommand => new RelayCommand(_ => BtnProducts_Click(this, new RoutedEventArgs()));
+        public RelayCommand NavVouchersCommand => new RelayCommand(_ => BtnVouchers_Click(this, new RoutedEventArgs()));
+        public RelayCommand NavJournalCommand => new RelayCommand(_ => BtnJournal_Click(this, new RoutedEventArgs()));
+        public RelayCommand NavHistoryCommand => new RelayCommand(_ => BtnHistory_Click(this, new RoutedEventArgs()));
 
         public MainWindow(HomeViewModel homeVm, MainViewModel posVm, HistoryViewModel histVm, ManageDonationsViewModel manageVm,
                           DonationVoucherViewModel voucherVm, DonationJournalViewModel journalVm, StockLotsViewModel stockLotsVm, AppDbContext db)

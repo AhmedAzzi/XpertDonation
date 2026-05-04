@@ -27,7 +27,7 @@
 
                 <!-- Search & Refresh -->
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Width="260" Height="32" VerticalContentAlignment="Center" Padding="8,2"
+                    <TextBox MinWidth="220" MinHeight="32" VerticalContentAlignment="Center" Padding="8,2"
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"
                              BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                         <TextBox.InputBindings>
@@ -35,7 +35,7 @@
                         </TextBox.InputBindings>
                     </TextBox>
                     
-                    <Button Command="{Binding SearchCommand}" Width="120" Height="32" Margin="0,0,10,0"
+                    <Button Command="{Binding SearchCommand}" MinWidth="120" MinHeight="32" Margin="0,0,10,0"
                             Style="{StaticResource PrimaryButtonStyle}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="🔍" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
@@ -43,7 +43,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Command="{Binding LoadCommand}" Width="120" Height="32"
+                    <Button Command="{Binding LoadCommand}" MinWidth="120" MinHeight="32"
                             Style="{StaticResource GhostButtonStyle}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="⟳" FontSize="16" FontWeight="Bold" Margin="0,-2,6,0" VerticalAlignment="Center"/>
@@ -54,7 +54,7 @@
 
                 <!-- CRUD Actions -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Command="{Binding ShowEditDrugFormCommand}" Width="110" Height="32" Margin="0,0,10,0"
+                    <Button Command="{Binding ShowEditDrugFormCommand}" MinWidth="110" MinHeight="32" Margin="0,0,10,0"
                             Style="{StaticResource GhostButtonStyle}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="✏" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="#333"/>
@@ -62,7 +62,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Command="{Binding DeleteDrugCommand}" Width="110" Height="32" Margin="0,0,10,0"
+                    <Button Command="{Binding DeleteDrugCommand}" MinWidth="110" MinHeight="32" Margin="0,0,10,0"
                             Style="{StaticResource DangerButtonStyle}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="🗑" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
@@ -70,7 +70,7 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Command="{Binding ShowAddDrugFormCommand}" Width="150" Height="32"
+                    <Button Command="{Binding ShowAddDrugFormCommand}" MinWidth="150" MinHeight="32"
                             Style="{StaticResource PrimaryButtonStyle}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="➕" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
@@ -85,7 +85,7 @@
         <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="Auto" MinHeight="34"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
@@ -97,20 +97,20 @@
                 <DataGrid Grid.Row="1" ItemsSource="{Binding Drugs}" SelectedItem="{Binding SelectedDrug}"
                           AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                           HeadersVisibility="Column" SelectionMode="Single"
-                          RowHeight="32" BorderThickness="0" Background="Transparent"
+                          MinRowHeight="32" BorderThickness="0" Background="Transparent"
                           Style="{StaticResource AppDataGridStyle}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Produit" Binding="{Binding Name}" Width="2*"/>
                         <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="1.5*"/>
-                        <DataGridTextColumn Header="Forme" Binding="{Binding Form}" Width="120"/>
-                        <DataGridTextColumn Header="Nb Lots" Binding="{Binding StockBatches.Count}" Width="80">
+                        <DataGridTextColumn Header="Forme" Binding="{Binding Form}" Width="1*"/>
+                        <DataGridTextColumn Header="Nb Lots" Binding="{Binding StockBatches.Count}" Width="0.6*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Stock valide" Binding="{Binding TotalValidStock}" Width="100">
+                        <DataGridTextColumn Header="Stock valide" Binding="{Binding TotalValidStock}" Width="0.8*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -118,7 +118,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Stock total" Binding="{Binding TotalAvailableStock}" Width="100">
+                        <DataGridTextColumn Header="Stock total" Binding="{Binding TotalAvailableStock}" Width="0.8*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>

@@ -19,10 +19,19 @@ namespace XpertPharm5Donation.Views
         private void BtnGoComptoir_Click(object sender, RoutedEventArgs e)
             => (Window.GetWindow(this) as MainWindow)?.BtnComptoir_Click(sender, e);
 
+        private void BtnGoStock_Click(object sender, RoutedEventArgs e)
+            => (Window.GetWindow(this) as MainWindow)?.BtnStock_Click(sender, e);
+
         private void BtnGoHistory_Click(object sender, RoutedEventArgs e)
             => (Window.GetWindow(this) as MainWindow)?.BtnHistory_Click(sender, e);
 
-        private void BtnGoManage_Click(object sender, RoutedEventArgs e)
-            => (Window.GetWindow(this) as MainWindow)?.BtnStock_Click(sender, e);
+        private void BtnGoVouchers_Click(object sender, RoutedEventArgs e)
+            => (Window.GetWindow(this) as MainWindow)?.BtnVouchers_Click(sender, e);
+
+        private void BtnGoJournal_Click(object sender, RoutedEventArgs e)
+            => (Window.GetWindow(this) as MainWindow)?.BtnJournal_Click(sender, e);
+
+        private void BtnGoProducts_Click(object sender, RoutedEventArgs e)
+            => (Window.GetWindow(this) as MainWindow)?.BtnProducts_Click(sender, e);
     }
 }

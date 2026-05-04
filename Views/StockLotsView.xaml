@@ -45,7 +45,7 @@
                     <!-- Code Barre -->
                     <StackPanel Grid.Column="1" Margin="0,0,16,0">
                         <TextBlock Text="Code Barre" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
-                        <TextBox Width="170" Height="26" Padding="6,2"
+                        <TextBox MinWidth="170" MinHeight="26" Padding="6,2"
                                  FontFamily="Segoe UI" FontSize="12"
                                  Background="White"
                                  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
@@ -56,7 +56,7 @@
                     <!-- DCI -->
                     <StackPanel Grid.Column="2" Margin="0,0,16,0">
                         <TextBlock Text="DCI" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
-                        <TextBox Width="170" Height="26" Padding="6,2"
+                        <TextBox MinWidth="170" MinHeight="26" Padding="6,2"
                                  FontFamily="Segoe UI" FontSize="12"
                                  Background="White"
                                  BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
@@ -152,10 +152,10 @@
                   Style="{StaticResource AppDataGridStyle}"
                   Margin="16,0,16,0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Produit" Width="*" Binding="{Binding Drug.Name}"/>
-                <DataGridTextColumn Header="Référence" Width="100" Binding="{Binding BatchNumber}"/>
-                <DataGridTextColumn Header="Date Péremp." Width="110" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}"/>
-                <DataGridTemplateColumn Header="Bloqué" Width="70">
+                <DataGridTextColumn Header="Produit" Width="2*" Binding="{Binding Drug.Name}"/>
+                <DataGridTextColumn Header="Référence" Width="1*" Binding="{Binding BatchNumber}"/>
+                <DataGridTextColumn Header="Date Péremp." Width="1.2*" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}"/>
+                <DataGridTemplateColumn Header="Bloqué" Width="0.8*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding IsBlocked, Converter={StaticResource BoolText}, ConverterParameter='Oui|'}"
@@ -163,9 +163,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Qté" Width="60" Binding="{Binding QuantityRemaining}"/>
-                <DataGridTextColumn Header="Magasin" Width="90" Binding="{Binding Store}"/>
-                <DataGridTemplateColumn Header="Psychotrope" Width="90">
+                <DataGridTextColumn Header="Qté" Width="0.7*" Binding="{Binding QuantityRemaining}"/>
+                <DataGridTextColumn Header="Magasin" Width="1*" Binding="{Binding Store}"/>
+                <DataGridTemplateColumn Header="Psychotrope" Width="1*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding IsPsychotrope, Converter={StaticResource BoolText}, ConverterParameter='Oui|'}"
@@ -173,7 +173,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Code Barre Lot" Width="130" Binding="{Binding Barcode}"/>
+                <DataGridTextColumn Header="Code Barre Lot" Width="1.5*" Binding="{Binding Barcode}"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -212,11 +212,11 @@
                                   CommandParameter="{Binding SelectedHistoryEntry}"/>
                 </DataGrid.InputBindings>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="N° Bon / Facture" Width="130" Binding="{Binding VoucherNumber}"/>
-                    <DataGridTextColumn Header="Type" Width="100" Binding="{Binding EntryType}"/>
-                    <DataGridTextColumn Header="Date" Width="110" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
-                    <DataGridTextColumn Header="Tiers (Donneur)" Width="*" Binding="{Binding DonorName}"/>
-                    <DataGridTextColumn Header="Qté Reçue" Width="100" Binding="{Binding QuantityReceived}">
+                    <DataGridTextColumn Header="N° Bon / Facture" Width="1.5*" Binding="{Binding VoucherNumber}"/>
+                    <DataGridTextColumn Header="Type" Width="1*" Binding="{Binding EntryType}"/>
+                    <DataGridTextColumn Header="Date" Width="1.2*" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
+                    <DataGridTextColumn Header="Tiers (Donneur)" Width="2*" Binding="{Binding DonorName}"/>
+                    <DataGridTextColumn Header="Qté Reçue" Width="1*" Binding="{Binding QuantityReceived}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Right"/>

@@ -80,7 +80,7 @@
     <Style x:Key="InputStyle" TargetType="TextBox">
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
@@ -108,7 +108,7 @@
     </Style>
 
     <Style x:Key="SearchBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputStyle}">
-        <Setter Property="Height" Value="34"/>
+        <Setter Property="MinHeight" Value="34"/>
         <Setter Property="Margin" Value="0,2"/>
     </Style>
 
@@ -118,7 +118,7 @@
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Height" Value="36"/>
+        <Setter Property="MinHeight" Value="36"/>
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════
@@ -128,7 +128,7 @@
         <Setter Property="TextAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Width" Value="80"/>
+        <Setter Property="MinWidth" Value="80"/>
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════
@@ -137,7 +137,7 @@
     <Style x:Key="ComboStyle" TargetType="ComboBox">
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
@@ -152,7 +152,7 @@
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
         <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Height" Value="36"/>
+        <Setter Property="MinHeight" Value="36"/>
         <Setter Property="Padding" Value="18,0"/>
         <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
         <Setter Property="Foreground" Value="White"/>
@@ -183,7 +183,7 @@
     <Style x:Key="SuccessButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
         <Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Height" Value="42"/>
+        <Setter Property="MinHeight" Value="42"/>
         <Setter Property="Padding" Value="24,0"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -262,7 +262,7 @@
     <Style x:Key="NavTabStyle" TargetType="Button">
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="12.5"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
         <Setter Property="Padding" Value="18,0"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="#90B4D8"/>
@@ -313,7 +313,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="GridLinesVisibility" Value="Horizontal"/>
         <Setter Property="HorizontalGridLinesBrush" Value="#F1F5F9"/>
-        <Setter Property="RowHeight" Value="40"/>
+        <Setter Property="MinRowHeight" Value="36"/>
         <Setter Property="SelectionMode" Value="Single"/>
         <Setter Property="SelectionUnit" Value="FullRow"/>
         <Setter Property="CanUserAddRows" Value="False"/>
@@ -331,7 +331,7 @@
                     <Setter Property="Foreground" Value="White"/>
                     <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
                     <Setter Property="FontSize" Value="12"/>
-                    <Setter Property="Height" Value="38"/>
+                    <Setter Property="MinHeight" Value="36"/>
                     <Setter Property="Padding" Value="12,0"/>
                     <Setter Property="BorderBrush" Value="#0F2952"/>
                     <Setter Property="BorderThickness" Value="0,0,1,0"/>
@@ -410,19 +410,16 @@
     ═══════════════════════════════════════════════════════ -->
     <Style x:Key="SeparatorStyle" TargetType="Separator">
         <Setter Property="Background" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="Height" Value="1"/>
+        <Setter Property="MinHeight" Value="1"/>
         <Setter Property="Margin" Value="0,6"/>
     </Style>
 
-    <!-- ═══════════════════════════════════════════════════════
-         STATUS BAR
-    ═══════════════════════════════════════════════════════ -->
     <Style x:Key="StatusBarStyle" TargetType="StatusBar">
         <Setter Property="Background" Value="#1A3A6B"/>
         <Setter Property="Foreground" Value="#A0BFDF"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11.5"/>
-        <Setter Property="Height" Value="26"/>
+        <Setter Property="MinHeight" Value="26"/>
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════
@@ -431,7 +428,7 @@
     <Style x:Key="DatePickerStyle" TargetType="DatePicker">
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
@@ -482,7 +479,7 @@
     <Style x:Key="SectionHeaderBorderStyle" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource TableHeaderBrush}"/>
         <Setter Property="Padding" Value="12,0"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
     </Style>
 
     <Style x:Key="IndicatorLabelStyle" TargetType="TextBlock">
@@ -499,7 +496,7 @@
     </Style>
 
     <Style x:Key="TileButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="160"/>
+        <Setter Property="MinHeight" Value="140"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>

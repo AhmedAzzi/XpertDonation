@@ -24,7 +24,7 @@
 
         <Border Panel.ZIndex="999" Background="#33000000"
                 Visibility="{Binding IsStockFormVisible, Converter={StaticResource BoolVis}}">
-            <Border Background="White" Width="450" VerticalAlignment="Center" HorizontalAlignment="Center"
+            <Border Background="White" MinWidth="400" MaxWidth="500" VerticalAlignment="Center" HorizontalAlignment="Center"
                     CornerRadius="8" Padding="24">
                 <Border.Effect>
                     <DropShadowEffect Color="Black" BlurRadius="20" Opacity="0.15"/>
@@ -92,12 +92,12 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBox Width="250" Style="{StaticResource SearchBoxStyle}"
+                        <TextBox MinWidth="200" Style="{StaticResource SearchBoxStyle}"
                                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
                         <Button Content="🔍  Rechercher" Command="{Binding SearchCommand}"
-                                Style="{StaticResource PrimaryButtonStyle}" Width="110" Margin="0,0,10,0"/>
+                                Style="{StaticResource PrimaryButtonStyle}" MinWidth="110" Margin="0,0,10,0"/>
                         <Button Content="⟳  Actualiser" Command="{Binding LoadCommand}"
-                                Style="{StaticResource GhostButtonStyle}" Width="110"/>
+                                Style="{StaticResource GhostButtonStyle}" MinWidth="110"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -124,7 +124,7 @@
                     </Border.Effect>
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="Auto" MinHeight="40"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
@@ -136,8 +136,8 @@
                                   BorderThickness="0" Background="Transparent" IsReadOnly="True"
                                   AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Médicament" Width="300" Binding="{Binding Name}"/>
-                                <DataGridTextColumn Header="Nb Lots" Width="80" Binding="{Binding StockBatches.Count}"/>
+                                <DataGridTextColumn Header="Médicament" Width="2*" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Nb Lots" Width="0.5*" Binding="{Binding StockBatches.Count}"/>
                                 <DataGridTemplateColumn Header="Stock Actuel (Total)" Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -171,7 +171,7 @@
                         <!-- Si médicament sélectionné -->
                         <Grid Visibility="{Binding SelectedDrug, Converter={StaticResource BoolVis}}">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="Auto" MinHeight="40"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
@@ -198,11 +198,11 @@
                                       BorderThickness="0" Background="Transparent" IsReadOnly="True"
                                       AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="Single">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Lot" Width="80" Binding="{Binding BatchNumber}"/>
-                                    <DataGridTextColumn Header="Code Barre" Width="110" Binding="{Binding Barcode}"/>
-                                    <DataGridTextColumn Header="Péremption" Width="80" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}"/>
-                                    <DataGridTextColumn Header="Reçu" Width="50" Binding="{Binding InitialQuantity}"/>
-                                    <DataGridTemplateColumn Header="Dispo." Width="50">
+                                    <DataGridTextColumn Header="Lot" Width="0.8*" Binding="{Binding BatchNumber}"/>
+                                    <DataGridTextColumn Header="Code Barre" Width="1.2*" Binding="{Binding Barcode}"/>
+                                    <DataGridTextColumn Header="Péremption" Width="1*" Binding="{Binding ExpirationDate, StringFormat=dd/MM/yyyy}"/>
+                                    <DataGridTextColumn Header="Reçu" Width="0.5*" Binding="{Binding InitialQuantity}"/>
+                                    <DataGridTemplateColumn Header="Dispo." Width="0.5*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding QuantityRemaining}" FontFamily="Segoe UI Semibold" HorizontalAlignment="Center" VerticalAlignment="Center"/>

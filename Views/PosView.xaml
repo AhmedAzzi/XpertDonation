@@ -44,8 +44,8 @@
                 <DropShadowEffect Color="#000000" BlurRadius="8" Opacity="0.07" ShadowDepth="2"/>
             </Grid.Effect>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- Left: Input Fields -->
@@ -58,10 +58,10 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="Auto" MinWidth="120"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="Auto" MinWidth="100"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
@@ -76,7 +76,7 @@
                 <Button Grid.Row="0" Grid.Column="3" Content="🔍  Rechercher"
                         Style="{StaticResource PrimaryButtonStyle}"
                         Command="{Binding ScanBarcodeCommand}"
-                        Margin="0,0,0,0" Height="32"/>
+                        Margin="0,0,0,0" MinHeight="32"/>
 
                 <!-- Product Search -->
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Produit [F4] :"
@@ -107,7 +107,7 @@
 
             <!-- Right: Drug Info Panel (LCD style) -->
             <Border Grid.Column="1" Background="{StaticResource InfoPanelBgBrush}"
-                    Margin="0,0,0,0" Padding="16,12">
+                    MinWidth="280" MaxWidth="380" Padding="16,12">
                 <Grid>
                     <StackPanel Visibility="{Binding SelectedDrug, Converter={StaticResource BoolVis}}">
                         <!-- Drug Name -->
@@ -124,11 +124,11 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="22"/>
-                                <RowDefinition Height="22"/>
-                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="Auto" MinHeight="22"/>
+                                <RowDefinition Height="Auto" MinHeight="22"/>
+                                <RowDefinition Height="Auto" MinHeight="22"/>
                                 <RowDefinition Height="4"/>
-                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="Auto" MinHeight="22"/>
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Réf. Sys."
@@ -197,15 +197,15 @@
 
             <!-- Column Header Bar -->
             <Border Grid.Row="0" Background="{StaticResource TableHeaderBrush}" Padding="10,0">
-                <Grid Height="34">
+                <Grid MinHeight="34">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="32"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="90"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="#" Foreground="White" FontFamily="Segoe UI Semibold"
                                FontSize="12" VerticalAlignment="Center"/>
@@ -262,15 +262,15 @@
                         </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="36" Margin="10,0">
+                                <Grid MinHeight="36" Margin="10,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="32"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="120"/>
-                                        <ColumnDefinition Width="120"/>
-                                        <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="130"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="90"/>
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Row number via converter workaround -->
