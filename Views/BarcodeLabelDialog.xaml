@@ -4,58 +4,91 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:XpertPharm5Donation.Views"
     Title="Impression Code-Barres"
-    Width="720"
-    Height="440"
-    Background="#F5F5F5"
+    Width="980"
+    Height="610"
+    MinWidth="840"
+    MinHeight="520"
+    Background="{StaticResource WorkspaceBrush}"
     FontFamily="Segoe UI"
-    ResizeMode="NoResize"
+    ResizeMode="CanResize"
     WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
         <Style x:Key="OptionCheckBox" TargetType="CheckBox">
-            <Setter Property="Margin" Value="0,0,0,4" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Padding" Value="4,2" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="8,6" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Foreground" Value="#333" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="Background" Value="Transparent" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
-                        <StackPanel Orientation="Horizontal">
-                            <Border
-                                Width="18"
-                                Height="18"
-                                VerticalAlignment="Center"
-                                Background="White"
-                                BorderBrush="#CCC"
-                                BorderThickness="1"
-                                CornerRadius="3">
+                        <Border
+                            x:Name="Row"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
                                 <Border
-                                    x:Name="CheckMark"
-                                    Margin="3"
-                                    Background="#2196F3"
-                                    CornerRadius="2"
-                                    Visibility="Collapsed">
+                                    x:Name="Box"
+                                    Width="18"
+                                    Height="18"
+                                    VerticalAlignment="Center"
+                                    Background="White"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4">
                                     <Path
+                                        x:Name="CheckMark"
+                                        Width="9"
+                                        Height="7"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Data="M0,4 L3,7 L8,0"
+                                        Data="M1,4 L4,7 L10,1"
+                                        Opacity="0"
                                         Stroke="White"
+                                        StrokeEndLineCap="Round"
+                                        StrokeStartLineCap="Round"
                                         StrokeThickness="2" />
                                 </Border>
-                            </Border>
-                            <TextBlock
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{TemplateBinding Content}" />
-                        </StackPanel>
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{TemplateBinding Content}" />
+                            </Grid>
+                        </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="Row" Property="Background" Value="{StaticResource SelectionBrush}" />
+                                <Setter TargetName="Row" Property="BorderBrush" Value="#BFDBFE" />
+                                <Setter TargetName="Box" Property="Background" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="CheckMark" Property="Opacity" Value="1" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="#2196F3" />
+                                <Setter TargetName="Row" Property="Background" Value="#F8FAFC" />
+                                <Setter TargetName="Row" Property="BorderBrush" Value="#E2E8F0" />
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
                             </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsChecked" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Row" Property="Background" Value="#EFF6FF" />
+                                <Setter TargetName="Row" Property="BorderBrush" Value="#BFDBFE" />
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -63,19 +96,54 @@
         </Style>
 
         <Style x:Key="ActionBtn" TargetType="Button">
-            <Setter Property="Height" Value="34" />
-            <Setter Property="Padding" Value="20,0" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Height" Value="42" />
+            <Setter Property="MinWidth" Value="112" />
+            <Setter Property="Padding" Value="18,0" />
+            <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+            <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+        </Style>
+
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F1F5F9" />
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
     <Grid Margin="0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="320" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -83,9 +151,9 @@
         <Border
             Grid.Column="0"
             Background="White"
-            BorderBrush="#E0E0E0"
+            BorderBrush="{StaticResource BorderBrush}"
             BorderThickness="0,0,1,0">
-            <Grid Margin="16">
+            <Grid Margin="28,30,28,24">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -95,10 +163,10 @@
                 <!--  Header  -->
                 <TextBlock
                     Grid.Row="0"
-                    Margin="0,0,0,12"
-                    FontSize="11"
+                    Margin="0,0,0,22"
+                    FontSize="13"
                     FontWeight="Bold"
-                    Foreground="#888"
+                    Foreground="{StaticResource TextSecondaryBrush}"
                     Text="OPTIONS D'IMPRESSION" />
 
                 <!--  Fields  -->
@@ -107,7 +175,7 @@
                         Content="Nom pharmacie"
                         IsChecked="{Binding ShowPharmacyName}"
                         Style="{StaticResource OptionCheckBox}" />
-                    <Separator Margin="0,4" Opacity="0.3" />
+                    <Separator Margin="0,2,0,12" Opacity="0.35" />
                     <CheckBox
                         Content="Image code-barres"
                         IsChecked="{Binding ShowBarcodeImage}"
@@ -116,7 +184,7 @@
                         Content="N° code-barres"
                         IsChecked="{Binding ShowBarcodeNumber}"
                         Style="{StaticResource OptionCheckBox}" />
-                    <Separator Margin="0,4" Opacity="0.3" />
+                    <Separator Margin="0,2,0,12" Opacity="0.35" />
                     <CheckBox
                         Content="Nom produit"
                         IsChecked="{Binding ShowProductName}"
@@ -125,7 +193,7 @@
                         Content="Prix"
                         IsChecked="{Binding ShowPrice}"
                         Style="{StaticResource OptionCheckBox}" />
-                    <Separator Margin="0,4" Opacity="0.3" />
+                    <Separator Margin="0,2,0,12" Opacity="0.35" />
                     <CheckBox
                         Content="Date expiration"
                         IsChecked="{Binding ShowExpiry}"
@@ -139,11 +207,11 @@
                 <!--  Buttons  -->
                 <StackPanel
                     Grid.Row="2"
-                    Margin="0,16,0,0"
-                    HorizontalAlignment="Center"
+                    Margin="0,22,0,0"
+                    HorizontalAlignment="Left"
                     Orientation="Horizontal">
                     <Button
-                        Background="#2196F3"
+                        Background="{StaticResource AccentBrush}"
                         Command="{Binding PrintCommand}"
                         Content="Imprimer"
                         Foreground="White"
@@ -156,43 +224,95 @@
                     </Button>
                     <Button
                         Margin="0"
-                        Background="#E0E0E0"
+                        Background="#E2E8F0"
                         Command="{Binding CloseCommand}"
                         Content="Fermer"
-                        Foreground="#555"
+                        Foreground="{StaticResource TextPrimaryBrush}"
                         Style="{StaticResource ActionBtn}" />
                 </StackPanel>
             </Grid>
         </Border>
 
         <!--  RIGHT PANEL - Preview  -->
-        <Grid Grid.Column="1" Margin="20">
+        <Grid Grid.Column="1" Margin="34,30,34,34">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock
+            <Grid
                 Grid.Row="0"
-                Margin="0,0,0,12"
-                FontSize="11"
-                FontWeight="Bold"
-                Foreground="#888"
-                Text="APERÇU" />
+                Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource TextSecondaryBrush}"
+                    Text="APERÇU" />
+
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource TextSecondaryBrush}"
+                        Text="ZOOM" />
+                    <Button
+                        Command="{Binding ZoomOutCommand}"
+                        Content="-"
+                        Style="{StaticResource IconButton}" />
+                    <Slider
+                        Width="150"
+                        Margin="10,0,6,0"
+                        VerticalAlignment="Center"
+                        IsSnapToTickEnabled="True"
+                        Maximum="2.4"
+                        Minimum="0.6"
+                        TickFrequency="0.1"
+                        Value="{Binding PreviewZoom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock
+                        Width="48"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource TextPrimaryBrush}"
+                        Text="{Binding PreviewZoomPercent}"
+                        TextAlignment="Center" />
+                    <Button
+                        Command="{Binding ZoomInCommand}"
+                        Content="+"
+                        Style="{StaticResource IconButton}" />
+                    <Button
+                        Width="58"
+                        Command="{Binding ResetZoomCommand}"
+                        Content="100%"
+                        FontSize="12"
+                        Style="{StaticResource IconButton}" />
+                </StackPanel>
+            </Grid>
 
             <!--  Preview Card  -->
             <Border
                 Grid.Row="1"
                 Background="White"
-                BorderBrush="#DDD"
+                BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="1"
                 CornerRadius="8">
                 <Border.Effect>
                     <DropShadowEffect
-                        BlurRadius="12"
+                        BlurRadius="16"
                         Direction="270"
-                        Opacity="0.1"
-                        ShadowDepth="4"
+                        Opacity="0.12"
+                        ShadowDepth="5"
                         Color="#000" />
                 </Border.Effect>
                 <Grid>
@@ -213,9 +333,29 @@
                         </DrawingBrush>
                     </Grid.Background>
 
-                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <local:BarcodeLabelPreview DataContext="{Binding}" />
-                    </Grid>
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto">
+                        <Grid
+                            MinWidth="520"
+                            MinHeight="340"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                            <Border
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="White"
+                                BorderBrush="#E6ECF2"
+                                BorderThickness="1">
+                                <Border.LayoutTransform>
+                                    <ScaleTransform
+                                        ScaleX="{Binding PreviewZoom}"
+                                        ScaleY="{Binding PreviewZoom}" />
+                                </Border.LayoutTransform>
+                                <local:BarcodeLabelPreview DataContext="{Binding}" />
+                            </Border>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </Border>
         </Grid>

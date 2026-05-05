@@ -15,6 +15,7 @@ namespace XpertPharm5Donation.ViewModels
         private readonly AppDbContext _db = db;
         private readonly SemaphoreSlim _dbLock = new(1, 1);
         private CancellationTokenSource? _batchLoadCts;
+        private CancellationTokenSource? _searchCts;
 
         public ObservableCollection<Drug> Drugs { get; } = [];
         public ObservableCollection<StockBatch> SelectedDrugStockBatches { get; } = [];
@@ -26,6 +27,7 @@ namespace XpertPharm5Donation.ViewModels
         [ObservableProperty] private string _statusMessage = string.Empty;
         [ObservableProperty] private bool _isStatusError;
         [ObservableProperty] private string _searchText = string.Empty;
+        [ObservableProperty] private bool _isSearchDropDownOpen;
 
         public event Action<Drug?>? RequestDrugEdit;
         public event Action<Drug>? RequestNewVoucherForDrug;
@@ -41,9 +43,30 @@ namespace XpertPharm5Donation.ViewModels
 
         partial void OnSelectedDrugChanged(Drug? value)
         {
+            if (value != null)
+                IsSearchDropDownOpen = false;
+
             _batchLoadCts?.Cancel();
             _batchLoadCts = new CancellationTokenSource();
             _ = LoadBatchesForSelectedDrugAsync(_batchLoadCts.Token);
+        }
+
+        partial void OnSearchTextChanged(string value)
+        {
+            IsSearchDropDownOpen = !string.IsNullOrWhiteSpace(value);
+            _searchCts?.Cancel();
+            _searchCts = new CancellationTokenSource();
+            _ = SearchAfterTypingAsync(_searchCts.Token);
+        }
+
+        private async Task SearchAfterTypingAsync(CancellationToken ct)
+        {
+            try
+            {
+                await Task.Delay(250, ct);
+                await SearchAsync(ct);
+            }
+            catch (OperationCanceledException) { }
         }
 
         private async Task LoadBatchesForSelectedDrugAsync(CancellationToken ct)
@@ -106,12 +129,19 @@ namespace XpertPharm5Donation.ViewModels
         [RelayCommand]
         private async Task SearchAsync()
         {
+            await SearchAsync(CancellationToken.None);
+        }
+
+        private async Task SearchAsync(CancellationToken ct)
+        {
             if (IsBusy) return;
             IsBusy = true;
-            
-            await _dbLock.WaitAsync();
+            var lockTaken = false;
             try
             {
+                await _dbLock.WaitAsync(ct);
+                lockTaken = true;
+
                 var term = SearchText?.Trim().ToLower() ?? string.Empty;
                 var query = _db.Drugs
                     .Include(d => d.StockBatches)
@@ -120,14 +150,21 @@ namespace XpertPharm5Donation.ViewModels
                 if (!string.IsNullOrEmpty(term))
                     query = query.Where(d => d.Name.ToLower().Contains(term) || d.StockBatches.Any(b => b.Barcode != null && b.Barcode.Contains(term)));
 
-                var list = await query.OrderBy(d => d.Name).ToListAsync();
+                var list = await query.OrderBy(d => d.Name).Take(60).ToListAsync(ct);
                 Drugs.Clear();
                 foreach (var d in list) Drugs.Add(d);
+                IsStatusError = false;
+                StatusMessage = string.IsNullOrWhiteSpace(term)
+                    ? $"{Drugs.Count} médicament(s) dans le catalogue."
+                    : $"{Drugs.Count} résultat(s) pour \"{SearchText.Trim()}\".";
+                IsSearchDropDownOpen = !string.IsNullOrWhiteSpace(term) && Drugs.Count > 0;
             }
+            catch (OperationCanceledException) { }
             catch (Exception ex) { StatusMessage = ex.Message; IsStatusError = true; }
             finally 
             { 
-                _dbLock.Release();
+                if (lockTaken)
+                    _dbLock.Release();
                 IsBusy = false; 
             }
         }

@@ -10,7 +10,6 @@ namespace XpertPharm5Donation.Views
     public partial class PosView : UserControl
     {
         private readonly MainViewModel _vm;
-        private bool _suppressSelectionChanged;
 
         public PosView(MainViewModel vm)
         {
@@ -46,83 +45,34 @@ namespace XpertPharm5Donation.Views
             }
         }
 
-        private async void ProductCombo_KeyUp(object sender, KeyEventArgs e)
+        private async void ProductBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter || e.Key == Key.Return)
             {
-                if (ProductCombo.SelectedItem is Models.Drug selected)
+                if (!string.IsNullOrWhiteSpace(ProductBox.Text))
                 {
-                    // User pressed Enter while a product is selected in the dropdown
-                    _suppressSelectionChanged = true;
-                    await _vm.SelectFromSearchCommand.ExecuteAsync(selected);
-                    
+                    await _vm.FilterSuggestionsCommand.ExecuteAsync(null);
+                    var match = _vm.DrugSuggestions.FirstOrDefault();
+                    if (match != null)
+                    {
+                        await _vm.SelectFromSearchCommand.ExecuteAsync(match);
+                        if (_vm.AddToCartCommand.CanExecute(null))
+                            _vm.AddToCartCommand.Execute(null);
+                    }
+                    else
+                    {
+                        _vm.StatusMessage = "Aucun produit correspondant trouvé.";
+                        _vm.IsStatusError = true;
+                    }
+                }
+                else if (_vm.SelectedDrug != null)
+                {
                     if (_vm.AddToCartCommand.CanExecute(null))
                         _vm.AddToCartCommand.Execute(null);
-                        
-                    ProductCombo.SelectedIndex = -1;
-                    _vm.SearchText = string.Empty;
-                    _suppressSelectionChanged = false;
                 }
-                else if (_vm.SelectedDrug != null && string.IsNullOrWhiteSpace(ProductCombo.Text))
-                {
-                    // If they just press Enter in an empty combo box, add the currently selected drug
-                    if (_vm.AddToCartCommand.CanExecute(null))
-                        _vm.AddToCartCommand.Execute(null);
-                }
-                else
-                {
-                    // No item selected and text is not empty
-                    _vm.StatusMessage = "Veuillez sélectionner un produit dans la liste.";
-                    _vm.IsStatusError = true;
-                }
+                ProductBox.Text = string.Empty;
                 e.Handled = true;
-                return;
-            }
-            if (e.Key is Key.Down or Key.Up or Key.Left or Key.Right or Key.Tab) return;
-            await _vm.FilterSuggestionsCommand.ExecuteAsync(null);
-            
-            var textBox = ProductCombo.Template.FindName("PART_EditableTextBox", ProductCombo) as TextBox;
-            int caret = textBox?.CaretIndex ?? 0;
-            
-            ProductCombo.IsDropDownOpen = true;
-            
-            if (textBox != null)
-            {
-                textBox.CaretIndex = caret;
-            }
-        }
-        
-        private void ProductCombo_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Down)
-            {
-                if (!ProductCombo.IsDropDownOpen)
-                {
-                    ProductCombo.IsDropDownOpen = true;
-                    e.Handled = true;
-                }
-                else if (ProductCombo.SelectedIndex == -1 && ProductCombo.HasItems)
-                {
-                    // If dropdown is open but no item is highlighted, select the first one
-                    ProductCombo.SelectedIndex = 0;
-                    e.Handled = true;
-                }
-            }
-        }
-
-        private async void ProductCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_suppressSelectionChanged) return;
-            if (ProductCombo.SelectedItem is Models.Drug selected)
-            {
-                // Load the drug info into the panel
-                await _vm.SelectFromSearchCommand.ExecuteAsync(selected);
-            }
-            else
-            {
-                // Clear selection if nothing is selected in the combo
-                _vm.SelectedDrug = null;
-                _vm.SelectedStockBatch = null;
+                BarcodeBox.Focus();
             }
         }
 

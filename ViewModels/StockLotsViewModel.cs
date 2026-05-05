@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -138,6 +139,36 @@ namespace XpertPharm5Donation.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void PrintBarcode(StockBatch? lot)
+        {
+            var selected = lot ?? SelectedLot;
+            if (selected == null)
+            {
+                StatusMessage = "Sélectionnez un lot à imprimer.";
+                IsStatusError = true;
+                return;
+            }
+
+            var vm = new BarcodeLabelDialogViewModel
+            {
+                PharmacyName = "PHARMACIE ARAB",
+                BarcodeNumber = FirstNotBlank(selected.Barcode, selected.Drug?.Barcode, $"LOT{selected.Id:000000}"),
+                ProductName = selected.Drug?.Name ?? string.Empty,
+                Price = "GRATUIT",
+                ExpiryDate = selected.ExpirationDate?.ToString("dd-MM-yyyy") ?? string.Empty,
+                LotNumber = selected.BatchNumber ?? string.Empty,
+            };
+
+            var dlg = new Views.BarcodeLabelDialog(vm)
+            {
+                Owner = Application
+                    .Current.Windows.OfType<Window>()
+                    .FirstOrDefault(w => w.IsActive),
+            };
+            dlg.ShowDialog();
+        }
+
         private void ApplyFilters()
         {
             var filtered = _allBatches.AsEnumerable();
@@ -225,6 +256,12 @@ namespace XpertPharm5Donation.ViewModels
             {
                 _dbLock.Release();
             }
+        }
+
+        private static string FirstNotBlank(params string?[] values)
+        {
+            return values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim()
+                ?? string.Empty;
         }
     }
 }

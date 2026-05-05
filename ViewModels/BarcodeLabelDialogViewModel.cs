@@ -30,6 +30,21 @@ namespace XpertPharm5Donation.ViewModels
         public bool ShowLot { get => _showLot; set { _showLot = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
         public bool ShowMeta => ShowExpiry || ShowLot;
         public double FontSize { get => _fontSize; set { _fontSize = value; OnPropertyChanged(); } }
+        public double PreviewZoom
+        {
+            get => _previewZoom;
+            set
+            {
+                var clamped = Math.Clamp(value, 0.6, 2.4);
+                if (Math.Abs(_previewZoom - clamped) < 0.001)
+                    return;
+
+                _previewZoom = clamped;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviewZoomPercent));
+            }
+        }
+        public string PreviewZoomPercent => $"{PreviewZoom * 100:0}%";
 
         public string PharmacyName { get; set; } = string.Empty;
         private string _barcodeNumber = string.Empty;
@@ -52,17 +67,24 @@ namespace XpertPharm5Donation.ViewModels
 
         public ICommand PrintCommand { get; }
         public ICommand CloseCommand { get; }
+        public ICommand ZoomInCommand { get; }
+        public ICommand ZoomOutCommand { get; }
+        public ICommand ResetZoomCommand { get; }
 
         public event Action? PrintRequested;
 
         private bool _showPharmacyName = true, _showBarcodeImage = true, _showBarcodeNumber = true, _showProductName = true, _showPrice = true, _showExpiry = true, _showLot = true;
         private double _fontSize = 10;
+        private double _previewZoom = 1.0;
 
 
         public BarcodeLabelDialogViewModel()
         {
             PrintCommand = new RelayCommand(Print);
             CloseCommand = new RelayCommand(Close);
+            ZoomInCommand = new RelayCommand(_ => PreviewZoom += 0.1);
+            ZoomOutCommand = new RelayCommand(_ => PreviewZoom -= 0.1);
+            ResetZoomCommand = new RelayCommand(_ => PreviewZoom = 1.0);
         }
 
         public void RefreshBarcode()

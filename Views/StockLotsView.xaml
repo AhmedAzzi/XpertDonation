@@ -147,10 +147,25 @@
         </Border>
 
         <!-- ═══ LOTS EN STOCK TITLE ════════════════════════════════ -->
-        <TextBlock Grid.Row="1" Text="Lots en stock"
-                   FontFamily="Segoe UI Semibold" FontSize="12"
-                   Foreground="{StaticResource TextPrimaryBrush}"
-                   Margin="16,8,16,4"/>
+        <Grid Grid.Row="1" Margin="16,8,16,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Lots en stock"
+                       FontFamily="Segoe UI Semibold" FontSize="12"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       VerticalAlignment="Center"/>
+
+            <Button Grid.Column="1"
+                    Content="Imprimer code-barres"
+                    Command="{Binding PrintBarcodeCommand}"
+                    CommandParameter="{Binding SelectedLot}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    MinHeight="30"
+                    Padding="14,0"/>
+        </Grid>
 
         <!-- ═══ MAIN DATA GRID ════════════════════════════════════ -->
         <DataGrid Grid.Row="2"
@@ -158,6 +173,13 @@
                   SelectedItem="{Binding SelectedLot}"
                   Style="{StaticResource AppDataGridStyle}"
                   Margin="16,0,16,0">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Imprimer code-barres"
+                              Command="{Binding PlacementTarget.DataContext.PrintBarcodeCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Produit" Width="2*" Binding="{Binding Drug.Name}"/>
                 <DataGridTextColumn Header="Référence" Width="1*" Binding="{Binding BatchNumber}"/>

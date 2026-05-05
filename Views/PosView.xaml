@@ -81,18 +81,11 @@
                 <!-- Product Search -->
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Produit [F4] :"
                            Style="{StaticResource LabelStyle}" FontWeight="SemiBold"/>
-                <ComboBox Grid.Row="2" Grid.Column="1"
-                          x:Name="ProductCombo"
-                          Style="{StaticResource ComboStyle}"
-                          IsEditable="True"
-                          IsTextSearchEnabled="False"
-                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                          ItemsSource="{Binding DrugSuggestions}"
-                          DisplayMemberPath="Name"
-                          KeyUp="ProductCombo_KeyUp"
-                          PreviewKeyDown="ProductCombo_PreviewKeyDown"
-                          SelectionChanged="ProductCombo_SelectionChanged"
-                          ToolTip="Taper pour rechercher un médicament"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="ProductBox"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource InputStyle}"
+                         KeyDown="ProductBox_KeyDown"
+                         ToolTip="Taper pour rechercher un médicament"/>
 
                 <!-- Quantity -->
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Quantité :"
