@@ -117,31 +117,132 @@
                 <!-- Médicament * -->
                 <StackPanel Grid.Column="1" Margin="0,0,6,0">
                     <TextBlock Text="Médicament *" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <Grid>
+                    <Grid x:Name="DrugSearchGrid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0"
-                                 Text="{Binding InputDrugName, UpdateSourceTrigger=PropertyChanged}" 
-                                 MinHeight="26" Padding="4,2" FontFamily="Segoe UI" FontSize="11"
-                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Enter" Command="{Binding FilterSuggestionsCommand}"/>
-                            </TextBox.InputBindings>
-                        </TextBox>
-                        <Button Grid.Column="1" Content="…" MinWidth="24" MinHeight="26" 
-                                FontSize="12" FontWeight="Bold" Padding="0"
-                                Background="#F0F0F0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,1,1"
+                        <!-- TextBox with embedded toggle area -->
+                        <Border x:Name="DrugSearchBorder"
+                                Grid.Column="0"
+                                Background="White"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="24"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="DrugTextBox"
+                                         Grid.Column="0"
+                                         Text="{Binding InputDrugName, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Padding="4,2"
+                                         FontFamily="Segoe UI"
+                                         FontSize="12"
+                                         VerticalContentAlignment="Center"
+                                         PreviewKeyDown="DrugTextBox_PreviewKeyDown"
+                                         LostKeyboardFocus="DrugTextBox_LostKeyboardFocus"/>
+                                <!-- Dropdown toggle button -->
+                                <ToggleButton x:Name="ToggleDropdownBtn"
+                                              Grid.Column="1"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              IsChecked="{Binding IsSuggestionOpen, Mode=TwoWay}"
+                                              Cursor="Hand">
+                                    <Path Data="M 0 0 L 4 4 L 8 0 Z"
+                                          Fill="#94A3B8"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          SnapsToDevicePixels="True"/>
+                                </ToggleButton>
+                            </Grid>
+                        </Border>
+                        <Button Grid.Column="1" Content="+" MinWidth="24" MinHeight="26"
+                                FontSize="14" FontWeight="Bold" Padding="0"
+                                Background="#1D6CB5" BorderBrush="#1D6CB5" BorderThickness="0,1,1,1"
                                 Command="{Binding ShowDrugDialogCommand}" Cursor="Hand"
-                                VerticalAlignment="Bottom" ToolTip="Ajouter / Modifier le produit"/>
+                                Foreground="White"
+                                VerticalAlignment="Bottom" ToolTip="Ajouter un nouveau produit"/>
                     </Grid>
-                    <!-- Suggestions Popup -->
-                    <Popup IsOpen="{Binding IsSuggestionOpen}" StaysOpen="False" x:Name="SugPopup" MinWidth="250">
-                        <Border Background="White" BorderBrush="#DDD" BorderThickness="1" CornerRadius="4" MaxHeight="200">
-                            <ListBox ItemsSource="{Binding DrugSuggestions}" BorderThickness="0"
-                                     DisplayMemberPath="DisplayName"
-                                     MouseDoubleClick="ListBox_MouseDoubleClick" />
+                    <!-- Suggestions Dropdown Popup -->
+                    <Popup x:Name="SuggestionsPopup"
+                           IsOpen="{Binding IsSuggestionOpen}"
+                           StaysOpen="False"
+                           PlacementTarget="{Binding ElementName=DrugSearchGrid}"
+                           Placement="Bottom"
+                           Width="{Binding ActualWidth, ElementName=DrugSearchGrid}"
+                           MaxHeight="250"
+                           AllowsTransparency="True">
+                        <Border Background="White"
+                                BorderBrush="#CBD5E1"
+                                BorderThickness="1"
+                                CornerRadius="0,0,6,6"
+                                Margin="0,0,0,0"
+                                SnapsToDevicePixels="True">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.12" ShadowDepth="2" Direction="270"/>
+                            </Border.Effect>
+                            <ListBox x:Name="SuggestionsList"
+                                     ItemsSource="{Binding DrugSuggestions}"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     MaxHeight="250"
+                                     SelectionMode="Single"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     KeyDown="SuggestionsList_KeyDown"
+                                     MouseDoubleClick="SuggestionsList_MouseDoubleClick">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="8,4"/>
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Border x:Name="bg" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="bg" Property="Background" Value="#EFF6FF"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="bg" Property="Background" Value="#DBEAFE"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       FontFamily="Segoe UI Semibold"
+                                                       FontSize="12"
+                                                       Foreground="#1E293B"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Dci, StringFormat='| {0}'}"
+                                                       FontFamily="Segoe UI"
+                                                       FontSize="10"
+                                                       Foreground="#94A3B8"
+                                                       Margin="6,0,0,0"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </Border>
                     </Popup>
                 </StackPanel>

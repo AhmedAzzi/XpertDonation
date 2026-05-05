@@ -1,4 +1,6 @@
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using XpertPharm5Donation.Models;
 using XpertPharm5Donation.ViewModels;
 
@@ -20,27 +22,98 @@ namespace XpertPharm5Donation.Views
                 };
                 if (win.ShowDialog() == true && dialogVm.SavedDrug != null)
                 {
-                    // If a drug was added/edited, we can auto-select it if it's new
-                    if (drug == null && dialogVm.SavedDrug.Id > 0)
-                    {
-                        viewModel.SelectDrugSuggestionCommand.Execute(dialogVm.SavedDrug);
-                    }
-                    else if (drug != null)
-                    {
-                        // Update UI fields if the current drug was edited
-                        viewModel.SelectDrugSuggestionCommand.Execute(dialogVm.SavedDrug);
-                    }
+                    viewModel.SelectDrugSuggestionCommand.Execute(dialogVm.SavedDrug);
                 }
             };
         }
 
-        private void ListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SuggestionsList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (sender is ListBox listBox && listBox.SelectedItem is Drug drug)
+            if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                if (SuggestionsList.SelectedItem is Drug selected && DataContext is DonationVoucherViewModel vm)
+                {
+                    vm.SelectDrugSuggestionCommand.Execute(selected);
+                    SuggestionsPopup.IsOpen = false;
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void SuggestionsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (SuggestionsList.SelectedItem is Drug selected && DataContext is DonationVoucherViewModel vm)
+            {
+                vm.SelectDrugSuggestionCommand.Execute(selected);
+                SuggestionsPopup.IsOpen = false;
+            }
+        }
+
+        private void DrugTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                if (!SuggestionsPopup.IsOpen)
+                {
+                    SuggestionsPopup.IsOpen = true;
+                    SuggestionsList.SelectedIndex = 0;
+                }
+                else if (SuggestionsList.HasItems)
+                {
+                    int next = SuggestionsList.SelectedIndex + 1;
+                    if (next < SuggestionsList.Items.Count)
+                    {
+                        SuggestionsList.SelectedIndex = next;
+                        SuggestionsList.ScrollIntoView(SuggestionsList.SelectedItem);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Up)
+            {
+                if (!SuggestionsPopup.IsOpen && SuggestionsList.HasItems)
+                {
+                    SuggestionsPopup.IsOpen = true;
+                    SuggestionsList.SelectedIndex = SuggestionsList.Items.Count - 1;
+                }
+                else
+                {
+                    int prev = SuggestionsList.SelectedIndex - 1;
+                    if (prev >= 0)
+                    {
+                        SuggestionsList.SelectedIndex = prev;
+                        SuggestionsList.ScrollIntoView(SuggestionsList.SelectedItem);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                if (SuggestionsPopup.IsOpen && SuggestionsList.SelectedItem is Drug selected)
+                {
+                    if (DataContext is DonationVoucherViewModel vm)
+                    {
+                        vm.SelectDrugSuggestionCommand.Execute(selected);
+                    }
+                    SuggestionsPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.Escape)
+            {
+                SuggestionsPopup.IsOpen = false;
+                e.Handled = true;
+            }
+        }
+
+        private void DrugTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            // Keep popup open if user clicks on the suggestions list
+            if (e.NewFocus is not ListBoxItem && e.NewFocus is not ScrollViewer && e.NewFocus is not ListBox)
             {
                 if (DataContext is DonationVoucherViewModel vm)
                 {
-                    vm.SelectDrugSuggestionCommand.Execute(drug);
+                    vm.IsSuggestionOpen = false;
                 }
             }
         }
