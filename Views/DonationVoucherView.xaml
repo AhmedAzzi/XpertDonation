@@ -4,9 +4,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:XpertPharm5Donation.ViewModels"
+             xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1080"
              Background="{StaticResource WorkspaceBrush}">
+
+    <UserControl.Resources>
+        <conv:WidthOffsetConverter x:Key="WidthOffset"/>
+    </UserControl.Resources>
 
     <UserControl.InputBindings>
         <KeyBinding Key="F8" Command="{Binding ValidateVoucherCommand}"/>
@@ -174,7 +179,8 @@
                            StaysOpen="False"
                            PlacementTarget="{Binding ElementName=DrugSearchGrid}"
                            Placement="Bottom"
-                           Width="{Binding ActualWidth, ElementName=DrugSearchGrid}"
+                           HorizontalOffset="-20"
+                           Width="{Binding ActualWidth, ElementName=DrugSearchGrid, Converter={StaticResource WidthOffset}, ConverterParameter=40}"
                            MaxHeight="250"
                            AllowsTransparency="True">
                         <Border Background="White"

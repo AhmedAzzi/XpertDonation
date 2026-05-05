@@ -45,19 +45,61 @@ namespace XpertPharm5Donation.Views
             }
         }
 
-        private async void ProductBox_KeyDown(object sender, KeyEventArgs e)
+        private void ProductBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter || e.Key == Key.Return)
+            if (e.Key == Key.Down)
             {
+                if (!SuggestionsPopup.IsOpen)
+                {
+                    SuggestionsPopup.IsOpen = true;
+                    SuggestionsList.SelectedIndex = 0;
+                }
+                else if (SuggestionsList.HasItems)
+                {
+                    int next = SuggestionsList.SelectedIndex + 1;
+                    if (next < SuggestionsList.Items.Count)
+                    {
+                        SuggestionsList.SelectedIndex = next;
+                        SuggestionsList.ScrollIntoView(SuggestionsList.SelectedItem);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Up)
+            {
+                if (!SuggestionsPopup.IsOpen && SuggestionsList.HasItems)
+                {
+                    SuggestionsPopup.IsOpen = true;
+                    SuggestionsList.SelectedIndex = SuggestionsList.Items.Count - 1;
+                }
+                else
+                {
+                    int prev = SuggestionsList.SelectedIndex - 1;
+                    if (prev >= 0)
+                    {
+                        SuggestionsList.SelectedIndex = prev;
+                        SuggestionsList.ScrollIntoView(SuggestionsList.SelectedItem);
+                    }
+                }
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                if (SuggestionsPopup.IsOpen && SuggestionsList.SelectedItem is Drug selected)
+                {
+                    _ = _vm.SelectFromSearchCommand.ExecuteAsync(selected);
+                    SuggestionsPopup.IsOpen = false;
+                    e.Handled = true;
+                    return;
+                }
+
                 if (!string.IsNullOrWhiteSpace(ProductBox.Text))
                 {
-                    await _vm.FilterSuggestionsCommand.ExecuteAsync(null);
+                    _vm.FilterSuggestionsCommand.Execute(null);
                     var match = _vm.DrugSuggestions.FirstOrDefault();
                     if (match != null)
                     {
-                        await _vm.SelectFromSearchCommand.ExecuteAsync(match);
-                        if (_vm.AddToCartCommand.CanExecute(null))
-                            _vm.AddToCartCommand.Execute(null);
+                        _ = _vm.SelectFromSearchCommand.ExecuteAsync(match);
                     }
                     else
                     {
@@ -71,7 +113,45 @@ namespace XpertPharm5Donation.Views
                         _vm.AddToCartCommand.Execute(null);
                 }
                 ProductBox.Text = string.Empty;
+                SuggestionsPopup.IsOpen = false;
                 e.Handled = true;
+                BarcodeBox.Focus();
+            }
+            else if (e.Key == Key.Escape)
+            {
+                SuggestionsPopup.IsOpen = false;
+                e.Handled = true;
+            }
+        }
+
+        private void ProductBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (e.NewFocus is not ListBoxItem && e.NewFocus is not ScrollViewer && e.NewFocus is not ListBox)
+            {
+                _vm.IsSuggestionOpen = false;
+            }
+        }
+
+        private void SuggestionsList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                if (SuggestionsList.SelectedItem is Drug selected)
+                {
+                    _ = _vm.SelectFromSearchCommand.ExecuteAsync(selected);
+                    SuggestionsPopup.IsOpen = false;
+                    BarcodeBox.Focus();
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void SuggestionsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (SuggestionsList.SelectedItem is Drug selected)
+            {
+                _ = _vm.SelectFromSearchCommand.ExecuteAsync(selected);
+                SuggestionsPopup.IsOpen = false;
                 BarcodeBox.Focus();
             }
         }

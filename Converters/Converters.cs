@@ -160,4 +160,16 @@ namespace XpertPharm5Donation.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => throw new NotImplementedException();
     }
+
+    public class WidthOffsetConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double offset = 40;
+            if (parameter is string s && double.TryParse(s, out double p)) offset = p;
+            return (value is double d ? d : 0) + offset;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
 }

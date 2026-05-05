@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -23,7 +24,22 @@ namespace XpertPharm5Donation.ViewModels
             _db = db;
             CartItems = [];
             DrugSuggestions = [];
-            _ = LoadSuggestionsAsync();
+            _ = LoadDrugCacheAsync();
+        }
+
+        partial void OnSearchTextChanged(string value)
+        {
+            if (_suppressTextChanged) return;
+            DebouncedSearch(value);
+        }
+
+        partial void OnSelectedSuggestionChanged(Drug? value)
+        {
+            if (value != null)
+            {
+                _ = SelectFromSearchAsync(value);
+                SelectedSuggestion = null;
+            }
         }
 
         // ── Inputs ──────────────────────────────────────────────────────────────
@@ -45,6 +61,13 @@ namespace XpertPharm5Donation.ViewModels
         [ObservableProperty] private string _statusMessage = string.Empty;
         [ObservableProperty] private bool _isStatusError;
         [ObservableProperty] private bool _isBusy;
+        [ObservableProperty] private bool _isSuggestionOpen;
+        [ObservableProperty] private Drug? _selectedSuggestion;
+
+        // Search cache for fast autocomplete
+        private List<Drug> _allDrugsCache = [];
+        private CancellationTokenSource? _searchCts;
+        private bool _suppressTextChanged;
 
         // ── Computed ─────────────────────────────────────────────────────────────
         public int TotalItemsInCart => CartItems.Sum(c => c.Quantity);
@@ -105,22 +128,79 @@ namespace XpertPharm5Donation.ViewModels
             await SelectDrugAsync(drug);
         }
 
-        [RelayCommand]
-        private async Task FilterSuggestionsAsync()
+        // ═════════════════════════════════════════════════════════════════════
+        //  DRUG SEARCH / AUTOCOMPLETE
+        // ═════════════════════════════════════════════════════════════════════
+
+        private async Task LoadDrugCacheAsync()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
+            try
             {
-                await LoadSuggestionsAsync();
+                _allDrugsCache = await _db.Drugs
+                    .Include(d => d.StockBatches)
+                    .ThenInclude(b => b.Dispensations)
+                    .OrderBy(d => d.Name)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load drug cache: {ex.Message}");
+            }
+        }
+
+        private void DebouncedSearch(string term)
+        {
+            _searchCts?.Cancel();
+            _searchCts = new CancellationTokenSource();
+            var ct = _searchCts.Token;
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(150, ct);
+                if (ct.IsCancellationRequested) return;
+                await Application.Current.Dispatcher.InvokeAsync(() => PerformSearch(term));
+            }, ct);
+        }
+
+        private void PerformSearch(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+            {
+                DrugSuggestions.Clear();
+                IsSuggestionOpen = false;
                 return;
             }
-            var term = SearchText.ToLower();
+
+            var lowerTerm = term.ToLowerInvariant();
+
+            var results = _allDrugsCache
+                .Where(d => d.Name.ToLowerInvariant().Contains(lowerTerm)
+                         || (!string.IsNullOrEmpty(d.Dci) && d.Dci.ToLowerInvariant().Contains(lowerTerm))
+                         || d.StockBatches.Any(b => !string.IsNullOrEmpty(b.Barcode) && b.Barcode.Contains(lowerTerm)))
+                .OrderBy(d => d.Name.ToLowerInvariant().StartsWith(lowerTerm) ? 0 : 1)
+                .ThenBy(d => d.Name)
+                .Take(25)
+                .ToList();
+
+            DrugSuggestions.Clear();
+            foreach (var d in results)
+                DrugSuggestions.Add(d);
+
+            IsSuggestionOpen = results.Count > 0;
+        }
+
+        [RelayCommand]
+        private void FilterSuggestions()
+        {
+            PerformSearch(SearchText);
+        }
+
+        private async Task LoadSuggestionsAsync()
+        {
             var list = await _db.Drugs
                 .Include(d => d.StockBatches)
                 .ThenInclude(b => b.Dispensations)
-                .Where(d => d.Name.ToLower().Contains(term) || d.StockBatches.Any(b => b.Barcode != null && b.Barcode.Contains(term)))
-                .OrderBy(d => d.Name)
-                .Take(30)
-                .ToListAsync();
+                .OrderBy(d => d.Name).Take(50).ToListAsync();
 
             DrugSuggestions.Clear();
             foreach (var d in list) DrugSuggestions.Add(d);
@@ -285,6 +365,8 @@ namespace XpertPharm5Donation.ViewModels
             SelectedDrug = null;
             SelectedStockBatch = null;
             SearchText = string.Empty;
+            DrugSuggestions.Clear();
+            IsSuggestionOpen = false;
             UpdateCartTotals();
             SetStatus("Prêt", error: false);
         }
@@ -347,17 +429,6 @@ namespace XpertPharm5Donation.ViewModels
                 .ThenInclude(sb => sb.Dispensations)
                 .FirstOrDefaultAsync(x => x.Barcode == barcode);
             return b;
-        }
-
-        private async Task LoadSuggestionsAsync()
-        {
-            var list = await _db.Drugs
-                .Include(d => d.StockBatches)
-                .ThenInclude(b => b.Dispensations)
-                .OrderBy(d => d.Name).Take(50).ToListAsync();
-
-            DrugSuggestions.Clear();
-            foreach (var d in list) DrugSuggestions.Add(d);
         }
 
         private void SetStatus(string msg, bool error)
