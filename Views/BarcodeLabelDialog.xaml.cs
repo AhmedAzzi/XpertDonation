@@ -2,7 +2,9 @@ using System.Windows;
 using XpertPharm5Donation.ViewModels;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Printing;
 
 namespace XpertPharm5Donation.Views
 {
@@ -20,38 +22,53 @@ namespace XpertPharm5Donation.Views
 
         private void PrintLabel()
         {
-            // Find the BarcodeLabelPreview control
-            var preview = FindPreviewControl(this);
-            if (preview == null)
-            {
-                MessageBox.Show("Aperçu non trouvé.");
-                return;
-            }
+            if (DataContext is not BarcodeLabelDialogViewModel vm) return;
 
             PrintDialog dlg = new PrintDialog();
             if (dlg.ShowDialog() == true)
             {
-                // Optionally scale for printer DPI
-                var scale = dlg.PrintableAreaWidth / preview.ActualWidth;
-                var transform = preview.LayoutTransform;
-                preview.LayoutTransform = new ScaleTransform(scale, scale);
-                dlg.PrintVisual(preview, "Impression étiquette code-barres");
-                preview.LayoutTransform = transform;
-            }
-        }
+                // Build a label-sized page so PDF/thermal output has no A4 whitespace.
+                double labelWidth = 40.0 / 25.4 * 96.0;
+                double labelHeight = 20.0 / 25.4 * 96.0;
 
-        private BarcodeLabelPreview? FindPreviewControl(DependencyObject parent)
-        {
-            if (parent is BarcodeLabelPreview preview)
-                return preview;
-            int count = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < count; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                var result = FindPreviewControl(child);
-                if (result != null) return result;
+                dlg.PrintTicket.PageMediaSize = new PageMediaSize(labelWidth, labelHeight);
+                dlg.PrintTicket.PageOrientation = PageOrientation.Landscape;
+
+                var label = new BarcodeLabelPreview { DataContext = vm };
+                label.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                label.Arrange(new Rect(label.DesiredSize));
+                label.UpdateLayout();
+
+                var page = new FixedPage
+                {
+                    Width = labelWidth,
+                    Height = labelHeight,
+                    Background = Brushes.White
+                };
+
+                var content = new Viewbox
+                {
+                    Width = labelWidth,
+                    Height = labelHeight,
+                    Stretch = Stretch.Fill,
+                    Child = label
+                };
+                FixedPage.SetLeft(content, 0);
+                FixedPage.SetTop(content, 0);
+                page.Children.Add(content);
+                page.Measure(new Size(labelWidth, labelHeight));
+                page.Arrange(new Rect(0, 0, labelWidth, labelHeight));
+                page.UpdateLayout();
+
+                var fixedDocument = new FixedDocument();
+                fixedDocument.DocumentPaginator.PageSize = new Size(labelWidth, labelHeight);
+
+                var pageContent = new PageContent();
+                ((IAddChild)pageContent).AddChild(page);
+                fixedDocument.Pages.Add(pageContent);
+
+                dlg.PrintDocument(fixedDocument.DocumentPaginator, "Impression étiquette code-barres");
             }
-            return null;
         }
     }
 }

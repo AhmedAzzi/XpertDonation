@@ -213,12 +213,9 @@
                         </DrawingBrush>
                     </Grid.Background>
 
-                    <Viewbox Margin="20" Stretch="Uniform">
-                        <local:BarcodeLabelPreview
-                            Width="340"
-                            Height="180"
-                            DataContext="{Binding}" />
-                    </Viewbox>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <local:BarcodeLabelPreview DataContext="{Binding}" />
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

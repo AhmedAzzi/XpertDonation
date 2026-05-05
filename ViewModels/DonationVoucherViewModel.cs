@@ -151,6 +151,7 @@ namespace XpertPharm5Donation.ViewModels
             InputDrugId = drug.Id;
             InputDrugName = drug.Name;
             InputDci = drug.Dci ?? string.Empty;
+            InputBarcode = drug.Barcode ?? string.Empty;
 
             SetStatus($"Prêt à ajouter du stock pour : {drug.Name}", false);
         }
@@ -184,6 +185,7 @@ namespace XpertPharm5Donation.ViewModels
             InputDrugId = drug.Id;
             InputDrugName = drug.Name;
             InputDci = drug.Dci ?? string.Empty;
+            InputBarcode = drug.Barcode ?? string.Empty;
             IsSuggestionOpen = false;
         }
 
@@ -223,6 +225,8 @@ namespace XpertPharm5Donation.ViewModels
                 InputDrugName = batch.Drug.Name;
                 InputDci = batch.Drug.Dci ?? string.Empty;
                 InputBatchNumber = batch.BatchNumber ?? string.Empty;
+                InputExpirationDate = batch.ExpirationDate;
+                InputBarcode = batch.Barcode ?? batch.Drug.Barcode ?? barcode;
                 SetStatus($"✓ Médicament trouvé : {batch.Drug.Name}", false);
             }
             else
@@ -234,6 +238,7 @@ namespace XpertPharm5Donation.ViewModels
                     InputDrugId = drug.Id;
                     InputDrugName = drug.Name;
                     InputDci = drug.Dci ?? string.Empty;
+                    InputBarcode = drug.Barcode ?? barcode;
                     SetStatus($"✓ Médicament trouvé : {drug.Name}", false);
                 }
                 else
@@ -334,11 +339,11 @@ namespace XpertPharm5Donation.ViewModels
             var vm = new BarcodeLabelDialogViewModel
             {
                 PharmacyName = "PHARMACIE ARAB", // TODO: Bind from settings
-                BarcodeNumber = GenerateInternalBarcode(line),
-                ProductName = line.DrugName,
+                BarcodeNumber = GetLabelBarcode(line),
+                ProductName = GetLabelProductName(line),
                 Price = "GRATUIT", // Or line.Price if available
-                ExpiryDate = line.ExpirationDate?.ToString("dd-MM-yyyy") ?? string.Empty,
-                LotNumber = line.BatchNumber ?? string.Empty,
+                ExpiryDate = GetLabelExpirationDate(line),
+                LotNumber = GetLabelLotNumber(line),
             };
             var dlg = new Views.BarcodeLabelDialog(vm)
             {
@@ -353,6 +358,38 @@ namespace XpertPharm5Donation.ViewModels
         {
             // Example: use line index + voucher id for uniqueness
             return $"{VoucherId:0000}{Lines.IndexOf(line):0000}";
+        }
+
+        private string GetLabelBarcode(DonationVoucherLine line)
+        {
+            return FirstNotBlank(
+                line.Barcode,
+                line.StockBatch?.Barcode,
+                line.Drug?.Barcode,
+                GenerateInternalBarcode(line)
+            );
+        }
+
+        private string GetLabelProductName(DonationVoucherLine line)
+        {
+            return FirstNotBlank(line.DrugName, line.Drug?.Name);
+        }
+
+        private string GetLabelLotNumber(DonationVoucherLine line)
+        {
+            return FirstNotBlank(line.BatchNumber, line.StockBatch?.BatchNumber);
+        }
+
+        private string GetLabelExpirationDate(DonationVoucherLine line)
+        {
+            var expirationDate = line.ExpirationDate ?? line.StockBatch?.ExpirationDate;
+            return expirationDate?.ToString("dd-MM-yyyy") ?? string.Empty;
+        }
+
+        private static string FirstNotBlank(params string?[] values)
+        {
+            return values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim()
+                ?? string.Empty;
         }
 
         [RelayCommand]

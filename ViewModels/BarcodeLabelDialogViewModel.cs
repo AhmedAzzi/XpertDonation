@@ -26,8 +26,9 @@ namespace XpertPharm5Donation.ViewModels
         public bool ShowBarcodeNumber { get => _showBarcodeNumber; set { _showBarcodeNumber = value; OnPropertyChanged(); } }
         public bool ShowProductName { get => _showProductName; set { _showProductName = value; OnPropertyChanged(); } }
         public bool ShowPrice { get => _showPrice; set { _showPrice = value; OnPropertyChanged(); } }
-        public bool ShowExpiry { get => _showExpiry; set { _showExpiry = value; OnPropertyChanged(); } }
-        public bool ShowLot { get => _showLot; set { _showLot = value; OnPropertyChanged(); } }
+        public bool ShowExpiry { get => _showExpiry; set { _showExpiry = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
+        public bool ShowLot { get => _showLot; set { _showLot = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
+        public bool ShowMeta => ShowExpiry || ShowLot;
         public double FontSize { get => _fontSize; set { _fontSize = value; OnPropertyChanged(); } }
 
         public string PharmacyName { get; set; } = string.Empty;
@@ -76,7 +77,13 @@ namespace XpertPharm5Donation.ViewModels
             var writer = new ZXing.Windows.Compatibility.BarcodeWriter
             {
                 Format = BarcodeFormat.CODE_128,
-                Options = new EncodingOptions { Height = 100, Width = 300, Margin = 3, PureBarcode = true }
+                Options = new EncodingOptions
+                {
+                    Width = 230,
+                    Height = 42,
+                    Margin = 0,
+                    PureBarcode = true
+                }
             };
 
             using var bitmap = writer.Write(code);

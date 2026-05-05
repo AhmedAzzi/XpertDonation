@@ -9,29 +9,29 @@ namespace XpertPharm5Donation.Helpers
     /// 
     /// Hardware Spec:
     /// - Resolution: 203 DPI (8 dots/mm)
-    /// - Label: 60mm × 40mm = 480 dots × 320 dots
+    /// - Label: 40mm × 20mm = 320 dots × 160 dots (landscape)
     /// </summary>
     public class ThermalLabelPrinter
     {
         // Physical dimensions in dots (203 DPI = 8 dots/mm)
-        // 60mm × 40mm label
-        private const int LABEL_WIDTH_MM = 60;
-        private const int LABEL_HEIGHT_MM = 40;
+        // 40mm × 20mm label (landscape)
+        private const int LABEL_WIDTH_MM = 40;
+        private const int LABEL_HEIGHT_MM = 20;
         private const int DPI = 203;
         private const int DOTS_PER_MM = 8; // 203 DPI = 8 dots/mm
 
-        private const int LABEL_WIDTH_DOTS = 480;   // 60mm * 8 dots/mm
-        private const int LABEL_HEIGHT_DOTS = 320;  // 40mm * 8 dots/mm
+        private const int LABEL_WIDTH_DOTS = 320;   // 40mm * 8 dots/mm
+        private const int LABEL_HEIGHT_DOTS = 160;  // 20mm * 8 dots/mm
 
         // Spacing and positioning (in dots)
-        private const int MARGIN_TOP = 10;
-        private const int MARGIN_LEFT = 8;
-        private const int MARGIN_RIGHT = 8;
-        private const int MARGIN_BOTTOM = 10;
+        private const int MARGIN_TOP = 5;
+        private const int MARGIN_LEFT = 4;
+        private const int MARGIN_RIGHT = 4;
+        private const int MARGIN_BOTTOM = 5;
 
         // Barcode dimensions
-        private const int BARCODE_HEIGHT = 60; // height in dots
-        private const int BARCODE_WIDTH_MULTIPLIER = 3; // width multiplier for Code128
+        private const int BARCODE_HEIGHT = 32; // height in dots
+        private const int BARCODE_WIDTH_MULTIPLIER = 2; // width multiplier for Code128
 
         private readonly string _printerName;
 
@@ -63,67 +63,47 @@ namespace XpertPharm5Donation.Helpers
             StringBuilder tspl = new StringBuilder();
 
             // ===== Setup =====
-            tspl.AppendLine("SIZE 60mm, 40mm");          // Physical label size
+            tspl.AppendLine("SIZE 40mm, 20mm");          // Physical label size
             tspl.AppendLine("GAP 0mm, 0mm");             // Gap between labels
             tspl.AppendLine("SPEED 4");                   // Print speed (1-5)
             tspl.AppendLine("DENSITY 8");                 // Darkness level
             tspl.AppendLine("CLS");                       // Clear buffer
 
             // ===== Header (Pharmacy Name) =====
-            // Centered at top
             if (!string.IsNullOrWhiteSpace(header))
             {
-                int headerX = CenterX(header, fontWidth: 6); // Approximate width for font size 1
-                tspl.AppendLine($"TEXT {headerX},15,\"0\",0,1,1,\"{TsplEscape(header)}\"");
-                // Format: TEXT x, y, font, rotation, x-multiplication, y-multiplication, "text"
+                int headerX = CenterX(header, fontWidth: 14);
+                tspl.AppendLine($"TEXT {headerX},6,\"0\",0,3,3,\"{TsplEscape(header)}\"");
             }
 
             // ===== Barcode (Code128) =====
-            // Centered, below header
-            // Barcode height: 60 dots, width based on barcode length
-            int barcodeY = 35;
-            int barcodeX = CenterBarcode(barcode);
+            int barcodeY = 36;
+            int barcodeX = CenterBarcode(barcode, maxWidth: 220, rightBoundary: 238);
             
-            tspl.AppendLine($"BARCODE {barcodeX},{barcodeY},\"128\",{BARCODE_HEIGHT},1,0,2,2,\"{TsplEscape(barcode)}\"");
-            // Format: BARCODE x, y, "128", height, readable, rotation, x-multiplier, y-multiplier, barcode-data
-            // readable=1 displays text under barcode, rotation=0 is normal
+            tspl.AppendLine($"BARCODE {barcodeX},{barcodeY},\"128\",{BARCODE_HEIGHT},0,0,2,2,\"{TsplEscape(barcode)}\"");
 
             // ===== Barcode Number (Human Readable) =====
-            // Directly below barcode, centered, large font
-            int numberY = barcodeY + BARCODE_HEIGHT + 8;
-            int numberX = CenterX(barcode, fontWidth: 8);
-            tspl.AppendLine($"TEXT {numberX},{numberY},\"0\",0,2,2,\"{TsplEscape(barcode)}\"");
+            int numberY = barcodeY + BARCODE_HEIGHT + 5;
+            int numberX = CenterX(barcode, fontWidth: 16, rightBoundary: 238);
+            tspl.AppendLine($"TEXT {numberX},{numberY},\"0\",0,3,3,\"{TsplEscape(barcode)}\"");
 
             // ===== Product Name =====
-            // Left side, below barcode number
-            int productY = numberY + 35;
-            string displayProduct = TruncateProduct(product, maxChars: 25);
-            tspl.AppendLine($"TEXT {MARGIN_LEFT},{productY},\"0\",0,1,1,\"{TsplEscape(displayProduct)}\"");
+            int productY = 101;
+            string displayProduct = TruncateProduct(product, maxChars: 22);
+            tspl.AppendLine($"TEXT {MARGIN_LEFT},{productY},\"0\",0,2,2,\"{TsplEscape(displayProduct)}\"");
 
-            // ===== Price / Free Label (Large, Bold) =====
-            // Centered, below product
-            int priceY = productY + 20;
+            // ===== Price / Free Label =====
+            int priceY = 116;
             string priceText = isFree ? "GRATUIT" : (string.IsNullOrWhiteSpace(price) ? "GRATUIT" : price);
-            int priceX = CenterX(priceText, fontWidth: 10);
-            tspl.AppendLine($"TEXT {priceX},{priceY},\"0\",0,3,3,\"{TsplEscape(priceText)}\"");
+            int priceX = CenterX(priceText, fontWidth: 20, rightBoundary: 238);
+            tspl.AppendLine($"TEXT {priceX},{priceY},\"0\",0,4,4,\"{TsplEscape(priceText)}\"");
 
-            // ===== Right Side Vertical Text (Lot and Expiry, rotated 90°) =====
-            // Right edge, centered vertically
-            // Rotation 90 = vertical text (reads from bottom to top when label is horizontal)
-            
-            // Calculate right side X position (right edge with margin)
-            int rightX = LABEL_WIDTH_DOTS - MARGIN_RIGHT - 30; // Reserve space for rotated text
-            
-            // Position for lot (higher on label when rotated)
-            int lotY = 150; // Center area
-            string lotText = $"Lot: {TsplEscape(lot)}";
-            tspl.AppendLine($"TEXT {rightX},{lotY},\"0\",2,1,1,\"{lotText}\"");
-            // rotation=2 means 180 degrees, but we'll use rotation 1 for 90-degree vertical
+            // ===== Lot and Expiry (Bottom of label) =====
+            string expText = $"Exp : {TsplEscape(exp)}";
+            tspl.AppendLine($"TEXT 276,152,\"0\",270,2,2,\"{expText}\"");
 
-            // Position for expiry (below lot)
-            int expY = lotY + 50;
-            string expText = $"Exp: {TsplEscape(exp)}";
-            tspl.AppendLine($"TEXT {rightX},{expY},\"0\",2,1,1,\"{expText}\"");
+            string lotText = $"Lot : {TsplEscape(lot)}";
+            tspl.AppendLine($"TEXT 314,152,\"0\",270,2,2,\"{lotText}\"");
 
             // ===== Print =====
             tspl.AppendLine("PRINT 1,1"); // Print 1 label, 1 set
@@ -144,14 +124,14 @@ namespace XpertPharm5Donation.Helpers
         /// <summary>
         /// Calculates X position to center text horizontally on the label.
         /// </summary>
-        private int CenterX(string text, int fontWidth = 6)
+        private int CenterX(string text, int fontWidth = 6, int? rightBoundary = null)
         {
             if (string.IsNullOrEmpty(text))
                 return MARGIN_LEFT;
 
             // Approximate text width based on character count and font width
             int textWidth = text.Length * fontWidth;
-            int availableWidth = LABEL_WIDTH_DOTS - MARGIN_LEFT - MARGIN_RIGHT;
+            int availableWidth = (rightBoundary ?? LABEL_WIDTH_DOTS - MARGIN_RIGHT) - MARGIN_LEFT;
             int x = MARGIN_LEFT + (availableWidth - textWidth) / 2;
 
             return Math.Max(MARGIN_LEFT, x);
@@ -160,14 +140,13 @@ namespace XpertPharm5Donation.Helpers
         /// <summary>
         /// Calculates X position to center barcode on the label.
         /// </summary>
-        private int CenterBarcode(string barcode)
+        private int CenterBarcode(string barcode, int maxWidth, int rightBoundary)
         {
-            // Code128 average: ~8-10 dots per character
-            int barcodeWidth = barcode.Length * 8; // Conservative estimate
-            int availableWidth = LABEL_WIDTH_DOTS - MARGIN_LEFT - MARGIN_RIGHT;
+            int barcodeWidth = Math.Min(maxWidth, barcode.Length * 18);
+            int availableWidth = rightBoundary - MARGIN_LEFT;
             int x = MARGIN_LEFT + (availableWidth - barcodeWidth) / 2;
 
-            return Math.Max(MARGIN_LEFT, Math.Min(x, LABEL_WIDTH_DOTS - MARGIN_RIGHT - 50));
+            return Math.Max(MARGIN_LEFT, x);
         }
 
         /// <summary>
