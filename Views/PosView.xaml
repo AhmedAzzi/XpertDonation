@@ -61,9 +61,6 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="120"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="Auto" MinWidth="100"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Barcode -->
@@ -72,12 +69,8 @@
                 <TextBox Grid.Row="0" Grid.Column="1" x:Name="BarcodeBox"
                          Text="{Binding BarcodeInput, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource BarcodeInputStyle}"
-                         KeyDown="BarcodeBox_KeyDown"
-                         ToolTip="Scanner ou saisir le code barre puis appuyer sur Entrée"/>
-                <Button Grid.Row="0" Grid.Column="3" Content="🔍  Rechercher"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Command="{Binding ScanBarcodeCommand}"
-                        Margin="0,0,0,0" MinHeight="32"/>
+                         PreviewKeyDown="BarcodeBox_PreviewKeyDown"
+                         ToolTip="Scanner le code barre — ajout automatique au panier"/>
 
                 <!-- Product Search -->
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Produit [F4] :"

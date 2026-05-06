@@ -25,10 +25,11 @@ namespace XpertPharm5Donation.Views
             base.OnPreviewMouseDown(e);
         }
 
-        private void BarcodeBox_KeyDown(object sender, KeyEventArgs e)
+        private void BarcodeBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter || e.Key == Key.Return)
             {
+                e.Handled = true;
                 if (string.IsNullOrWhiteSpace(BarcodeBox.Text))
                 {
                     if (_vm.AddToCartCommand.CanExecute(null))
@@ -40,8 +41,8 @@ namespace XpertPharm5Donation.Views
                 {
                     _ = _vm.ScanBarcodeCommand.ExecuteAsync(null);
                 }
-                e.Handled = true;
                 BarcodeBox.Focus();
+                BarcodeBox.SelectAll();
             }
         }
 
