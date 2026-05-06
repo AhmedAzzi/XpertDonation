@@ -1,9 +1,48 @@
+# Build outputs
 [Bb]in/
 [Oo]bj/
+publish/
+installer/
+
+# Visual Studio
 .vs/
-.vscode/
 *.user
 *.suo
 *.sln.dotSettings.user
+*.sln.docstates
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# .NET
+*.nupkg
+*.snupkg
+[Dd]ebug/
+[Rr]elease/
+[Nn]et/
+[Tt]emp/
+
+# EF Core
+[Ee]fCore.db
+[Mm]igrations/
+
+# User-specific
 *.patch
 *.diff
+*.dotCover
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Logs
+*.log
+*.tlog
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml

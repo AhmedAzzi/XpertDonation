@@ -65,6 +65,7 @@ namespace XpertPharm5Donation.Helpers
             // ===== Setup =====
             tspl.AppendLine("SIZE 40mm, 20mm");          // Physical label size
             tspl.AppendLine("GAP 0mm, 0mm");             // Gap between labels
+            tspl.AppendLine("DIRECTION 1");               // Landscape orientation
             tspl.AppendLine("SPEED 4");                   // Print speed (1-5)
             tspl.AppendLine("DENSITY 8");                 // Darkness level
             tspl.AppendLine("CLS");                       // Clear buffer
