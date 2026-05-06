@@ -180,7 +180,7 @@
                        Foreground="#15803D" FontSize="13" FontWeight="SemiBold"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Command="{Binding NewVoucherCommand}" Width="110" Height="32" Margin="0,0,8,0"
+                <Button Command="{Binding NewVoucherCommand}" Height="32" Padding="16,0" Margin="0,0,8,0"
                         Style="{StaticResource SuccessButtonStyle}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="⊕" FontSize="16" Margin="0,-2,6,0" VerticalAlignment="Center"/>
@@ -212,13 +212,8 @@
                     </StackPanel>
                 </Button>
 
-                <Button Command="{Binding PrintVoucherCommand}" Width="110" Height="32"
-                        Style="{StaticResource GhostButtonStyle}">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="⎙" FontSize="16" Margin="0,-2,6,0" VerticalAlignment="Center" Foreground="#334155"/>
-                        <TextBlock Text="Imprimer" FontSize="12" VerticalAlignment="Center" Foreground="#334155"/>
-                    </StackPanel>
-                </Button>
+
+
             </StackPanel>
         </Grid>
     </Grid>

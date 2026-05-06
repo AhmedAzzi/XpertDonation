@@ -133,14 +133,17 @@ namespace XpertPharm5Donation.Controls
             if (x < 35)
             {
                 DayBox.Focus();
+                DayBox.SelectAll();
             }
             else if (x < 75)
             {
                 MonthBox.Focus();
+                MonthBox.SelectAll();
             }
             else
             {
                 YearBox.Focus();
+                YearBox.SelectAll();
             }
             e.Handled = true;
         }
@@ -200,10 +203,12 @@ namespace XpertPharm5Donation.Controls
 
         private void DayBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (DayBox.SelectionLength == 0)
+            if (!DayBox.IsFocused)
             {
-                DayBox.SelectAll();
+                DayBox.Focus();
             }
+            DayBox.SelectAll();
+            e.Handled = true;
         }
 
         // ── Month TextBox ──
@@ -272,10 +277,12 @@ namespace XpertPharm5Donation.Controls
 
         private void MonthBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (MonthBox.SelectionLength == 0)
+            if (!MonthBox.IsFocused)
             {
-                MonthBox.SelectAll();
+                MonthBox.Focus();
             }
+            MonthBox.SelectAll();
+            e.Handled = true;
         }
 
         // ── Year TextBox ──
@@ -329,10 +336,12 @@ namespace XpertPharm5Donation.Controls
 
         private void YearBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (YearBox.SelectionLength == 0)
+            if (!YearBox.IsFocused)
             {
-                YearBox.SelectAll();
+                YearBox.Focus();
             }
+            YearBox.SelectAll();
+            e.Handled = true;
         }
 
         private void DateBox_LostFocus(object sender, RoutedEventArgs e)

@@ -238,8 +238,8 @@
 
         <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="24,12,24,12">
-            <Button Content="Nouveau[F10]" 
-                    Padding="12,8"
+            <Button Content="Nouveau [F10]" 
+                    Padding="16,8"
                     FontFamily="Segoe UI Semibold"
                     FontSize="11"
                     Background="{StaticResource AccentBrush}"
