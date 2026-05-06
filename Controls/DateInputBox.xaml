@@ -1,0 +1,79 @@
+<UserControl x:Class="XpertPharm5Donation.Controls.DateInputBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="32" d:DesignWidth="160"
+             PreviewMouseDown="Root_PreviewMouseDown">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentBrush" Color="#1D6CB5"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#CBD5E1"/>
+    </UserControl.Resources>
+    <Border x:Name="RootBorder"
+            Background="White"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="4"
+            Padding="4,3"
+            SnapsToDevicePixels="True">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <!-- Day -->
+            <TextBox x:Name="DayBox"
+                     Width="28"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="Transparent"
+                     FontFamily="Segoe UI"
+                     FontSize="13"
+                     Foreground="{StaticResource TextPrimaryBrush}"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     MaxLength="2"
+                     PreviewTextInput="DayBox_PreviewTextInput"
+                     PreviewKeyDown="DayBox_PreviewKeyDown"
+                     PreviewMouseDown="DayBox_PreviewMouseDown"
+                     TextChanged="DayBox_TextChanged"
+                     GotFocus="DayBox_GotFocus"
+                     LostFocus="DateBox_LostFocus"/>
+            <TextBlock Text="/" Foreground="#94A3B8" Margin="2,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+            <!-- Month -->
+            <TextBox x:Name="MonthBox"
+                     Width="28"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="Transparent"
+                     FontFamily="Segoe UI"
+                     FontSize="13"
+                     Foreground="{StaticResource TextPrimaryBrush}"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     MaxLength="2"
+                     PreviewTextInput="MonthBox_PreviewTextInput"
+                     PreviewKeyDown="MonthBox_PreviewKeyDown"
+                     PreviewMouseDown="MonthBox_PreviewMouseDown"
+                     TextChanged="MonthBox_TextChanged"
+                     GotFocus="MonthBox_GotFocus"
+                     LostFocus="DateBox_LostFocus"/>
+            <TextBlock Text="/" Foreground="#94A3B8" Margin="2,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+            <!-- Year -->
+            <TextBox x:Name="YearBox"
+                     Width="40"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     CaretBrush="Transparent"
+                     FontFamily="Segoe UI"
+                     FontSize="13"
+                     Foreground="{StaticResource TextPrimaryBrush}"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     MaxLength="4"
+                     PreviewTextInput="YearBox_PreviewTextInput"
+                     PreviewKeyDown="YearBox_PreviewKeyDown"
+                     PreviewMouseDown="YearBox_PreviewMouseDown"
+                     TextChanged="YearBox_TextChanged"
+                     GotFocus="YearBox_GotFocus"
+                     LostFocus="DateBox_LostFocus"/>
+        </StackPanel>
+    </Border>
+</UserControl>

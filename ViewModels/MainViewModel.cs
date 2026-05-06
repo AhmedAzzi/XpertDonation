@@ -29,7 +29,6 @@ namespace XpertPharm5Donation.ViewModels
 
         partial void OnSearchTextChanged(string value)
         {
-            if (_suppressTextChanged) return;
             DebouncedSearch(value);
         }
 
@@ -67,7 +66,6 @@ namespace XpertPharm5Donation.ViewModels
         // Search cache for fast autocomplete
         private List<Drug> _allDrugsCache = [];
         private CancellationTokenSource? _searchCts;
-        private bool _suppressTextChanged;
 
         // ── Computed ─────────────────────────────────────────────────────────────
         public int TotalItemsInCart => CartItems.Sum(c => c.Quantity);

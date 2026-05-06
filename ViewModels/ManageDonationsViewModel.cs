@@ -156,7 +156,7 @@ namespace XpertPharm5Donation.ViewModels
                 IsStatusError = false;
                 StatusMessage = string.IsNullOrWhiteSpace(term)
                     ? $"{Drugs.Count} médicament(s) dans le catalogue."
-                    : $"{Drugs.Count} résultat(s) pour \"{SearchText.Trim()}\".";
+                    : $"{Drugs.Count} résultat(s) pour \"{SearchText?.Trim()}\".";
                 IsSearchDropDownOpen = !string.IsNullOrWhiteSpace(term) && Drugs.Count > 0;
             }
             catch (OperationCanceledException) { }

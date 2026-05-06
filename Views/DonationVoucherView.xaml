@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:XpertPharm5Donation.ViewModels"
              xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
+             xmlns:ctrl="clr-namespace:XpertPharm5Donation.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1080"
              Background="{StaticResource WorkspaceBrush}">
@@ -52,13 +53,9 @@
                         <TextBlock Text="Date de réception :" 
                                    FontFamily="Segoe UI" FontSize="11" 
                                    Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding ReceiptDate, StringFormat=dd-MM-yyyy, UpdateSourceTrigger=PropertyChanged}" 
-                                 IsEnabled="{Binding CanEdit}"
-                                 MinHeight="28" Padding="8,4" 
-                                 FontFamily="Segoe UI" FontSize="12"
-                                 Background="White" 
-                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                 VerticalContentAlignment="Center"/>
+                        <ctrl:DateInputBox Date="{Binding ReceiptDate, UpdateSourceTrigger=PropertyChanged}"
+                                           IsEnabled="{Binding CanEdit}"
+                                           MinHeight="28"/>
                     </StackPanel>
 
                     <!-- Donneur -->
@@ -272,9 +269,8 @@
                 <!-- Expiration -->
                 <StackPanel Grid.Column="4" Margin="0,0,6,0">
                     <TextBlock Text="Expiration" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <TextBox Text="{Binding InputExpirationDate, StringFormat=dd-MM-yyyy, UpdateSourceTrigger=PropertyChanged}" 
-                             MinHeight="26" Padding="4,2" FontFamily="Segoe UI" FontSize="11"
-                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    <ctrl:DateInputBox Date="{Binding InputExpirationDate, UpdateSourceTrigger=PropertyChanged}"
+                                       MinHeight="26"/>
                 </StackPanel>
 
                 <!-- Qté * -->

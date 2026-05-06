@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:conv="clr-namespace:XpertPharm5Donation.Converters"
+             xmlns:ctrl="clr-namespace:XpertPharm5Donation.Controls"
              Background="{StaticResource WorkspaceBrush}">
     <UserControl.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
@@ -31,12 +32,12 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" MinHeight="40">
                         <StackPanel Margin="0,0,12,0">
                             <TextBlock Text="Date Début :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
-                            <DatePicker SelectedDate="{Binding StartDate}" MinWidth="120" MinHeight="30" BorderBrush="#DDD"/>
+                            <ctrl:DateInputBox Date="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,0,12,0">
                             <TextBlock Text="Date Fin :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
-                            <DatePicker SelectedDate="{Binding EndDate}" MinWidth="120" MinHeight="30" BorderBrush="#DDD"/>
+                            <ctrl:DateInputBox Date="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
                         <Button Command="{Binding FilterCommand}" MinWidth="110" MinHeight="32" Margin="0,15,0,0"
