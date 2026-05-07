@@ -6,8 +6,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <AssemblyName>XpertPharm5Donation</AssemblyName>
-    <RootNamespace>XpertPharm5Donation</RootNamespace>
+    <AssemblyName>XDonation</AssemblyName>
+    <RootNamespace>XDonation</RootNamespace>
+    <AssemblyTitle>XDonation</AssemblyTitle>
+    <AssemblyProduct>XDonation</AssemblyProduct>
+    <AssemblyCompany>Ahmed Azzi</AssemblyCompany>
+    <AssemblyCopyright>Copyright © 2026 Ahmed Azzi</AssemblyCopyright>
+    <Authors>Ahmed Azzi</Authors>
+    <Description>Application de gestion des dons de médicaments</Description>
+    <ApplicationIcon>Resources\xdonation.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +41,9 @@
     </Content>
     <Content Include="medicament.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\xdonation.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

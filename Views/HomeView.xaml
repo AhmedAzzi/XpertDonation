@@ -1,8 +1,8 @@
 <UserControl
-    x:Class="XpertPharm5Donation.Views.HomeView"
+    x:Class="XDonation.Views.HomeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="clr-namespace:XpertPharm5Donation.ViewModels"
+    xmlns:vm="clr-namespace:XDonation.ViewModels"
     Background="{StaticResource WorkspaceBrush}">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -15,12 +15,12 @@
 
             <!--  Title block — docked top  -->
             <StackPanel Margin="0,0,0,8" DockPanel.Dock="Top">
-                <TextBlock
-                    Margin="0,0,0,4"
-                    FontFamily="Segoe UI Light"
-                    FontSize="22"
-                    Foreground="{StaticResource TextPrimaryBrush}"
-                    Text="Bienvenue dans XpertPharm5 Donation" />
+                 <TextBlock
+                     Margin="0,0,0,4"
+                     FontFamily="Segoe UI Light"
+                     FontSize="22"
+                     Foreground="{StaticResource TextPrimaryBrush}"
+                     Text="Bienvenue dans XDonation" />
                 <TextBlock
                     FontFamily="Segoe UI"
                     FontSize="13"

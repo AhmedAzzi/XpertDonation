@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using XpertPharm5Donation.Models;
+using XDonation.Models;
 
-namespace XpertPharm5Donation.Data
+namespace XDonation.Data
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {

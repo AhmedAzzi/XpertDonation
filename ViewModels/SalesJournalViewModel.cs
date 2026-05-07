@@ -2,7 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     /// <summary>
     /// ViewModel for SalesJournalView

@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using XpertPharm5Donation.Data;
-using XpertPharm5Donation.Models;
+using XDonation.Data;
+using XDonation.Models;
 using System;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     public partial class DrugEditViewModel : ObservableObject
     {

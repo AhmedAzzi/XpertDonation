@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace XpertPharm5Donation.Views
+namespace XDonation.Views
 {
     public partial class BarcodeLabelPreview : UserControl
     {

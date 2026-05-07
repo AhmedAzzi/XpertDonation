@@ -1,9 +1,9 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using XpertPharm5Donation.ViewModels;
+using XDonation.ViewModels;
 
-namespace XpertPharm5Donation.Views
+namespace XDonation.Views
 {
     public partial class StockLotsView : UserControl
     {

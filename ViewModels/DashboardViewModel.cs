@@ -1,7 +1,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     /// <summary>
     /// ViewModel for DashboardView

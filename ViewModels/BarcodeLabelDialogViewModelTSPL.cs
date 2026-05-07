@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using XpertPharm5Donation.Helpers;
+using XDonation.Helpers;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     /// <summary>
     /// Updated BarcodeLabelDialogViewModel with TSPL thermal printer support.

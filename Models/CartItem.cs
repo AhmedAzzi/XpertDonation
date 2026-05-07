@@ -1,7 +1,7 @@
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace XpertPharm5Donation.Models
+namespace XDonation.Models
 {
     public partial class CartItem : ObservableObject
     {

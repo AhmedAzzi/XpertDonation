@@ -8,10 +8,10 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
-using XpertPharm5Donation.Data;
-using XpertPharm5Donation.Models;
+using XDonation.Data;
+using XDonation.Models;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {

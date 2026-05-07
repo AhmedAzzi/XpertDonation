@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace XpertPharm5Donation.Helpers
+namespace XDonation.Helpers
 {
     /// <summary>
     /// Production-ready thermal label printer for Xprinter 203 DPI printers.

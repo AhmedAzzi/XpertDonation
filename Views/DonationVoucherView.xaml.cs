@@ -1,10 +1,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using XpertPharm5Donation.Models;
-using XpertPharm5Donation.ViewModels;
+using XDonation.Models;
+using XDonation.ViewModels;
 
-namespace XpertPharm5Donation.Views
+namespace XDonation.Views
 {
     public partial class DonationVoucherView : UserControl
     {

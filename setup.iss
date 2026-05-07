@@ -1,24 +1,26 @@
 [Setup]
-AppName=XpertDonation
+AppName=XDonation
 AppVersion=1.0
-AppPublisher=XpertPharm
-DefaultDirName={pf}\XpertDonation
-DefaultGroupName=XpertDonation
+AppPublisher=Ahmed Azzi
+AppPublisherURL=mailto:mrahmedazzi@gmail.com
+DefaultDirName={pf}\XDonation
+DefaultGroupName=XDonation
 OutputDir=installer
-OutputBaseFilename=XpertDonation_Setup
+OutputBaseFilename=XDonation_Setup
 Compression=lzma
 SolidCompression=yes
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
-SetupIconFile=
+SetupIconFile=Resources\xdonation.ico
+AppCopyright=Copyright © 2026 Ahmed Azzi
 
 [Files]
 Source: "publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\XpertDonation"; Filename: "{app}\XpertPharm5Donation.exe"
-Name: "{group}\Uninstall XpertDonation"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\XpertDonation"; Filename: "{app}\XpertPharm5Donation.exe"
+Name: "{group}\XDonation"; Filename: "{app}\XDonation.exe"; IconFilename: "{app}\XDonation.exe"
+Name: "{group}\Uninstall XDonation"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\XDonation"; Filename: "{app}\XDonation.exe"; IconFilename: "{app}\XDonation.exe"
 
 [Run]
-Filename: "{app}\XpertPharm5Donation.exe"; Description: "Launch XpertDonation"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\XDonation.exe"; Description: "Launch XDonation"; Flags: nowait postinstall skipifsilent

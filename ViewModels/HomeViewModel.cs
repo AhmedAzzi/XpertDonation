@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
-using XpertPharm5Donation.Data;
-using XpertPharm5Donation.ViewModels;
+using XDonation.Data;
+using XDonation.ViewModels;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     public partial class HomeViewModel(AppDbContext db) : ObservableObject
     {

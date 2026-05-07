@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace XpertPharm5Donation.Helpers
+namespace XDonation.Helpers
 {
     public static class FocusExtensions
     {

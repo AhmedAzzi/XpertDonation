@@ -1,12 +1,12 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using XpertPharm5Donation.ViewModels;
-using XpertPharm5Donation.Data;
-using XpertPharm5Donation.Models;
+using XDonation.ViewModels;
+using XDonation.Data;
+using XDonation.Models;
 using System.Linq;
 
-namespace XpertPharm5Donation.Views
+namespace XDonation.Views
 {
     public partial class ProductsView : UserControl
     {

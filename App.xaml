@@ -1,4 +1,4 @@
-<Application x:Class="XpertPharm5Donation.App"
+<Application x:Class="XDonation.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
@@ -7,7 +7,7 @@
                     <ResourceDictionary Source="Themes/Theme.xaml"/>
                 </ResourceDictionary.MergedDictionaries>
                 <!-- Global converters -->
-                <converters:BoolToVisConverter x:Key="BoolToVisConverter" xmlns:converters="clr-namespace:XpertPharm5Donation.Converters" />
+                <converters:BoolToVisConverter x:Key="BoolToVisConverter" xmlns:converters="clr-namespace:XDonation.Converters" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,12 +1,12 @@
 using System.Windows;
-using XpertPharm5Donation.ViewModels;
+using XDonation.ViewModels;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Printing;
 
-namespace XpertPharm5Donation.Views
+namespace XDonation.Views
 {
     public partial class BarcodeLabelDialog : Window
     {
@@ -18,6 +18,18 @@ namespace XpertPharm5Donation.Views
 
             if (vm != null)
                 vm.PrintRequested += () => PrintLabel();
+
+            // Allow window dragging
+            this.MouseLeftButtonDown += (s, e) =>
+            {
+                if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+                    DragMove();
+            };
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
         private void PrintLabel()

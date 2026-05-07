@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace XpertPharm5Donation.Models
+namespace XDonation.Models
 {
     public class Dispensation
     {

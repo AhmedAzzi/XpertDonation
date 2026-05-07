@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using XpertPharm5Donation.ViewModels;
-using XpertPharm5Donation.Data;
+using XDonation.ViewModels;
+using XDonation.Data;
 
-namespace XpertPharm5Donation.Views
+namespace XDonation.Views
 {
     public partial class MainWindow : Window
     {
@@ -144,6 +144,15 @@ namespace XpertPharm5Donation.Views
             {
                 vm.LoadCommand.Execute(null);
             }
+        }
+
+        public void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var aboutWindow = new AboutWindow
+            {
+                Owner = this
+            };
+            aboutWindow.ShowDialog();
         }
     }
 }

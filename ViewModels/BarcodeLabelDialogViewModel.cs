@@ -10,7 +10,7 @@ using ZXing.Common;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace XpertPharm5Donation.ViewModels
+namespace XDonation.ViewModels
 {
     public class BarcodeLabelDialogViewModel : INotifyPropertyChanged
     {

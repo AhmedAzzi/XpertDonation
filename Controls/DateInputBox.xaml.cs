@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace XpertPharm5Donation.Controls
+namespace XDonation.Controls
 {
     public partial class DateInputBox : UserControl
     {

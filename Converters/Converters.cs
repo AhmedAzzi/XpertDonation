@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace XpertPharm5Donation.Converters
+namespace XDonation.Converters
 {
     public class BoolToVisConverter : IValueConverter
     {

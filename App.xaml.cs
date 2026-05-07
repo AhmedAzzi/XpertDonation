@@ -6,19 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using XpertPharm5Donation.Data;
-using XpertPharm5Donation.Models;
-using XpertPharm5Donation.ViewModels;
-using XpertPharm5Donation.Views;
+using XDonation.Data;
+using XDonation.Models;
+using XDonation.ViewModels;
+using XDonation.Views;
 
-namespace XpertPharm5Donation
+namespace XDonation
 {
     public partial class App : Application
     {
-        // P/Invoke to allocate console window for WPF app
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool AllocConsole();
-
         // DPI awareness
         [DllImport("shcore.dll", SetLastError = true)]
         private static extern bool SetProcessDpiAwareness(int awareness);
@@ -47,11 +43,8 @@ namespace XpertPharm5Donation
 
             base.OnStartup(e);
 
-            // Allocate console window for logging
-            AllocConsole();
-
             // Enable Enter key navigation
-            XpertPharm5Donation.Helpers.FocusExtensions.RegisterGlobalEnterNavigation();
+            XDonation.Helpers.FocusExtensions.RegisterGlobalEnterNavigation();
 
             // Load configuration
             var config = new ConfigurationBuilder()
@@ -65,8 +58,7 @@ namespace XpertPharm5Donation
             // Configure logging
             services.AddLogging(builder =>
             {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Debug);
+                builder.SetMinimumLevel(LogLevel.Warning);
                 builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
             });
 
@@ -235,7 +227,7 @@ namespace XpertPharm5Donation
 
             _logger?.LogError(ex, "CRITICAL ERROR from {Source}", source);
             
-            MessageBox.Show(message, "Erreur Critique - XpertPharm5", MessageBoxButton.OK, MessageBoxImage.Error);
+             MessageBox.Show(message, "Erreur Critique - XDonation", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

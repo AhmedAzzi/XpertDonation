@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace XpertPharm5Donation.Helpers
+namespace XDonation.Helpers
 {
     /// <summary>
     /// Sends raw TSPL commands directly to thermal printers via Windows printer spooler.
