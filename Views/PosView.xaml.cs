@@ -202,7 +202,7 @@ namespace XpertPharm5Donation.Views
 
         private void CartList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (sender is ListView listView && listView.SelectedItem is CartItem selectedItem)
+            if (sender is DataGrid dataGrid && dataGrid.SelectedItem is CartItem selectedItem)
             {
                 // Set the quantity to match the selected row
                 _vm.Quantity = selectedItem.Quantity;

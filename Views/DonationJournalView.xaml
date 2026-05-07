@@ -15,7 +15,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Filters & KPIs -->
             <RowDefinition Height="*"/>    <!-- Journal Grid -->
-            <RowDefinition Height="Auto"/> <!-- Splitter -->
             <RowDefinition Height="2*"/>   <!-- Detail Grid -->
             <RowDefinition Height="Auto"/> <!-- Footer -->
         </Grid.RowDefinitions>
@@ -28,7 +27,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" MinHeight="40">
                         <StackPanel Margin="0,0,10,0">
                             <TextBlock Text="Date Début :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
@@ -58,8 +57,11 @@
                     </StackPanel>
                 </ScrollViewer>
 
+
+
+
                 <!-- KPI CARDS -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
                     <Border Background="White" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="8" MinWidth="90" Margin="0,0,10,0" Padding="8">
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Total Bons" FontSize="11" Foreground="#0066CC" HorizontalAlignment="Center"/>
@@ -124,8 +126,6 @@
             </Grid>
         </Border>
 
-        <!-- ═══ SPLITTER ═══════════════════════════════════════════════════ -->
-        <GridSplitter Grid.Row="2" Height="4" HorizontalAlignment="Stretch" Background="#F1F5F9" VerticalAlignment="Center" Margin="0,4"/>
 
         <!-- ═══ BOTTOM: DETAIL GRID ════════════════════════════════════════ -->
         <Border Grid.Row="3" Background="White" CornerRadius="6" ClipToBounds="True">
