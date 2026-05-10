@@ -1,139 +1,113 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using ZXing;
-using ZXing.Common;
 using System.Windows;
-using System.Windows.Interop;
+using XDonation.Helpers;
+using System.Linq;
 
 namespace XDonation.ViewModels
 {
     public class BarcodeLabelDialogViewModel : INotifyPropertyChanged
     {
-        [DllImport("gdi32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool DeleteObject(IntPtr hObject);
-
         public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        private void OnPropertyChanged([CallerMemberName] string name = "") 
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        public bool ShowPharmacyName { get => _showPharmacyName; set { _showPharmacyName = value; OnPropertyChanged(); } }
-        public bool ShowBarcodeImage { get => _showBarcodeImage; set { _showBarcodeImage = value; OnPropertyChanged(); } }
-        public bool ShowBarcodeNumber { get => _showBarcodeNumber; set { _showBarcodeNumber = value; OnPropertyChanged(); } }
-        public bool ShowProductName { get => _showProductName; set { _showProductName = value; OnPropertyChanged(); } }
-        public bool ShowPrice { get => _showPrice; set { _showPrice = value; OnPropertyChanged(); } }
-        public bool ShowExpiry { get => _showExpiry; set { _showExpiry = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
-        public bool ShowLot { get => _showLot; set { _showLot = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
-        public bool ShowMeta => ShowExpiry || ShowLot;
-        public double FontSize { get => _fontSize; set { _fontSize = value; OnPropertyChanged(); } }
-        public double PreviewZoom
-        {
-            get => _previewZoom;
-            set
-            {
-                var clamped = Math.Clamp(value, 0.6, 2.4);
-                if (Math.Abs(_previewZoom - clamped) < 0.001)
-                    return;
+        // Required by View code-behind
+        public event Action? PrintRequested;
+        public void RefreshBarcode() { /* Not needed for TSPL */ }
 
-                _previewZoom = clamped;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PreviewZoomPercent));
-            }
-        }
-        public string PreviewZoomPercent => $"{PreviewZoom * 100:0}%";
+        // Properties
+        private string _printerName = "Xprinter XP-233B (Copie 1)";
+        public string PrinterName { get => _printerName; set { _printerName = value; OnPropertyChanged(); } }
 
-        public string PharmacyName { get; set; } = string.Empty;
-        private string _barcodeNumber = string.Empty;
-        public string BarcodeNumber
-        {
-            get => _barcodeNumber;
-            set { _barcodeNumber = value; OnPropertyChanged(); RefreshBarcode(); }
-        }
-        public string ProductName { get; set; } = string.Empty;
-        public string Price { get; set; } = string.Empty;
-        public string ExpiryDate { get; set; } = string.Empty;
-        public string LotNumber { get; set; } = string.Empty;
+        public string PharmacyName { get; set; } = "PHARMACIE ARAB";
+        public string BarcodeNumber { get; set; } = "";
+        public string ProductName { get; set; } = "";
+        public string Price { get; set; } = "";
+        public string ExpiryDate { get; set; } = "";
+        public string LotNumber { get; set; } = "";
+        public bool IsFree { get; set; } = false;
 
-        private BitmapSource? _barcodeImage;
-        public BitmapSource? BarcodeImage
-        {
-            get => _barcodeImage;
-            private set { _barcodeImage = value; OnPropertyChanged(); }
-        }
+        private string _statusMessage = "Ready";
+        public string StatusMessage { get => _statusMessage; set { _statusMessage = value; OnPropertyChanged(); } }
+
+        private List<string> _availablePrinters = new();
+        public List<string> AvailablePrinters { get => _availablePrinters; set { _availablePrinters = value; OnPropertyChanged(); } }
 
         public ICommand PrintCommand { get; }
         public ICommand CloseCommand { get; }
-        public ICommand ZoomInCommand { get; }
-        public ICommand ZoomOutCommand { get; }
-        public ICommand ResetZoomCommand { get; }
-
-        public event Action? PrintRequested;
-
-        private bool _showPharmacyName = true, _showBarcodeImage = true, _showBarcodeNumber = true, _showProductName = true, _showPrice = true, _showExpiry = true, _showLot = true;
-        private double _fontSize = 10;
-        private double _previewZoom = 1.0;
-
 
         public BarcodeLabelDialogViewModel()
         {
             PrintCommand = new RelayCommand(Print);
             CloseCommand = new RelayCommand(Close);
-            ZoomInCommand = new RelayCommand(_ => PreviewZoom += 0.1);
-            ZoomOutCommand = new RelayCommand(_ => PreviewZoom -= 0.1);
-            ResetZoomCommand = new RelayCommand(_ => PreviewZoom = 1.0);
-        }
-
-        public void RefreshBarcode()
-        {
-            BarcodeImage = GenerateBarcode(_barcodeNumber);
-        }
-
-        private BitmapSource? GenerateBarcode(string? code)
-        {
-            if (string.IsNullOrEmpty(code)) return null;
-
-            var writer = new ZXing.Windows.Compatibility.BarcodeWriter
-            {
-                Format = BarcodeFormat.CODE_128,
-                Options = new EncodingOptions
+            
+            try 
+            { 
+                var names = RawPrinterHelper.GetPrinterNames();
+                AvailablePrinters = names.ToList();
+                
+                if (AvailablePrinters.Count > 0)
                 {
-                    Width = 230,
-                    Height = 42,
-                    Margin = 0,
-                    PureBarcode = true
-                }
-            };
+                    // Try to find a printer that looks like a thermal label printer
+                    var defaultPrinter = AvailablePrinters.FirstOrDefault(p => 
+                        p.Contains("Xprinter", StringComparison.OrdinalIgnoreCase) || 
+                        p.Contains("Label", StringComparison.OrdinalIgnoreCase) ||
+                        p.Contains("Thermal", StringComparison.OrdinalIgnoreCase));
 
-            using var bitmap = writer.Write(code);
-            IntPtr hBitmap = bitmap.GetHbitmap();
-            try
-            {
-                BitmapSource source = Imaging.CreateBitmapSourceFromHBitmap(
-                    hBitmap,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
-                source.Freeze();
-                return source;
-            }
-            finally
-            {
-                DeleteObject(hBitmap);
-            }
+                    if (defaultPrinter != null)
+                    {
+                        PrinterName = defaultPrinter;
+                    }
+                    else if (!AvailablePrinters.Contains(PrinterName))
+                    {
+                        // If current default is not in the list, pick the first available
+                        PrinterName = AvailablePrinters[0];
+                    }
+                }
+            } 
+            catch { }
         }
 
         private void Print(object? obj)
         {
-            PrintRequested?.Invoke();
+            if (string.IsNullOrWhiteSpace(BarcodeNumber)) {
+                StatusMessage = "✗ Barcode required";
+                return;
+            }
+
+            try
+            {
+                StatusMessage = "Printing...";
+                var printer = new ThermalLabelPrinter(PrinterName);
+                printer.PrintLabel(
+                    product: ProductName,
+                    barcode: BarcodeNumber,
+                    lot: LotNumber,
+                    exp: ExpiryDate,
+                    header: PharmacyName,
+                    isFree: IsFree,
+                    price: Price
+                );
+                StatusMessage = "✓ Success!";
+                PrintRequested?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "✗ Error";
+                MessageBox.Show($"Print failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Close(object? obj)
         {
-            Application.Current.Windows[Application.Current.Windows.Count - 1]?.Close();
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.DataContext == this) { window.Close(); break; }
+            }
         }
     }
 

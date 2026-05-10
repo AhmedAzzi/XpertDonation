@@ -142,8 +142,21 @@ namespace XDonation.Helpers
         /// </summary>
         public static string[] GetPrinterNames()
         {
-            var printerNames = System.Drawing.Printing.PrinterSettings.InstalledPrinters;
-            return new System.Collections.Generic.List<string>(printerNames).ToArray();
+            try
+            {
+                var printerNames = System.Drawing.Printing.PrinterSettings.InstalledPrinters;
+                var list = new System.Collections.Generic.List<string>();
+                foreach (string? name in printerNames)
+                {
+                    if (!string.IsNullOrEmpty(name))
+                        list.Add(name);
+                }
+                return list.ToArray();
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
         }
     }
 }
