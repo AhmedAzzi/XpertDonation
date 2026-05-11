@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Linq;
 
 namespace XDonation.Helpers
 {
@@ -22,49 +23,58 @@ namespace XDonation.Helpers
             if (string.IsNullOrWhiteSpace(barcode))
                 throw new ArgumentException("Barcode cannot be empty", nameof(barcode));
 
-            StringBuilder tspl = new StringBuilder();
-
-            // Setup
-            tspl.AppendLine("SIZE 40 mm, 20 mm");
-            tspl.AppendLine("GAP 3 mm, 0 mm");
-            tspl.AppendLine("DIRECTION 0,0"); 
-            tspl.AppendLine("REFERENCE 0,0");
-            tspl.AppendLine("CLS");
+            var builder = new TsplBuilder()
+                .Size("40 mm", "20 mm")
+                .Gap("2 mm", "0 mm")
+                .Density(8)
+                .Speed(4)
+                .Direction(0, 0)
+                .Reference(0, 0)
+                .Cls();
 
             // --- COMPACT MAIN CONTENT AREA ---
 
             // 1. Header - Tight to top
             int headerX = GetCenterX(header, 12, CONTENT_WIDTH);
-            tspl.AppendLine($"TEXT {headerX},5,\"3\",0,1,1,\"{TsplEscape(header)}\"");
+            builder.Text(headerX, 5, "3", 0, 1, 1, header);
 
             // 2. Barcode - Reduced height for compactness
+            string barcodeType = "128M";
+            if ((barcode.Length == 12 || barcode.Length == 13) && barcode.All(char.IsDigit) && IsValidEanChecksum(barcode))
+            {
+                barcodeType = "EAN13";
+            }
+            else if (barcode.Length == 8 && barcode.All(char.IsDigit) && IsValidEanChecksum(barcode))
+            {
+                barcodeType = "EAN8";
+            }
+
             int barcodeX = GetCenterX(barcode, 16, CONTENT_WIDTH); 
-            tspl.AppendLine($"BARCODE {barcodeX},28,\"128M\",35,0,0,2,2,\"{TsplEscape(barcode)}\"");
+            builder.Barcode(barcodeX, 28, barcodeType, 35, 0, 0, 2, 2, barcode);
 
             // 3. Barcode Number - Moved up
             int numX = GetCenterX(barcode, 16, CONTENT_WIDTH);
-            tspl.AppendLine($"TEXT {numX},68,\"4\",0,1,1,\"{TsplEscape(barcode)}\"");
+            builder.Text(numX, 68, "4", 0, 1, 1, barcode);
 
             // 4. Product Name - Tightened Y-offset
             string displayProduct = TruncateProduct(product, 20);
-            tspl.AppendLine($"TEXT 10,102,\"2\",0,1,1,\"{TsplEscape(displayProduct)}\"");
+            builder.Text(10, 102, "2", 0, 1, 1, displayProduct);
 
             // 5. Price / GRATUIT - Font 4 (Bold & Compact)
             string priceText = isFree ? "GRATUIT" : (string.IsNullOrWhiteSpace(price) ? "GRATUIT" : price);
             int priceX = GetCenterX(priceText, 16, CONTENT_WIDTH);
-            tspl.AppendLine($"TEXT {priceX},122,\"4\",0,1,1,\"{TsplEscape(priceText)}\"");
-            tspl.AppendLine($"TEXT {priceX + 1},122,\"4\",0,1,1,\"{TsplEscape(priceText)}\""); // Bold effect
-
+            builder.Text(priceX, 122, "4", 0, 1, 1, priceText);
+            builder.Text(priceX + 1, 122, "4", 0, 1, 1, priceText); // Bold effect
 
             // --- VERTICAL META INFO (Right Side) ---
-            tspl.AppendLine($"TEXT 285,10,\"2\",90,1,1,\"Exp : {TsplEscape(exp)}\"");
-            tspl.AppendLine($"TEXT 310,10,\"2\",90,1,1,\"Lot : {TsplEscape(lot)}\"");
+            builder.Text(285, 10, "2", 90, 1, 1, $"Exp : {exp}");
+            builder.Text(310, 10, "2", 90, 1, 1, $"Lot : {lot}");
 
-            tspl.AppendLine("PRINT 1,1");
+            builder.Print(1, 1);
 
             try
             {
-                RawPrinterHelper.SendRawTSPL(_printerName, tspl.ToString());
+                RawPrinterHelper.SendRawTSPL(_printerName, builder.Build());
             }
             catch (Exception ex)
             {
@@ -85,9 +95,38 @@ namespace XDonation.Helpers
             return product.Length <= max ? product : product.Substring(0, max - 3) + "...";
         }
 
-        private string TsplEscape(string text)
+        private bool IsValidEanChecksum(string barcode)
         {
-            return text?.Replace("\"", "\\\"").Replace("\n", " ").Replace("\r", " ") ?? "";
+            if (string.IsNullOrWhiteSpace(barcode) || !barcode.All(char.IsDigit)) return false;
+            
+            // UPC-A (12) or EAN-13 (13)
+            if (barcode.Length == 12 || barcode.Length == 13)
+            {
+                // Pad 12 digit UPC-A to 13 digits for calculation
+                string code = barcode.Length == 12 ? "0" + barcode : barcode;
+                int sum = 0;
+                for (int i = 0; i < 12; i++)
+                {
+                    int digit = code[i] - '0';
+                    sum += (i % 2 == 0) ? digit : digit * 3;
+                }
+                int checkDigit = (10 - (sum % 10)) % 10;
+                return checkDigit == (code[12] - '0');
+            }
+            // EAN-8
+            else if (barcode.Length == 8)
+            {
+                int sum = 0;
+                for (int i = 0; i < 7; i++)
+                {
+                    int digit = barcode[i] - '0';
+                    sum += (i % 2 == 0) ? digit * 3 : digit;
+                }
+                int checkDigit = (10 - (sum % 10)) % 10;
+                return checkDigit == (barcode[7] - '0');
+            }
+            
+            return false;
         }
     }
 }

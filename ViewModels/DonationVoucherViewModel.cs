@@ -433,12 +433,7 @@ namespace XDonation.ViewModels
 
         private string GetLabelBarcode(DonationVoucherLine line)
         {
-            return FirstNotBlank(
-                line.Barcode,
-                line.StockBatch?.Barcode,
-                line.Drug?.Barcode,
-                GenerateInternalBarcode(line)
-            );
+            return GenerateInternalBarcode(line);
         }
 
         private string GetLabelProductName(DonationVoucherLine line)

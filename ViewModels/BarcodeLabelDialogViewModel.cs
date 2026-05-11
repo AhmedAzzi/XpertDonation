@@ -17,19 +17,67 @@ namespace XDonation.ViewModels
 
         // Required by View code-behind
         public event Action? PrintRequested;
-        public void RefreshBarcode() { /* Not needed for TSPL */ }
+        public void RefreshBarcode() 
+        { 
+            if (string.IsNullOrWhiteSpace(BarcodeNumber))
+            {
+                BarcodeImage = null;
+                return;
+            }
+            BarcodeImage = BarcodeService.GenerateBarcodeImage(BarcodeNumber);
+        }
 
         // Properties
         private string _printerName = "Xprinter XP-233B (Copie 1)";
         public string PrinterName { get => _printerName; set { _printerName = value; OnPropertyChanged(); } }
 
-        public string PharmacyName { get; set; } = "PHARMACIE ARAB";
-        public string BarcodeNumber { get; set; } = "";
-        public string ProductName { get; set; } = "";
-        public string Price { get; set; } = "";
-        public string ExpiryDate { get; set; } = "";
-        public string LotNumber { get; set; } = "";
-        public bool IsFree { get; set; } = false;
+        private string _pharmacyName = "PHARMACIE ARAB";
+        public string PharmacyName { get => _pharmacyName; set { _pharmacyName = value; OnPropertyChanged(); } }
+
+        private string _barcodeNumber = "";
+        public string BarcodeNumber { get => _barcodeNumber; set { _barcodeNumber = value; OnPropertyChanged(); RefreshBarcode(); } }
+
+        private string _productName = "";
+        public string ProductName { get => _productName; set { _productName = value; OnPropertyChanged(); } }
+
+        private string _price = "";
+        public string Price { get => _price; set { _price = value; OnPropertyChanged(); } }
+
+        private string _expiryDate = "";
+        public string ExpiryDate { get => _expiryDate; set { _expiryDate = value; OnPropertyChanged(); } }
+
+        private string _lotNumber = "";
+        public string LotNumber { get => _lotNumber; set { _lotNumber = value; OnPropertyChanged(); } }
+
+        private bool _isFree = false;
+        public bool IsFree { get => _isFree; set { _isFree = value; OnPropertyChanged(); } }
+
+        // UI Toggles
+        private bool _showPharmacyName = true;
+        public bool ShowPharmacyName { get => _showPharmacyName; set { _showPharmacyName = value; OnPropertyChanged(); } }
+
+        private bool _showBarcodeImage = true;
+        public bool ShowBarcodeImage { get => _showBarcodeImage; set { _showBarcodeImage = value; OnPropertyChanged(); } }
+
+        private bool _showBarcodeNumber = true;
+        public bool ShowBarcodeNumber { get => _showBarcodeNumber; set { _showBarcodeNumber = value; OnPropertyChanged(); } }
+
+        private bool _showProductName = true;
+        public bool ShowProductName { get => _showProductName; set { _showProductName = value; OnPropertyChanged(); } }
+
+        private bool _showPrice = true;
+        public bool ShowPrice { get => _showPrice; set { _showPrice = value; OnPropertyChanged(); } }
+
+        private bool _showExpiry = true;
+        public bool ShowExpiry { get => _showExpiry; set { _showExpiry = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
+
+        private bool _showLot = true;
+        public bool ShowLot { get => _showLot; set { _showLot = value; OnPropertyChanged(); OnPropertyChanged(nameof(ShowMeta)); } }
+
+        public bool ShowMeta => ShowExpiry || ShowLot;
+
+        private System.Windows.Media.Imaging.BitmapSource? _barcodeImage;
+        public System.Windows.Media.Imaging.BitmapSource? BarcodeImage { get => _barcodeImage; private set { _barcodeImage = value; OnPropertyChanged(); } }
 
         private string _statusMessage = "Ready";
         public string StatusMessage { get => _statusMessage; set { _statusMessage = value; OnPropertyChanged(); } }

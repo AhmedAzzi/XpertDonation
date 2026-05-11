@@ -153,7 +153,7 @@ namespace XDonation.ViewModels
             var vm = new BarcodeLabelDialogViewModel
             {
                 PharmacyName = "PHARMACIE ARAB",
-                BarcodeNumber = FirstNotBlank(selected.Barcode, selected.Drug?.Barcode, $"LOT{selected.Id:000000}"),
+                BarcodeNumber = $"LOT{selected.Id:000000}",
                 ProductName = selected.Drug?.Name ?? string.Empty,
                 Price = "GRATUIT",
                 ExpiryDate = selected.ExpirationDate?.ToString("dd-MM-yyyy") ?? string.Empty,
