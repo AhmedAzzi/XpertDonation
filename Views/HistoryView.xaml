@@ -40,6 +40,11 @@
                             <ctrl:DateInputBox Date="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
+                        <StackPanel Margin="0,0,12,0">
+                            <TextBlock Text="Code-barres :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding FilterBarcode, UpdateSourceTrigger=PropertyChanged}" Width="120" MinHeight="28" VerticalContentAlignment="Center" BorderBrush="#DDD"/>
+                        </StackPanel>
+
                         <Button Command="{Binding FilterCommand}" MinWidth="110" MinHeight="32" Margin="0,15,0,0"
                                 Style="{StaticResource PrimaryButtonStyle}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -83,7 +88,7 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource SectionHeaderBorderStyle}">
-                    <TextBlock Text="Journal de Comptoir (Historique des dispensations)" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
+                    <TextBlock Text="Journal de Sorteé (Historique des dispensations)" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
                 </Border>
 
                 <DataGrid Grid.Row="1" x:Name="SessionsGrid"
@@ -137,6 +142,16 @@
                           BorderThickness="0">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Médicament" Width="2*" Binding="{Binding StockBatch.Drug.Name}"/>
+                        <DataGridTextColumn Header="Code Barres (Syst.)" Width="1.2*" Binding="{Binding StockBatch.Barcode}"/>
+                        <DataGridTextColumn Header="Code Fab." Width="1.2*" Binding="{Binding StockBatch.Drug.CodeBarresFabricant}"/>
+                        <DataGridTextColumn Header="Correspondance" Width="1.2*" Binding="{Binding MatchStatus}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="#2563EB"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Lot Utilisé" Width="1.2*" Binding="{Binding StockBatch.BatchNumber}"/>
                         <DataGridTextColumn Header="Date péremption" Width="1*" Binding="{Binding StockBatch.ExpirationDate, Converter={StaticResource DateStr}}"/>
                         <DataGridTextColumn Header="Qté dispensée" Width="0.8*" Binding="{Binding Quantity}">

@@ -124,7 +124,7 @@
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="16"
                                     Foreground="White"
-                                    Text="Comptoir Don" />
+                                    Text="Sorteé" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="Segoe UI"
@@ -259,7 +259,7 @@
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="16"
                                     Foreground="White"
-                                    Text="Bons de don" />
+                                    Text="Entreé" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="Segoe UI"
@@ -302,7 +302,7 @@
                                     FontFamily="Segoe UI Semibold"
                                     FontSize="16"
                                     Foreground="White"
-                                    Text="Journal des bons" />
+                                    Text="Journal des Entreés" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     FontFamily="Segoe UI"

@@ -75,7 +75,7 @@ namespace XDonation.ViewModels
         public bool CanEdit => true;
         public string StatusLabel => IsValidated ? "Validé" : "Nouveau";
         public string ValidateActionLabel => IsValidated ? "RE-VALIDER (F8)" : "VALIDER (F8)";
-        public string VoucherModeLabel => IsValidated ? "Bon de don validé" : "Bon de don en cours";
+        public string VoucherModeLabel => IsValidated ? "Entreé validée" : "Entreé en cours";
 
         // ── Lines ────────────────────────────────────────────────────────────
         public ObservableCollection<DonationVoucherLine> Lines { get; }
@@ -86,6 +86,9 @@ namespace XDonation.ViewModels
         // ── Line Input Form ──────────────────────────────────────────────────
         [ObservableProperty]
         private string _inputBarcode = string.Empty;
+
+        [ObservableProperty]
+        private string _inputCodeBarresFabricant = string.Empty;
 
         [ObservableProperty]
         private string _inputDrugName = string.Empty;
@@ -150,8 +153,8 @@ namespace XDonation.ViewModels
             if (Lines.Count > 0 || !string.IsNullOrWhiteSpace(DonorName))
             {
                 var r = MessageBox.Show(
-                    "Créer un nouveau bon ?\nLes données non enregistrées seront perdues.",
-                    "Nouveau bon",
+                    "Créer une nouvelle Entreé ?\nLes données non enregistrées seront perdues.",
+                    "Nouvelle Entreé",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question
                 );
@@ -247,7 +250,7 @@ namespace XDonation.ViewModels
         }
 
         [RelayCommand]
-        private void SelectDrugSuggestion(Drug drug)
+        private async Task SelectDrugSuggestionAsync(Drug drug)
         {
             if (drug == null)
                 return;
@@ -256,6 +259,56 @@ namespace XDonation.ViewModels
             InputDrugName = drug.Name;
             InputDci = drug.Dci ?? string.Empty;
             InputBarcode = drug.Barcode ?? string.Empty;
+
+            // Check if there is a pending manufacturer barcode to associate
+            if (!string.IsNullOrWhiteSpace(InputCodeBarresFabricant))
+            {
+                var manufacturerBarcode = InputCodeBarresFabricant.Trim();
+                if (drug.CodeBarresFabricant != manufacturerBarcode)
+                {
+                    // Check if another drug has this barcode
+                    var duplicate = await _db.Drugs.FirstOrDefaultAsync(d => d.CodeBarresFabricant == manufacturerBarcode && d.Id != drug.Id);
+                    if (duplicate != null)
+                    {
+                        MessageBox.Show($"Ce code fabricant '{manufacturerBarcode}' est déjà associé au produit '{duplicate.Name}'.", 
+                            "Doublon détecté", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else
+                    {
+                        var res = MessageBox.Show(
+                            $"Voulez-vous associer le code fabricant '{manufacturerBarcode}' à '{drug.Name}' ?",
+                            "Associer le code fabricant",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question);
+
+                        if (res == MessageBoxResult.Yes)
+                        {
+                            drug.CodeBarresFabricant = manufacturerBarcode;
+                            if (string.IsNullOrWhiteSpace(drug.Barcode))
+                            {
+                                drug.Barcode = await _db.GenerateUniqueProductSystemBarcodeAsync();
+                            }
+                            _db.Drugs.Update(drug);
+                            await _db.SaveChangesAsync();
+                            
+                            // Update cache
+                            var cachedDrug = _allDrugsCache.FirstOrDefault(d => d.Id == drug.Id);
+                            if (cachedDrug != null)
+                            {
+                                cachedDrug.CodeBarresFabricant = drug.CodeBarresFabricant;
+                                cachedDrug.Barcode = drug.Barcode;
+                            }
+
+                            InputBarcode = drug.Barcode;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                InputCodeBarresFabricant = drug.CodeBarresFabricant ?? string.Empty;
+            }
+
             IsSuggestionOpen = false;
             _suppressTextChanged = false;
         }
@@ -304,6 +357,7 @@ namespace XDonation.ViewModels
                 InputBatchNumber = batch.BatchNumber ?? string.Empty;
                 InputExpirationDate = batch.ExpirationDate;
                 InputBarcode = batch.Barcode ?? batch.Drug.Barcode ?? barcode;
+                InputCodeBarresFabricant = batch.Drug.CodeBarresFabricant ?? string.Empty;
                 SetStatus($"✓ Médicament trouvé : {batch.Drug.Name}", false);
             }
             else
@@ -316,6 +370,7 @@ namespace XDonation.ViewModels
                     InputDrugName = drug.Name;
                     InputDci = drug.Dci ?? string.Empty;
                     InputBarcode = drug.Barcode ?? barcode;
+                    InputCodeBarresFabricant = drug.CodeBarresFabricant ?? string.Empty;
                     SetStatus($"✓ Médicament trouvé : {drug.Name}", false);
                 }
                 else
@@ -329,7 +384,66 @@ namespace XDonation.ViewModels
         }
 
         [RelayCommand]
-        private void AddLine()
+        private async Task ScanManufacturerBarcodeAsync()
+        {
+            if (string.IsNullOrWhiteSpace(InputCodeBarresFabricant))
+                return;
+
+            var manufacturerBarcode = InputCodeBarresFabricant.Trim();
+
+            // Search Drugs table where CodeBarresFabricant matches
+            var drug = await _db.Drugs.FirstOrDefaultAsync(d => d.CodeBarresFabricant == manufacturerBarcode);
+
+            if (drug != null)
+            {
+                // Populate drug details
+                _suppressTextChanged = true;
+                InputDrugId = drug.Id;
+                InputDrugName = drug.Name;
+                InputDci = drug.Dci ?? string.Empty;
+                InputCodeBarresFabricant = drug.CodeBarresFabricant ?? manufacturerBarcode;
+
+                // Rule: If product doesn't have an internal system barcode, generate one
+                if (string.IsNullOrWhiteSpace(drug.Barcode))
+                {
+                    drug.Barcode = await _db.GenerateUniqueProductSystemBarcodeAsync();
+                    _db.Drugs.Update(drug);
+                    await _db.SaveChangesAsync();
+                    
+                    var cachedDrug = _allDrugsCache.FirstOrDefault(d => d.Id == drug.Id);
+                    if (cachedDrug != null)
+                    {
+                        cachedDrug.Barcode = drug.Barcode;
+                    }
+                }
+                InputBarcode = drug.Barcode;
+                _suppressTextChanged = false;
+
+                SetStatus($"✓ Produit trouvé : {drug.Name} (System Barcode: {drug.Barcode})", false);
+            }
+            else
+            {
+                var res = MessageBox.Show(
+                    $"Le code fabricant '{manufacturerBarcode}' n'est associé à aucun produit.\n\n" +
+                    "Voulez-vous créer un NOUVEAU produit (Oui) ou l'ASSOCIER à un produit existant (Non) ?",
+                    "Code fabricant inconnu",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question);
+
+                if (res == MessageBoxResult.Yes)
+                {
+                    var newDrug = new Drug { CodeBarresFabricant = manufacturerBarcode };
+                    RequestDrugEdit?.Invoke(newDrug);
+                }
+                else if (res == MessageBoxResult.No)
+                {
+                    SetStatus($"Sélectionnez le produit dans la liste pour associer le code '{manufacturerBarcode}'.", false);
+                }
+            }
+        }
+
+        [RelayCommand]
+        private async Task AddLineAsync()
         {
             if (string.IsNullOrWhiteSpace(InputDrugName))
             {
@@ -342,12 +456,43 @@ namespace XDonation.ViewModels
                 return;
             }
 
+            // Automatically generate system barcode if not present
+            string? barcode = InputBarcode;
+            if (string.IsNullOrWhiteSpace(barcode))
+            {
+                if (InputDrugId.HasValue)
+                {
+                    var drug = await _db.Drugs.FindAsync(InputDrugId.Value);
+                    if (drug != null)
+                    {
+                        if (string.IsNullOrWhiteSpace(drug.Barcode))
+                        {
+                            drug.Barcode = await _db.GenerateUniqueProductSystemBarcodeAsync();
+                            _db.Drugs.Update(drug);
+                            await _db.SaveChangesAsync();
+
+                            var cachedDrug = _allDrugsCache.FirstOrDefault(d => d.Id == drug.Id);
+                            if (cachedDrug != null)
+                            {
+                                cachedDrug.Barcode = drug.Barcode;
+                            }
+                        }
+                        barcode = drug.Barcode;
+                    }
+                }
+                else
+                {
+                    barcode = await _db.GenerateUniqueProductSystemBarcodeAsync();
+                }
+            }
+
             var line = new DonationVoucherLine
             {
                 DrugId = InputDrugId,
                 DrugName = InputDrugName.Trim(),
                 Dci = string.IsNullOrWhiteSpace(InputDci) ? null : InputDci.Trim(),
-                Barcode = string.IsNullOrWhiteSpace(InputBarcode) ? null : InputBarcode.Trim(),
+                Barcode = barcode,
+                CodeBarresFabricant = string.IsNullOrWhiteSpace(InputCodeBarresFabricant) ? null : InputCodeBarresFabricant.Trim(),
                 BatchNumber = string.IsNullOrWhiteSpace(InputBatchNumber)
                     ? null
                     : InputBatchNumber.Trim(),
@@ -363,6 +508,7 @@ namespace XDonation.ViewModels
                 existing.DrugName = line.DrugName;
                 existing.Dci = line.Dci;
                 existing.Barcode = line.Barcode;
+                existing.CodeBarresFabricant = line.CodeBarresFabricant;
                 existing.BatchNumber = line.BatchNumber;
                 existing.ExpirationDate = line.ExpirationDate;
                 existing.Quantity = line.Quantity;
@@ -393,6 +539,7 @@ namespace XDonation.ViewModels
             InputDrugName = line.DrugName;
             InputDci = line.Dci ?? string.Empty;
             InputBarcode = line.Barcode ?? string.Empty;
+            InputCodeBarresFabricant = line.CodeBarresFabricant ?? string.Empty;
             InputBatchNumber = line.BatchNumber ?? string.Empty;
             InputExpirationDate = line.ExpirationDate;
             InputQuantity = line.Quantity;
@@ -421,6 +568,7 @@ namespace XDonation.ViewModels
                 Price = "GRATUIT", // Or line.Price if available
                 ExpiryDate = GetLabelExpirationDate(line),
                 LotNumber = GetLabelLotNumber(line),
+                PrintQuantity = line.Quantity
             };
             var dlg = new Views.BarcodeLabelDialog(vm)
             {
@@ -439,7 +587,7 @@ namespace XDonation.ViewModels
 
         private string GetLabelBarcode(DonationVoucherLine line)
         {
-            return GenerateInternalBarcode(line);
+            return FirstNotBlank(line.Barcode, GenerateInternalBarcode(line));
         }
 
         private string GetLabelProductName(DonationVoucherLine line)
@@ -479,15 +627,15 @@ namespace XDonation.ViewModels
                 return;
             if (Lines.Count == 0)
             {
-                SetStatus("Le bon ne contient aucune ligne.", true);
+                SetStatus("L'Entreé ne contient aucune ligne.", true);
                 return;
             }
 
             var confirm = MessageBox.Show(
-                $"{(IsValidated ? "Re-valider" : "Valider")} le bon {VoucherNumber} ?\n\n"
+                $"{(IsValidated ? "Re-valider" : "Valider")} l'Entreé {VoucherNumber} ?\n\n"
                     + $"• {TotalLines} ligne(s)  — {TotalUnits} unité(s)\n\n"
                     + "Le stock par lot sera synchronisé automatiquement.",
-                "Validation du bon de don",
+                "Validation de l'Entreé",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question
             );
@@ -523,7 +671,7 @@ namespace XDonation.ViewModels
 
                 if (voucher == null)
                 {
-                    SetStatus("Bon introuvable.", true);
+                    SetStatus("Entreé introuvable.", true);
                     return;
                 }
 
@@ -544,7 +692,7 @@ namespace XDonation.ViewModels
                 OnPropertyChanged(nameof(CanEdit));
                 OnPropertyChanged(nameof(TotalLines));
                 OnPropertyChanged(nameof(TotalUnits));
-                SetStatus($"Bon {voucher.VoucherNumber} chargé.", false);
+                SetStatus($"Entreé {voucher.VoucherNumber} chargée.", false);
             }
             catch (Exception ex)
             {
@@ -624,6 +772,9 @@ namespace XDonation.ViewModels
                     line.Barcode = string.IsNullOrWhiteSpace(line.Barcode)
                         ? null
                         : line.Barcode.Trim();
+                    line.CodeBarresFabricant = string.IsNullOrWhiteSpace(line.CodeBarresFabricant)
+                        ? null
+                        : line.CodeBarresFabricant.Trim();
                     line.BatchNumber = string.IsNullOrWhiteSpace(line.BatchNumber)
                         ? null
                         : line.BatchNumber.Trim();
@@ -639,6 +790,7 @@ namespace XDonation.ViewModels
                         dbLine.DrugName = line.DrugName;
                         dbLine.Dci = line.Dci;
                         dbLine.Barcode = line.Barcode;
+                        dbLine.CodeBarresFabricant = line.CodeBarresFabricant;
                         dbLine.BatchNumber = line.BatchNumber;
                         dbLine.ExpirationDate = line.ExpirationDate;
                         dbLine.Quantity = line.Quantity;
@@ -745,6 +897,7 @@ namespace XDonation.ViewModels
         private void ClearLineInputs()
         {
             InputBarcode = string.Empty;
+            InputCodeBarresFabricant = string.Empty;
             InputDrugName = string.Empty;
             InputDci = string.Empty;
             InputBatchNumber = string.Empty;
@@ -776,6 +929,16 @@ namespace XDonation.ViewModels
                         linkedDrug.Dci = line.Dci;
                     }
 
+                    if (string.IsNullOrWhiteSpace(linkedDrug.Barcode) && !string.IsNullOrWhiteSpace(line.Barcode))
+                    {
+                        linkedDrug.Barcode = line.Barcode;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(linkedDrug.CodeBarresFabricant) && !string.IsNullOrWhiteSpace(line.CodeBarresFabricant))
+                    {
+                        linkedDrug.CodeBarresFabricant = line.CodeBarresFabricant;
+                    }
+
                     return linkedDrug.Id;
                 }
             }
@@ -794,6 +957,16 @@ namespace XDonation.ViewModels
                     existingDrug.Dci = line.Dci;
                 }
 
+                if (string.IsNullOrWhiteSpace(existingDrug.Barcode) && !string.IsNullOrWhiteSpace(line.Barcode))
+                {
+                    existingDrug.Barcode = line.Barcode;
+                }
+
+                if (string.IsNullOrWhiteSpace(existingDrug.CodeBarresFabricant) && !string.IsNullOrWhiteSpace(line.CodeBarresFabricant))
+                {
+                    existingDrug.CodeBarresFabricant = line.CodeBarresFabricant;
+                }
+
                 return existingDrug.Id;
             }
 
@@ -801,6 +974,8 @@ namespace XDonation.ViewModels
             {
                 Name = line.DrugName.Trim(),
                 Dci = line.Dci,
+                Barcode = line.Barcode,
+                CodeBarresFabricant = line.CodeBarresFabricant,
                 CreatedAt = DateTime.Now,
             };
 

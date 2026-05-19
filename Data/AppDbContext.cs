@@ -25,6 +25,8 @@ namespace XDonation.Data
                 e.Property(d => d.Form).HasMaxLength(100);
                 e.Property(d => d.Barcode).HasMaxLength(100);
                 e.HasIndex(d => d.Barcode).IsUnique().HasFilter("[Barcode] IS NOT NULL");
+                e.Property(d => d.CodeBarresFabricant).HasMaxLength(100);
+                e.HasIndex(d => d.CodeBarresFabricant).IsUnique().HasFilter("[CodeBarresFabricant] IS NOT NULL");
             });
 
             // ── StockBatch ───────────────────────────────────────────────────
@@ -74,6 +76,7 @@ namespace XDonation.Data
                 e.Property(l => l.DrugName).IsRequired().HasMaxLength(300);
                 e.Property(l => l.Dci).HasMaxLength(300);
                 e.Property(l => l.Barcode).HasMaxLength(100);
+                e.Property(l => l.CodeBarresFabricant).HasMaxLength(100);
                 e.Property(l => l.BatchNumber).HasMaxLength(100);
                 e.Property(l => l.Notes).HasMaxLength(500);
 
@@ -89,6 +92,29 @@ namespace XDonation.Data
                  .HasForeignKey(l => l.StockBatchId)
                  .OnDelete(DeleteBehavior.NoAction);
             });
+        }
+
+        public async System.Threading.Tasks.Task<string> GenerateUniqueProductSystemBarcodeAsync()
+        {
+            var barcodes = await Drugs
+                .Where(d => d.Barcode != null && d.Barcode.Length == 8)
+                .Select(d => d.Barcode)
+                .ToListAsync();
+
+            long maxVal = 10000;
+            foreach (var bc in barcodes)
+            {
+                if (long.TryParse(bc, out long val))
+                {
+                    if (val > maxVal && val < 99999999)
+                    {
+                        maxVal = val;
+                    }
+                }
+            }
+
+            long newVal = maxVal + 1;
+            return newVal.ToString("D8");
         }
     }
 }

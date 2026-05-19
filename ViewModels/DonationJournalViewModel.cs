@@ -31,6 +31,40 @@ namespace XDonation.ViewModels
         [ObservableProperty] private bool _isBusy;
         [ObservableProperty] private string _statusMessage = string.Empty;
         [ObservableProperty] private bool _isStatusError;
+        [ObservableProperty] private string _filterBarcode = string.Empty;
+
+        partial void OnSelectedVoucherChanged(DonationVoucher? value)
+        {
+            UpdateLinesMatchStatus();
+        }
+
+        partial void OnFilterBarcodeChanged(string value)
+        {
+            UpdateLinesMatchStatus();
+        }
+
+        private void UpdateLinesMatchStatus()
+        {
+            if (SelectedVoucher == null) return;
+            foreach (var line in SelectedVoucher.Lines)
+            {
+                if (!string.IsNullOrWhiteSpace(FilterBarcode))
+                {
+                    var term = FilterBarcode.Trim().ToLower();
+                    bool systemMatch = line.Barcode?.ToLower().Contains(term) ?? false;
+                    bool fabMatch = line.CodeBarresFabricant?.ToLower().Contains(term) ?? false;
+                    if (systemMatch && fabMatch) line.MatchStatus = "Système & Fab.";
+                    else if (systemMatch) line.MatchStatus = "Système";
+                    else if (fabMatch) line.MatchStatus = "Fabricant";
+                    else line.MatchStatus = string.Empty;
+                }
+                else
+                {
+                    line.MatchStatus = string.Empty;
+                }
+            }
+            OnPropertyChanged(nameof(SelectedVoucher));
+        }
 
         // ── Filters ──────────────────────────────────────────────────────────
         [ObservableProperty] private DateTime? _filterDateFrom;
@@ -67,6 +101,15 @@ namespace XDonation.ViewModels
                 if (!string.IsNullOrWhiteSpace(FilterDonor))
                     query = query.Where(v => v.DonorName.Contains(FilterDonor.Trim()));
 
+                if (!string.IsNullOrWhiteSpace(FilterBarcode))
+                {
+                    var term = FilterBarcode.Trim().ToLower();
+                    query = query.Where(v => v.Lines.Any(l => 
+                        (l.Barcode != null && l.Barcode.ToLower().Contains(term)) ||
+                        (l.CodeBarresFabricant != null && l.CodeBarresFabricant.ToLower().Contains(term))
+                    ));
+                }
+
                 if (FilterStatus == "Validé")
                     query = query.Where(v => v.Status == VoucherStatus.Validated);
 
@@ -84,7 +127,7 @@ namespace XDonation.ViewModels
                     .Where(v => v.Status == VoucherStatus.Validated)
                     .Sum(v => v.TotalUnits);
 
-                StatusMessage = $"{TotalVouchers} bon(s) trouvé(s).";
+                StatusMessage = $"{TotalVouchers} Entreé(s) trouvée(s).";
                 IsStatusError = false;
             }
             catch (Exception ex) { StatusMessage = ex.Message; IsStatusError = true; }
@@ -97,6 +140,7 @@ namespace XDonation.ViewModels
             FilterDateFrom = null;
             FilterDateTo = null;
             FilterDonor = string.Empty;
+            FilterBarcode = string.Empty;
             FilterStatus = "Tous";
             _ = LoadAsync();
         }
@@ -120,7 +164,7 @@ namespace XDonation.ViewModels
         {
             if (SelectedVoucher == null) return;
             
-            var result = MessageBox.Show($"Voulez-vous vraiment supprimer le bon n° {SelectedVoucher.VoucherNumber} ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show($"Voulez-vous vraiment supprimer l'Entreé n° {SelectedVoucher.VoucherNumber} ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
                 _db.DonationVouchers.Remove(SelectedVoucher);
@@ -133,7 +177,7 @@ namespace XDonation.ViewModels
         private void PrintVoucher()
         {
             if (SelectedVoucher == null) return;
-            MessageBox.Show("Impression du bon " + SelectedVoucher.VoucherNumber);
+            MessageBox.Show("Impression de l'Entreé " + SelectedVoucher.VoucherNumber);
         }
     }
 }

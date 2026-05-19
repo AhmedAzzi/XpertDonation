@@ -18,5 +18,8 @@ namespace XDonation.Models
         public DateTime Date { get; set; } = DateTime.Now;
 
         public Guid SessionId { get; set; }
+
+        [NotMapped]
+        public string MatchStatus { get; set; } = string.Empty;
     }
 }

@@ -108,15 +108,28 @@
             <Setter Property="Margin" Value="3,0"/>
             <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
+
+        <!-- ── Root Border Style matching standard textboxes ── -->
+        <Style x:Key="RootBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource FieldBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource BorderHoverBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <!-- ── Root Container ── -->
     <Border x:Name="RootBorder"
-            Background="White"
-            BorderBrush="{StaticResource FieldBorderBrush}"
-            BorderThickness="1"
-            CornerRadius="6"
-            Padding="6,3"
+            Style="{StaticResource RootBorderStyle}"
             MinWidth="160"
             SnapsToDevicePixels="True"
             UseLayoutRounding="True"

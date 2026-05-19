@@ -123,7 +123,7 @@
                     <Button
                         x:Name="BtnComptoir"
                         Click="BtnComptoir_Click"
-                        Content="💊  Comptoir  (F2)"
+                        Content="💊  Sorteé  (F2)"
                         Style="{StaticResource NavTabStyle}" />
                     <Button
                         x:Name="BtnStock"
@@ -138,7 +138,7 @@
                     <Button
                         x:Name="BtnVouchers"
                         Click="BtnVouchers_Click"
-                        Content="📄  Bons de don  (F5)"
+                        Content="📄  Entreé  (F5)"
                         Style="{StaticResource NavTabStyle}" />
                     <Button
                         x:Name="BtnJournal"

@@ -169,6 +169,24 @@ namespace XDonation
                             CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_Barcode ON Drugs(Barcode) WHERE Barcode IS NOT NULL;
                         END
                     ");
+                    db.Database.ExecuteSqlRaw(@"
+                        IF COL_LENGTH('Drugs', 'CodeBarresFabricant') IS NULL
+                        BEGIN
+                            ALTER TABLE Drugs ADD CodeBarresFabricant NVARCHAR(100) NULL;
+                        END
+                    ");
+                    db.Database.ExecuteSqlRaw(@"
+                        IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Drugs_CodeBarresFabricant' AND object_id = OBJECT_ID('Drugs'))
+                        BEGIN
+                            CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_CodeBarresFabricant ON Drugs(CodeBarresFabricant) WHERE CodeBarresFabricant IS NOT NULL;
+                        END
+                    ");
+                    db.Database.ExecuteSqlRaw(@"
+                        IF COL_LENGTH('DonationVoucherLines', 'CodeBarresFabricant') IS NULL
+                        BEGIN
+                            ALTER TABLE DonationVoucherLines ADD CodeBarresFabricant NVARCHAR(100) NULL;
+                        END
+                    ");
 
                     db.Database.ExecuteSqlRaw(@"
                         IF COL_LENGTH('StockBatches', 'IsBlocked') IS NULL

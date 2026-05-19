@@ -17,6 +17,7 @@ namespace XDonation.ViewModels
         [ObservableProperty] private string _dci = string.Empty;
         [ObservableProperty] private string _form = string.Empty;
         [ObservableProperty] private string _barcode = string.Empty;
+        [ObservableProperty] private string _codeBarresFabricant = string.Empty;
         [ObservableProperty] private string _title = "Nouveau produit";
         [ObservableProperty] private string _statusMessage = string.Empty;
         [ObservableProperty] private bool _isStatusError;
@@ -28,15 +29,24 @@ namespace XDonation.ViewModels
         public DrugEditViewModel(AppDbContext db, Drug? drug = null)
         {
             _db = db;
-            _originalDrug = drug;
 
-            if (drug != null)
+            if (drug != null && drug.Id > 0)
             {
+                _originalDrug = drug;
                 Title = "Modifier le produit";
                 Name = drug.Name;
                 Dci = drug.Dci ?? string.Empty;
                 Form = drug.Form ?? string.Empty;
                 Barcode = drug.Barcode ?? string.Empty;
+                CodeBarresFabricant = drug.CodeBarresFabricant ?? string.Empty;
+            }
+            else
+            {
+                Title = "Nouveau produit";
+                if (drug != null)
+                {
+                    CodeBarresFabricant = drug.CodeBarresFabricant ?? string.Empty;
+                }
             }
         }
 
@@ -53,12 +63,17 @@ namespace XDonation.ViewModels
             IsBusy = true;
             try
             {
+                var finalBarcode = string.IsNullOrWhiteSpace(Barcode)
+                    ? await _db.GenerateUniqueProductSystemBarcodeAsync()
+                    : Barcode.Trim();
+
                 if (IsEditMode && _originalDrug != null)
                 {
                     _originalDrug.Name = Name.Trim();
                     _originalDrug.Dci = string.IsNullOrWhiteSpace(Dci) ? null : Dci.Trim();
                     _originalDrug.Form = string.IsNullOrWhiteSpace(Form) ? null : Form.Trim();
-                    _originalDrug.Barcode = string.IsNullOrWhiteSpace(Barcode) ? null : Barcode.Trim();
+                    _originalDrug.Barcode = finalBarcode;
+                    _originalDrug.CodeBarresFabricant = string.IsNullOrWhiteSpace(CodeBarresFabricant) ? null : CodeBarresFabricant.Trim();
                     _db.Drugs.Update(_originalDrug);
                     SavedDrug = _originalDrug;
                 }
@@ -69,7 +84,8 @@ namespace XDonation.ViewModels
                         Name = Name.Trim(),
                         Dci = string.IsNullOrWhiteSpace(Dci) ? null : Dci.Trim(),
                         Form = string.IsNullOrWhiteSpace(Form) ? null : Form.Trim(),
-                        Barcode = string.IsNullOrWhiteSpace(Barcode) ? null : Barcode.Trim(),
+                        Barcode = finalBarcode,
+                        CodeBarresFabricant = string.IsNullOrWhiteSpace(CodeBarresFabricant) ? null : CodeBarresFabricant.Trim(),
                         CreatedAt = DateTime.Now
                     };
                     _db.Drugs.Add(newDrug);

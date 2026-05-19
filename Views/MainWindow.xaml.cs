@@ -123,10 +123,10 @@ namespace XDonation.Views
         }
 
         public void BtnComptoir_Click(object sender, RoutedEventArgs e)
-            => NavigateTo(_posView, "Comptoir Don", BtnComptoir);
+            => NavigateTo(_posView, "Sorteé", BtnComptoir);
 
         public void BtnHistory_Click(object sender, RoutedEventArgs e)
-            => NavigateTo(_historyView, "Journal de Comptoir", BtnHistory);
+            => NavigateTo(_historyView, "Journal de Sorteé", BtnHistory);
 
         public void BtnStock_Click(object sender, RoutedEventArgs e)
             => NavigateTo(_stockLotsView, "Stock", BtnStock);
@@ -135,11 +135,11 @@ namespace XDonation.Views
             => NavigateTo(_productsView, "Catalogue produits", BtnProducts);
 
         public void BtnVouchers_Click(object sender, RoutedEventArgs e)
-            => NavigateTo(_voucherView, "Bon de don", BtnVouchers);
+            => NavigateTo(_voucherView, "Entreé", BtnVouchers);
 
         public void BtnJournal_Click(object sender, RoutedEventArgs e)
         {
-            NavigateTo(_journalView, "Journal des bons de don", BtnJournal);
+            NavigateTo(_journalView, "Journal des Entreés", BtnJournal);
             if (_journalView.DataContext is DonationJournalViewModel vm)
             {
                 vm.LoadCommand.Execute(null);

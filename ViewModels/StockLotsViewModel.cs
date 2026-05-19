@@ -159,6 +159,7 @@ namespace XDonation.ViewModels
                 Price = "GRATUIT",
                 ExpiryDate = selected.ExpirationDate?.ToString("dd-MM-yyyy") ?? string.Empty,
                 LotNumber = selected.BatchNumber ?? string.Empty,
+                PrintQuantity = selected.QuantityRemaining
             };
 
             var dlg = new Views.BarcodeLabelDialog(vm)

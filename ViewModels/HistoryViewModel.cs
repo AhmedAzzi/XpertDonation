@@ -34,6 +34,12 @@ namespace XDonation.ViewModels
         [ObservableProperty] private DateTime _endDate;
         [ObservableProperty] private int _totalSessions;
         [ObservableProperty] private int _totalUnits;
+        [ObservableProperty] private string _filterBarcode = string.Empty;
+
+        partial void OnFilterBarcodeChanged(string value)
+        {
+            LoadDetails();
+        }
 
         private SessionGroup? _selectedSession;
         public SessionGroup? SelectedSession
@@ -57,10 +63,21 @@ namespace XDonation.ViewModels
             IsBusy = true;
             try
             {
-                var dispensations = await _db.Dispensations
+                var query = _db.Dispensations
                     .Include(u => u.StockBatch)
                     .ThenInclude(b => b.Drug)
-                    .Where(u => u.Date.Date >= StartDate.Date && u.Date.Date <= EndDate.Date)
+                    .Where(u => u.Date.Date >= StartDate.Date && u.Date.Date <= EndDate.Date);
+
+                if (!string.IsNullOrWhiteSpace(FilterBarcode))
+                {
+                    var term = FilterBarcode.Trim().ToLower();
+                    query = query.Where(u => 
+                        (u.StockBatch.Barcode != null && u.StockBatch.Barcode.ToLower().Contains(term)) ||
+                        (u.StockBatch.Drug.CodeBarresFabricant != null && u.StockBatch.Drug.CodeBarresFabricant.ToLower().Contains(term))
+                    );
+                }
+
+                var dispensations = await query
                     .OrderByDescending(u => u.Date)
                     .ToListAsync();
 
@@ -83,7 +100,7 @@ namespace XDonation.ViewModels
                 TotalSessions = Sessions.Count;
                 TotalUnits = Sessions.Sum(s => s.TotalUnits);
 
-                StatusMessage = $"{Sessions.Count} session(s) de dispensation trouvée(s).";
+                StatusMessage = $"{Sessions.Count} session(s) de Sorteé trouvée(s).";
                 IsStatusError = false;
                 DetailItems.Clear();
             }
@@ -104,6 +121,20 @@ namespace XDonation.ViewModels
             if (SelectedSession == null) return;
             foreach (var item in SelectedSession.Dispensations)
             {
+                if (!string.IsNullOrWhiteSpace(FilterBarcode))
+                {
+                    var term = FilterBarcode.Trim().ToLower();
+                    bool systemMatch = item.StockBatch.Barcode?.ToLower().Contains(term) ?? false;
+                    bool fabMatch = item.StockBatch.Drug.CodeBarresFabricant?.ToLower().Contains(term) ?? false;
+                    if (systemMatch && fabMatch) item.MatchStatus = "Système & Fab.";
+                    else if (systemMatch) item.MatchStatus = "Système";
+                    else if (fabMatch) item.MatchStatus = "Fabricant";
+                    else item.MatchStatus = string.Empty;
+                }
+                else
+                {
+                    item.MatchStatus = string.Empty;
+                }
                 DetailItems.Add(item);
             }
         }

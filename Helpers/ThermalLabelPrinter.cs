@@ -19,7 +19,9 @@ namespace XDonation.Helpers
             string exp,
             string header,
             bool isFree,
-            string price = "")
+            string price = "",
+            string manufacturerBarcode = "",
+            int quantity = 1)
         {
             if (string.IsNullOrWhiteSpace(barcode))
                 throw new ArgumentException("Barcode cannot be empty", nameof(barcode));
@@ -145,15 +147,13 @@ namespace XDonation.Helpers
                 "1",
                 90,
                 1,
-
-1,
+                1,
                 $"LOT:{lot}"
             );
-
             // =========================
             // PRINT
             // =========================
-            builder.Print(1);
+            builder.Print(quantity);
 
             try
             {

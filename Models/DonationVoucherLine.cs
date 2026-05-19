@@ -31,6 +31,13 @@ namespace XDonation.Models
         [MaxLength(100)]
         public string? Barcode { get; set; }
 
+        /// <summary>Code-barres du fabricant</summary>
+        [MaxLength(100)]
+        public string? CodeBarresFabricant { get; set; }
+
+        [NotMapped]
+        public string MatchStatus { get; set; } = string.Empty;
+
         /// <summary>Numéro de lot du fabricant</summary>
         [MaxLength(100)]
         public string? BatchNumber { get; set; }

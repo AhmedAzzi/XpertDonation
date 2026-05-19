@@ -25,6 +25,9 @@ namespace XDonation.Models
         [MaxLength(100)]
         public string? Barcode { get; set; }
 
+        [MaxLength(100)]
+        public string? CodeBarresFabricant { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Navigation

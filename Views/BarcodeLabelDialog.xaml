@@ -13,10 +13,10 @@
 
     <Window.Resources>
         <Style x:Key="OptionCheckBox" TargetType="CheckBox">
-            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Margin" Value="0,0,0,4" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontSize" Value="13" />
-            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Padding" Value="10,5" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
@@ -193,53 +193,74 @@
                         </StackPanel>
 
                         <!--  Fields  -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel>
-                                <TextBlock
-                                    Margin="0,0,0,10"
-                                    FontSize="12"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="Informations Générales" />
-                                <CheckBox
-                                    Content="Nom pharmacie"
-                                    IsChecked="{Binding ShowPharmacyName}"
-                                    Style="{StaticResource OptionCheckBox}" />
-                                <CheckBox
-                                    Content="Image code-barres"
-                                    IsChecked="{Binding ShowBarcodeImage}"
-                                    Style="{StaticResource OptionCheckBox}" />
-                                <CheckBox
-                                    Content="N° code-barres"
-                                    IsChecked="{Binding ShowBarcodeNumber}"
-                                    Style="{StaticResource OptionCheckBox}" />
+                        <StackPanel Grid.Row="1">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="Informations Générales" />
+                            <CheckBox
+                                Content="Nom pharmacie"
+                                IsChecked="{Binding ShowPharmacyName}"
+                                Style="{StaticResource OptionCheckBox}" />
+                            <CheckBox
+                                Content="Image code-barres"
+                                IsChecked="{Binding ShowBarcodeImage}"
+                                Style="{StaticResource OptionCheckBox}" />
+                            <CheckBox
+                                Content="N° code-barres"
+                                IsChecked="{Binding ShowBarcodeNumber}"
+                                Style="{StaticResource OptionCheckBox}" />
 
-                                <Separator Margin="0,12,0,16" Opacity="0.4" />
+                            <Separator Margin="0,8,0,10" Opacity="0.4" />
 
-                                <TextBlock
-                                    Margin="0,0,0,10"
-                                    FontSize="12"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="Détails du Produit" />
-                                <CheckBox
-                                    Content="Nom produit"
-                                    IsChecked="{Binding ShowProductName}"
-                                    Style="{StaticResource OptionCheckBox}" />
-                                <CheckBox
-                                    Content="Prix de vente"
-                                    IsChecked="{Binding ShowPrice}"
-                                    Style="{StaticResource OptionCheckBox}" />
-                                <CheckBox
-                                    Content="Date d'expiration"
-                                    IsChecked="{Binding ShowExpiry}"
-                                    Style="{StaticResource OptionCheckBox}" />
-                                <CheckBox
-                                    Content="Numéro de Lot"
-                                    IsChecked="{Binding ShowLot}"
-                                    Style="{StaticResource OptionCheckBox}" />
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="Détails du Produit" />
+                            <CheckBox
+                                Content="Nom produit"
+                                IsChecked="{Binding ShowProductName}"
+                                Style="{StaticResource OptionCheckBox}" />
+                            <CheckBox
+                                Content="Prix de vente"
+                                IsChecked="{Binding ShowPrice}"
+                                Style="{StaticResource OptionCheckBox}" />
+                            <CheckBox
+                                Content="Date d'expiration"
+                                IsChecked="{Binding ShowExpiry}"
+                                Style="{StaticResource OptionCheckBox}" />
+                            <CheckBox
+                                Content="Numéro de Lot"
+                                IsChecked="{Binding ShowLot}"
+                                Style="{StaticResource OptionCheckBox}" />
+
+                            <Separator Margin="0,8,0,10" Opacity="0.4" />
+
+                            <!-- Quantity to Print -->
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Quantité à imprimer :" 
+                                           VerticalAlignment="Center" 
+                                           FontFamily="Segoe UI Semibold"
+                                           FontSize="13" 
+                                           Foreground="{StaticResource TextPrimaryBrush}" 
+                                           Margin="0,0,12,0" />
+                                <TextBox Width="80" 
+                                         Height="28"
+                                         MinHeight="28"
+                                         Padding="6,2"
+                                         VerticalContentAlignment="Center" 
+                                         HorizontalContentAlignment="Center"
+                                         FontFamily="Segoe UI Semibold" 
+                                         FontSize="13" 
+                                         FontWeight="Bold"
+                                         Style="{StaticResource InputStyle}"
+                                         Text="{Binding PrintQuantity, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
-                        </ScrollViewer>
+                        </StackPanel>
 
                         <!--  Actions  -->
                         <StackPanel Grid.Row="2" Margin="0,24,0,0">

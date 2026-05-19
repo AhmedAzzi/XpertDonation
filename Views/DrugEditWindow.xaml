@@ -61,8 +61,13 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="6" Margin="0,0,0,16">
-                    <TextBlock Text="Code-barres" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
-                    <TextBox Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BarcodeInputStyle}"/>
+                    <TextBlock Text="Code-barres Interne (Généré)" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BarcodeInputStyle}" IsEnabled="False" Opacity="0.7" ToolTip="Généré automatiquement si laissé vide"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="7" Margin="0,0,0,16">
+                    <TextBlock Text="Code-barres Fabricant" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding CodeBarresFabricant, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BarcodeInputStyle}"/>
                 </StackPanel>
 
                 <!-- Status Message -->

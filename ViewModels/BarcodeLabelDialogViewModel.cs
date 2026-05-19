@@ -82,6 +82,9 @@ namespace XDonation.ViewModels
         private string _statusMessage = "Ready";
         public string StatusMessage { get => _statusMessage; set { _statusMessage = value; OnPropertyChanged(); } }
 
+        private int _printQuantity = 1;
+        public int PrintQuantity { get => _printQuantity; set { _printQuantity = value; OnPropertyChanged(); } }
+
         private List<string> _availablePrinters = new();
         public List<string> AvailablePrinters { get => _availablePrinters; set { _availablePrinters = value; OnPropertyChanged(); } }
 
@@ -127,6 +130,12 @@ namespace XDonation.ViewModels
                 return;
             }
 
+            if (PrintQuantity <= 0)
+            {
+                StatusMessage = "✗ Qty must be > 0";
+                return;
+            }
+
             try
             {
                 StatusMessage = "Printing...";
@@ -138,7 +147,8 @@ namespace XDonation.ViewModels
                     exp: ExpiryDate,
                     header: PharmacyName,
                     isFree: IsFree,
-                    price: Price
+                    price: Price,
+                    quantity: PrintQuantity
                 );
                 StatusMessage = "✓ Success!";
                 PrintRequested?.Invoke();

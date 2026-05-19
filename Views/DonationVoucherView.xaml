@@ -43,7 +43,7 @@
                 FontFamily="Segoe UI Semibold"
                 FontSize="15"
                 Foreground="{StaticResource AccentBrush}"
-                Text="NOUVEAU BON DE DON" />
+                Text="NOUVELLE ENTREÉ" />
 
             <!--  Header Fields Box  -->
             <Border
@@ -130,9 +130,9 @@
             BorderThickness="1">
             <Grid Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.2*" />
-                    <!--  Code-barres  -->
-                    <ColumnDefinition Width="2.5*" />
+                    <ColumnDefinition Width="1.5*" />
+                    <!--  Code Fab.  -->
+                    <ColumnDefinition Width="2.8*" />
                     <!--  Médicament + btn  -->
                     <ColumnDefinition Width="1.5*" />
                     <!--  DCI  -->
@@ -146,24 +146,26 @@
                     <!--  Button  -->
                 </Grid.ColumnDefinitions>
 
-                <!--  Code-barres  -->
+                <!--  Code Fabricant  -->
                 <StackPanel Grid.Column="0" Margin="0,0,6,0">
                     <TextBlock
                         Margin="0,0,0,2"
                         FontSize="10"
-                        Foreground="#888"
-                        Text="Code-barres" />
+                        Foreground="#3B82F6"
+                        FontWeight="SemiBold"
+                        Text="Code Fab. 🏷️" />
                     <TextBox
-                        x:Name="TxtBarcode"
+                        x:Name="TxtCodeFab"
                         MinHeight="26"
                         Padding="4,2"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1"
+                        BorderBrush="#3B82F6"
+                        BorderThickness="1.5"
                         FontFamily="Segoe UI"
                         FontSize="11"
-                        Text="{Binding InputBarcode, UpdateSourceTrigger=PropertyChanged}">
+                        ToolTip="Scanner ou saisir le code-barres fabricant"
+                        Text="{Binding InputCodeBarresFabricant, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" />
+                            <KeyBinding Key="Enter" Command="{Binding ScanManufacturerBarcodeCommand}" />
                         </TextBox.InputBindings>
                     </TextBox>
                 </StackPanel>
@@ -460,6 +462,10 @@
                     Width="1.5*"
                     Binding="{Binding Dci}"
                     Header="DCI" />
+                <DataGridTextColumn
+                    Width="1.2*"
+                    Binding="{Binding CodeBarresFabricant}"
+                    Header="Code Fab." />
                 <DataGridTextColumn
                     Width="1.2*"
                     Binding="{Binding Barcode}"
