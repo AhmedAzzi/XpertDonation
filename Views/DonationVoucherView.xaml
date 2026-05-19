@@ -1,220 +1,309 @@
-<UserControl x:Class="XDonation.Views.DonationVoucherView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:XDonation.ViewModels"
-             xmlns:conv="clr-namespace:XDonation.Converters"
-             xmlns:ctrl="clr-namespace:XDonation.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="720" d:DesignWidth="1080"
-             Background="{StaticResource WorkspaceBrush}">
+<UserControl
+    x:Class="XDonation.Views.DonationVoucherView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:XDonation.Converters"
+    xmlns:ctrl="clr-namespace:XDonation.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:XDonation.ViewModels"
+    d:DesignHeight="720"
+    d:DesignWidth="1080"
+    Background="{StaticResource WorkspaceBrush}"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <conv:WidthOffsetConverter x:Key="WidthOffset"/>
+        <conv:WidthOffsetConverter x:Key="WidthOffset" />
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Key="F8" Command="{Binding ValidateVoucherCommand}"/>
-        <KeyBinding Key="Escape" Command="{Binding CancelCommand}"/>
+        <KeyBinding Key="F8" Command="{Binding ValidateVoucherCommand}" />
+        <KeyBinding Key="Escape" Command="{Binding CancelCommand}" />
     </UserControl.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>  <!-- Header: title + fields -->
-            <RowDefinition Height="Auto"/>  <!-- Line entry form -->
-            <RowDefinition Height="Auto"/>  <!-- DataGrid column headers -->
-            <RowDefinition Height="*"/>     <!-- DataGrid content -->
-            <RowDefinition Height="Auto"/>  <!-- Footer -->
+            <RowDefinition Height="Auto" />
+            <!--  Header: title + fields  -->
+            <RowDefinition Height="Auto" />
+            <!--  Line entry form  -->
+            <RowDefinition Height="Auto" />
+            <!--  DataGrid column headers  -->
+            <RowDefinition Height="*" />
+            <!--  DataGrid content  -->
+            <RowDefinition Height="Auto" />
+            <!--  Footer  -->
         </Grid.RowDefinitions>
 
-        <!-- ═══ HEADER SECTION ═══════════════════════════════════════════ -->
+        <!--  ═══ HEADER SECTION ═══════════════════════════════════════════  -->
         <StackPanel Grid.Row="0" Margin="20,12,20,0">
-            <!-- Title -->
-            <TextBlock Text="NOUVEAU BON DE DON" 
-                       FontFamily="Segoe UI Semibold" FontSize="15" 
-                       Foreground="{StaticResource AccentBrush}"
-                       Margin="0,0,0,12"/>
+            <!--  Title  -->
+            <TextBlock
+                Margin="0,0,0,12"
+                FontFamily="Segoe UI Semibold"
+                FontSize="15"
+                Foreground="{StaticResource AccentBrush}"
+                Text="NOUVEAU BON DE DON" />
 
-            <!-- Header Fields Box -->
-            <Border Background="White" BorderBrush="{StaticResource BorderBrush}" 
-                    BorderThickness="1" CornerRadius="4" Padding="12,10">
+            <!--  Header Fields Box  -->
+            <Border
+                Padding="12,10"
+                Background="White"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="12"/>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="12"/>
-                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- Date de réception -->
+                    <!--  Date de réception  -->
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="Date de réception :" 
-                                   FontFamily="Segoe UI" FontSize="11" 
-                                   Foreground="#666" Margin="0,0,0,4"/>
-                        <ctrl:DateInputBox Date="{Binding ReceiptDate, UpdateSourceTrigger=PropertyChanged}"
-                                           IsEnabled="{Binding CanEdit}"
-                                           MinHeight="28"/>
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            FontFamily="Segoe UI"
+                            FontSize="11"
+                            Foreground="#666"
+                            Text="Date de réception :" />
+                        <ctrl:DateInputBox
+                            MinHeight="28"
+                            Date="{Binding ReceiptDate, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding CanEdit}" />
                     </StackPanel>
 
-                    <!-- Donneur -->
+                    <!--  Donneur  -->
                     <StackPanel Grid.Column="2">
-                        <TextBlock Text="Donneur :" 
-                                   FontFamily="Segoe UI" FontSize="11" 
-                                   Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding DonorName, UpdateSourceTrigger=PropertyChanged}" 
-                                 IsEnabled="{Binding CanEdit}"
-                                 MinHeight="28" Padding="8,4" 
-                                 FontFamily="Segoe UI" FontSize="12"
-                                 Background="White"
-                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                 VerticalContentAlignment="Center"/>
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            FontFamily="Segoe UI"
+                            FontSize="11"
+                            Foreground="#666"
+                            Text="Donneur :" />
+                        <TextBox
+                            MinHeight="28"
+                            Padding="8,4"
+                            VerticalContentAlignment="Center"
+                            Background="White"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            IsEnabled="{Binding CanEdit}"
+                            Text="{Binding DonorName, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
 
-                    <!-- Notes / Observations -->
+                    <!--  Notes / Observations  -->
                     <StackPanel Grid.Column="4">
-                        <TextBlock Text="Notes / Observations :" 
-                                   FontFamily="Segoe UI" FontSize="11" 
-                                   Foreground="#666" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" 
-                                 IsEnabled="{Binding CanEdit}"
-                                 MinHeight="28" Padding="8,4" 
-                                 FontFamily="Segoe UI" FontSize="12"
-                                 Background="White"
-                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                                 VerticalContentAlignment="Center"/>
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            FontFamily="Segoe UI"
+                            FontSize="11"
+                            Foreground="#666"
+                            Text="Notes / Observations :" />
+                        <TextBox
+                            MinHeight="28"
+                            Padding="8,4"
+                            VerticalContentAlignment="Center"
+                            Background="White"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            IsEnabled="{Binding CanEdit}"
+                            Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </Grid>
             </Border>
         </StackPanel>
 
-        <!-- ═══ LINE ENTRY FORM ═══════════════════════════════════════════ -->
-        <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" 
-                Background="White" Margin="16,12,16,8" Padding="8,4">
+        <!--  ═══ LINE ENTRY FORM ═══════════════════════════════════════════  -->
+        <Border
+            Grid.Row="1"
+            Margin="16,12,16,8"
+            Padding="8,4"
+            Background="White"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1">
             <Grid Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.2*"/> <!-- Code-barres -->
-                    <ColumnDefinition Width="2.5*"/>   <!-- Médicament + btn -->
-                    <ColumnDefinition Width="1.5*"/>   <!-- DCI -->
-                    <ColumnDefinition Width="1.2*"/> <!-- N° Lot -->
-                    <ColumnDefinition Width="100"/>  <!-- Expiration -->
-                    <ColumnDefinition Width="60"/>   <!-- Qté -->
-                    <ColumnDefinition Width="Auto"/> <!-- Button -->
+                    <ColumnDefinition Width="1.2*" />
+                    <!--  Code-barres  -->
+                    <ColumnDefinition Width="2.5*" />
+                    <!--  Médicament + btn  -->
+                    <ColumnDefinition Width="1.5*" />
+                    <!--  DCI  -->
+                    <ColumnDefinition Width="1.2*" />
+                    <!--  N° Lot  -->
+                    <ColumnDefinition Width="170" />
+                    <!--  Expiration  -->
+                    <ColumnDefinition Width="60" />
+                    <!--  Qté  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Button  -->
                 </Grid.ColumnDefinitions>
 
-                <!-- Code-barres -->
+                <!--  Code-barres  -->
                 <StackPanel Grid.Column="0" Margin="0,0,6,0">
-                    <TextBlock Text="Code-barres" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <TextBox x:Name="TxtBarcode" 
-                             Text="{Binding InputBarcode, UpdateSourceTrigger=PropertyChanged}" 
-                             MinHeight="26" Padding="4,2" FontFamily="Segoe UI" FontSize="11"
-                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        FontSize="10"
+                        Foreground="#888"
+                        Text="Code-barres" />
+                    <TextBox
+                        x:Name="TxtBarcode"
+                        MinHeight="26"
+                        Padding="4,2"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        FontFamily="Segoe UI"
+                        FontSize="11"
+                        Text="{Binding InputBarcode, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}"/>
+                            <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" />
                         </TextBox.InputBindings>
                     </TextBox>
                 </StackPanel>
 
-                <!-- Médicament * -->
+                <!--  Médicament *  -->
                 <StackPanel Grid.Column="1" Margin="0,0,6,0">
-                    <TextBlock Text="Médicament *" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        FontSize="10"
+                        Foreground="#888"
+                        Text="Médicament *" />
                     <Grid x:Name="DrugSearchGrid">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <!-- TextBox with embedded toggle area -->
-                        <Border x:Name="DrugSearchBorder"
-                                Grid.Column="0"
-                                Background="White"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="4"
-                                SnapsToDevicePixels="True">
+                        <!--  TextBox with embedded toggle area  -->
+                        <Border
+                            x:Name="DrugSearchBorder"
+                            Grid.Column="0"
+                            Background="White"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="24" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox x:Name="DrugTextBox"
-                                         Grid.Column="0"
-                                         Text="{Binding InputDrugName, UpdateSourceTrigger=PropertyChanged}"
-                                         Background="Transparent"
-                                         BorderThickness="0"
-                                         Padding="4,2"
-                                         FontFamily="Segoe UI"
-                                         FontSize="12"
-                                         VerticalContentAlignment="Center"
-                                         PreviewKeyDown="DrugTextBox_PreviewKeyDown"
-                                         LostKeyboardFocus="DrugTextBox_LostKeyboardFocus"/>
-                                <!-- Dropdown toggle button -->
-                                <ToggleButton x:Name="ToggleDropdownBtn"
-                                              Grid.Column="1"
-                                              Background="Transparent"
-                                              BorderThickness="0"
-                                              IsChecked="{Binding IsSuggestionOpen, Mode=TwoWay}"
-                                              Cursor="Hand">
-                                    <Path Data="M 0 0 L 4 4 L 8 0 Z"
-                                          Fill="#94A3B8"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          SnapsToDevicePixels="True"/>
+                                <TextBox
+                                    x:Name="DrugTextBox"
+                                    Grid.Column="0"
+                                    Padding="4,2"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    LostKeyboardFocus="DrugTextBox_LostKeyboardFocus"
+                                    PreviewKeyDown="DrugTextBox_PreviewKeyDown"
+                                    Text="{Binding InputDrugName, UpdateSourceTrigger=PropertyChanged}" />
+                                <!--  Dropdown toggle button  -->
+                                <ToggleButton
+                                    x:Name="ToggleDropdownBtn"
+                                    Grid.Column="1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    IsChecked="{Binding IsSuggestionOpen, Mode=TwoWay}">
+                                    <Path
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Data="M 0 0 L 4 4 L 8 0 Z"
+                                        Fill="#94A3B8"
+                                        SnapsToDevicePixels="True" />
                                 </ToggleButton>
                             </Grid>
                         </Border>
-                        <Button Grid.Column="1" Content="+" MinWidth="24" MinHeight="26"
-                                FontSize="14" FontWeight="Bold" Padding="0"
-                                Background="#1D6CB5" BorderBrush="#1D6CB5" BorderThickness="0,1,1,1"
-                                Command="{Binding ShowDrugDialogCommand}" Cursor="Hand"
-                                Foreground="White"
-                                VerticalAlignment="Bottom" ToolTip="Ajouter un nouveau produit"/>
+                        <Button
+                            Grid.Column="1"
+                            MinWidth="24"
+                            MinHeight="26"
+                            Margin="2,0,0,0"
+                            Padding="0"
+                            VerticalAlignment="Bottom"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1,1,1,1"
+                            Click="OptionsBtn_Click"
+                            Content="..."
+                            Cursor="Hand"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#64748B"
+                            ToolTip="Options produit">
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Command="{Binding CreateNewDrugCommand}" Header="Nouveau" />
+                                    <MenuItem Command="{Binding ShowDrugDialogCommand}" Header="Modifier" />
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
                     </Grid>
-                    <!-- Suggestions Dropdown Popup -->
-                    <Popup x:Name="SuggestionsPopup"
-                           IsOpen="{Binding IsSuggestionOpen}"
-                           StaysOpen="False"
-                           PlacementTarget="{Binding ElementName=DrugSearchGrid}"
-                           Placement="Bottom"
-                           HorizontalOffset="-20"
-                           Width="{Binding ActualWidth, ElementName=DrugSearchGrid, Converter={StaticResource WidthOffset}, ConverterParameter=40}"
-                           MaxHeight="250"
-                           AllowsTransparency="True">
-                        <Border Background="White"
-                                BorderBrush="#CBD5E1"
-                                BorderThickness="1"
-                                CornerRadius="0,0,6,6"
-                                Margin="0,0,0,0"
-                                SnapsToDevicePixels="True">
+                    <!--  Suggestions Dropdown Popup  -->
+                    <Popup
+                        x:Name="SuggestionsPopup"
+                        Width="{Binding ActualWidth, ElementName=DrugSearchGrid, Converter={StaticResource WidthOffset}, ConverterParameter=40}"
+                        MaxHeight="250"
+                        AllowsTransparency="True"
+                        HorizontalOffset="-20"
+                        IsOpen="{Binding IsSuggestionOpen}"
+                        Placement="Bottom"
+                        PlacementTarget="{Binding ElementName=DrugSearchGrid}"
+                        StaysOpen="False">
+                        <Border
+                            Margin="0,0,0,0"
+                            Background="White"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            CornerRadius="0,0,6,6"
+                            SnapsToDevicePixels="True">
                             <Border.Effect>
-                                <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.12" ShadowDepth="2" Direction="270"/>
+                                <DropShadowEffect
+                                    BlurRadius="12"
+                                    Direction="270"
+                                    Opacity="0.12"
+                                    ShadowDepth="2"
+                                    Color="#000000" />
                             </Border.Effect>
-                            <ListBox x:Name="SuggestionsList"
-                                     ItemsSource="{Binding DrugSuggestions}"
-                                     BorderThickness="0"
-                                     Background="Transparent"
-                                     MaxHeight="250"
-                                     SelectionMode="Single"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                     KeyDown="SuggestionsList_KeyDown"
-                                     MouseDoubleClick="SuggestionsList_MouseDoubleClick">
+                            <ListBox
+                                x:Name="SuggestionsList"
+                                MaxHeight="250"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                ItemsSource="{Binding DrugSuggestions}"
+                                KeyDown="SuggestionsList_KeyDown"
+                                MouseDoubleClick="SuggestionsList_MouseDoubleClick"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                SelectionMode="Single">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
-                                        <Setter Property="Padding" Value="8,4"/>
-                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Setter Property="Padding" Value="8,4" />
+                                        <Setter Property="Cursor" Value="Hand" />
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ListBoxItem">
-                                                    <Border x:Name="bg" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                                                        <ContentPresenter/>
+                                                    <Border
+                                                        x:Name="bg"
+                                                        Padding="{TemplateBinding Padding}"
+                                                        SnapsToDevicePixels="True">
+                                                        <ContentPresenter />
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bg" Property="Background" Value="#EFF6FF"/>
+                                                            <Setter TargetName="bg" Property="Background" Value="#EFF6FF" />
                                                         </Trigger>
                                                         <Trigger Property="IsSelected" Value="True">
-                                                            <Setter TargetName="bg" Property="Background" Value="#DBEAFE"/>
+                                                            <Setter TargetName="bg" Property="Background" Value="#DBEAFE" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -226,22 +315,24 @@
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0"
-                                                       Text="{Binding Name}"
-                                                       FontFamily="Segoe UI Semibold"
-                                                       FontSize="12"
-                                                       Foreground="#1E293B"
-                                                       TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock Grid.Column="1"
-                                                       Text="{Binding Dci, StringFormat='| {0}'}"
-                                                       FontFamily="Segoe UI"
-                                                       FontSize="10"
-                                                       Foreground="#94A3B8"
-                                                       Margin="6,0,0,0"
-                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                FontFamily="Segoe UI Semibold"
+                                                FontSize="12"
+                                                Foreground="#1E293B"
+                                                Text="{Binding Name}"
+                                                TextTrimming="CharacterEllipsis" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Margin="6,0,0,0"
+                                                FontFamily="Segoe UI"
+                                                FontSize="10"
+                                                Foreground="#94A3B8"
+                                                Text="{Binding Dci, StringFormat='| {0}'}"
+                                                TextTrimming="CharacterEllipsis" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -250,91 +341,171 @@
                     </Popup>
                 </StackPanel>
 
-                <!-- DCI -->
+                <!--  DCI  -->
                 <StackPanel Grid.Column="2" Margin="0,0,6,0">
-                    <TextBlock Text="DCI" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <TextBox Text="{Binding InputDci, UpdateSourceTrigger=PropertyChanged}" 
-                             MinHeight="26" Padding="4,2" FontFamily="Segoe UI" FontSize="11"
-                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        FontSize="10"
+                        Foreground="#888"
+                        Text="DCI" />
+                    <TextBox
+                        MinHeight="26"
+                        Padding="4,2"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        FontFamily="Segoe UI"
+                        FontSize="11"
+                        Text="{Binding InputDci, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <!-- N° Lot -->
+                <!--  N° Lot  -->
                 <StackPanel Grid.Column="3" Margin="0,0,6,0">
-                    <TextBlock Text="N° Lot" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <TextBox Text="{Binding InputBatchNumber, UpdateSourceTrigger=PropertyChanged}" 
-                             MinHeight="26" Padding="4,2" FontFamily="Segoe UI" FontSize="11"
-                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        FontSize="10"
+                        Foreground="#888"
+                        Text="N° Lot" />
+                    <TextBox
+                        MinHeight="26"
+                        Padding="4,2"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        FontFamily="Segoe UI"
+                        FontSize="11"
+                        Text="{Binding InputBatchNumber, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <!-- Expiration -->
+                <!--  Expiration  -->
                 <StackPanel Grid.Column="4" Margin="0,0,6,0">
-                    <TextBlock Text="Expiration" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <ctrl:DateInputBox Date="{Binding InputExpirationDate, UpdateSourceTrigger=PropertyChanged}"
-                                       MinHeight="26"/>
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        FontSize="10"
+                        Foreground="#888"
+                        Text="Expiration" />
+                    <ctrl:DateInputBox MinHeight="26" Date="{Binding InputExpirationDate, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <!-- Qté * -->
+                <!--  Qté *  -->
                 <StackPanel Grid.Column="5" Margin="0,0,6,0">
-                    <TextBlock Text="Qté *" FontSize="10" Foreground="#888" Margin="0,0,0,2"/>
-                    <TextBox Text="{Binding InputQuantity, UpdateSourceTrigger=PropertyChanged}" 
-                             MinHeight="26" Padding="4,2" FontFamily="Segoe UI" FontSize="11"
-                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                             HorizontalContentAlignment="Center"/>
+                    <TextBlock
+                        Margin="0,0,0,2"
+                        FontSize="10"
+                        Foreground="#888"
+                        Text="Qté *" />
+                    <TextBox
+                        MinHeight="26"
+                        Padding="4,2"
+                        HorizontalContentAlignment="Center"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        FontFamily="Segoe UI"
+                        FontSize="11"
+                        Text="{Binding InputQuantity, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <!-- Aj. Ligne button -->
-                <StackPanel Grid.Column="6" VerticalAlignment="Bottom" Margin="4,0,0,0">
-                    <Button Content="{Binding IsLineEditMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Maj. Ligne|Ajt. Ligne'}"
-                            Command="{Binding AddLineCommand}" 
-                            MinHeight="26" Padding="12,0" MinWidth="70"
-                            Style="{StaticResource PrimaryButtonStyle}"/>
-                    <Button Content="Annuler modif." Command="{Binding CancelLineEditCommand}" Margin="0,4,0,0"
-                            Visibility="{Binding IsLineEditMode, Converter={StaticResource BoolToVisConverter}}"
-                            Background="Transparent" BorderThickness="0" Foreground="#7F8C8D" FontSize="10"/>
+                <!--  Aj. Ligne button  -->
+                <StackPanel
+                    Grid.Column="6"
+                    Margin="4,0,0,0"
+                    VerticalAlignment="Bottom">
+                    <Button
+                        MinWidth="70"
+                        MinHeight="26"
+                        Padding="12,0"
+                        Command="{Binding AddLineCommand}"
+                        Content="{Binding IsLineEditMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Maj. Ligne|Ajt. Ligne'}"
+                        Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button
+                        Margin="0,4,0,0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Command="{Binding CancelLineEditCommand}"
+                        Content="Annuler modif."
+                        FontSize="10"
+                        Foreground="#7F8C8D"
+                        Visibility="{Binding IsLineEditMode, Converter={StaticResource BoolToVisConverter}}" />
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- ═══ LINES DATA GRID ═══════════════════════════════════════════ -->
-        <DataGrid Grid.Row="2" Grid.RowSpan="2"
-                  ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLine}"
-                  Style="{StaticResource AppDataGridStyle}"
-                  Margin="16,0,16,0"
-                  BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
-                <DataGrid.Resources>
-                    <ContextMenu x:Key="RowContextMenu">
-                        <MenuItem Header="Imprimer code-barres" Command="{Binding DataContext.PrintBarcodeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" />
-                    </ContextMenu>
-                </DataGrid.Resources>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}" />
-                    </Style>
-                </DataGrid.RowStyle>
+        <!--  ═══ LINES DATA GRID ═══════════════════════════════════════════  -->
+        <DataGrid
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Margin="16,0,16,0"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            ItemsSource="{Binding Lines}"
+            SelectedItem="{Binding SelectedLine}"
+            Style="{StaticResource AppDataGridStyle}">
+            <DataGrid.Resources>
+                <ContextMenu x:Key="RowContextMenu">
+                    <MenuItem
+                        Command="{Binding DataContext.PrintBarcodeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                        CommandParameter="{Binding}"
+                        Header="Imprimer code-barres" />
+                </ContextMenu>
+            </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Médicament" Binding="{Binding DrugName}" Width="2*"/>
-                <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="1.5*"/>
-                <DataGridTextColumn Header="Code Barres" Binding="{Binding Barcode}" Width="1.2*"/>
-                <DataGridTextColumn Header="Lot" Binding="{Binding BatchNumber}" Width="1*"/>
-                <DataGridTextColumn Header="Exp." Binding="{Binding ExpirationLabel}" Width="0.8*"/>
-                <DataGridTextColumn Header="Qté" Binding="{Binding Quantity}" Width="0.6*">
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding DrugName}"
+                    Header="Médicament" />
+                <DataGridTextColumn
+                    Width="1.5*"
+                    Binding="{Binding Dci}"
+                    Header="DCI" />
+                <DataGridTextColumn
+                    Width="1.2*"
+                    Binding="{Binding Barcode}"
+                    Header="Code Barres" />
+                <DataGridTextColumn
+                    Width="1*"
+                    Binding="{Binding BatchNumber}"
+                    Header="Lot" />
+                <DataGridTextColumn
+                    Width="0.8*"
+                    Binding="{Binding ExpirationLabel}"
+                    Header="Exp." />
+                <DataGridTextColumn
+                    Width="0.6*"
+                    Binding="{Binding Quantity}"
+                    Header="Qté">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="FontWeight" Value="Bold" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
 
-                <!-- Actions (hidden column for edit/remove) -->
+                <!--  Actions (hidden column for edit/remove)  -->
                 <DataGridTemplateColumn Width="0.8*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Command="{Binding DataContext.EditLineCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}" Content="✏️" Background="Transparent" BorderThickness="0" Opacity="0.7" FontSize="10"/>
-                                <Button Command="{Binding DataContext.RemoveLineCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}" Content="❌" Background="Transparent" BorderThickness="0" Opacity="0.7" Margin="2,0,0,0" FontSize="10"/>
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                <Button
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.EditLineCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Content="✏️"
+                                    FontSize="10"
+                                    Opacity="0.7" />
+                                <Button
+                                    Margin="2,0,0,0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.RemoveLineCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Content="❌"
+                                    FontSize="10"
+                                    Opacity="0.7" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -342,48 +513,96 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- ═══ FOOTER ═══════════════════════════════════════════════════ -->
-        <Border Grid.Row="4" Background="White" BorderBrush="{StaticResource BorderBrush}" 
-                BorderThickness="0,1,0,0" Padding="16,8">
+        <!--  ═══ FOOTER ═══════════════════════════════════════════════════  -->
+        <Border
+            Grid.Row="4"
+            Padding="16,8"
+            Background="White"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>   <!-- Status message -->
-                    <ColumnDefinition Width="Auto"/> <!-- Totals -->
-                    <ColumnDefinition Width="Auto"/> <!-- Cancel -->
-                    <ColumnDefinition Width="Auto"/> <!-- Validate -->
+                    <ColumnDefinition Width="*" />
+                    <!--  Status message  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Totals  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Cancel  -->
+                    <ColumnDefinition Width="Auto" />
+                    <!--  Validate  -->
                 </Grid.ColumnDefinitions>
 
-                <!-- Status message -->
-                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" 
-                           VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="12"
-                           Foreground="{Binding IsStatusError, Converter={StaticResource ErrorToColorConverter}}"/>
+                <!--  Status message  -->
+                <TextBlock
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe UI"
+                    FontSize="12"
+                    Foreground="{Binding IsStatusError, Converter={StaticResource ErrorToColorConverter}}"
+                    Text="{Binding StatusMessage}" />
 
-                <!-- Totals -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
-                    <TextBlock Text="Total lignes : " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding TotalLines}" FontFamily="Segoe UI Semibold" FontSize="13" 
-                               Foreground="{StaticResource PrimaryDarkBrush}" Margin="0,0,16,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="Unités : " Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding TotalUnits}" FontFamily="Segoe UI Semibold" FontSize="13" 
-                               Foreground="{StaticResource PrimaryDarkBrush}" VerticalAlignment="Center"/>
+                <!--  Totals  -->
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,0,16,0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="#666"
+                        Text="Total lignes : " />
+                    <TextBlock
+                        Margin="0,0,16,0"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe UI Semibold"
+                        FontSize="13"
+                        Foreground="{StaticResource PrimaryDarkBrush}"
+                        Text="{Binding TotalLines}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="#666"
+                        Text="Unités : " />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe UI Semibold"
+                        FontSize="13"
+                        Foreground="{StaticResource PrimaryDarkBrush}"
+                        Text="{Binding TotalUnits}" />
                 </StackPanel>
 
-                <!-- Cancel button -->
-                <Button Grid.Column="2" Command="{Binding CancelCommand}" 
-                        MinHeight="34" Padding="16,0" Margin="0,0,8,0"
-                        Style="{StaticResource GhostButtonStyle}">
+                <!--  Cancel button  -->
+                <Button
+                    Grid.Column="2"
+                    MinHeight="34"
+                    Margin="0,0,8,0"
+                    Padding="16,0"
+                    Command="{Binding CancelCommand}"
+                    Style="{StaticResource GhostButtonStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="✕" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Annuler (ESC)" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock
+                            Margin="0,0,6,0"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Text="✕" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Text="Annuler (ESC)" />
                     </StackPanel>
                 </Button>
 
-                <!-- Validate button -->
-                <Button Grid.Column="3" Command="{Binding ValidateVoucherCommand}" 
-                        Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}"
-                        MinHeight="34" Padding="24,0" MinWidth="140"
-                        Style="{StaticResource PrimaryButtonStyle}">
-                    <TextBlock Text="{Binding ValidateActionLabel, StringFormat='{}{0} (F8)'}" FontFamily="Segoe UI Semibold"/>
+                <!--  Validate button  -->
+                <Button
+                    Grid.Column="3"
+                    MinWidth="140"
+                    MinHeight="34"
+                    Padding="24,0"
+                    Command="{Binding ValidateVoucherCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}">
+                    <TextBlock FontFamily="Segoe UI Semibold" Text="{Binding ValidateActionLabel, StringFormat='{}{0} (F8)'}" />
                 </Button>
             </Grid>
         </Border>

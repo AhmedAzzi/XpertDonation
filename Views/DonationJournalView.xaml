@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Filters & KPIs -->
             <RowDefinition Height="*"/>    <!-- Journal Grid -->
+            <RowDefinition Height="12"/>   <!-- Splitter -->
             <RowDefinition Height="2*"/>   <!-- Detail Grid -->
             <RowDefinition Height="Auto"/> <!-- Footer -->
         </Grid.RowDefinitions>
@@ -126,6 +127,8 @@
             </Grid>
         </Border>
 
+
+        <GridSplitter Grid.Row="2" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#E2E8F0" Margin="0,4"/>
 
         <!-- ═══ BOTTOM: DETAIL GRID ════════════════════════════════════════ -->
         <Border Grid.Row="3" Background="White" CornerRadius="6" ClipToBounds="True">

@@ -48,6 +48,7 @@ namespace XDonation.ViewModels
 
         [ObservableProperty] private string _codeBarreFilter = string.Empty;
         [ObservableProperty] private string _dciFilter = string.Empty;
+        [ObservableProperty] private string _nameFilter = string.Empty;
         [ObservableProperty] private bool _showZeroQuantities;
         [ObservableProperty] private StockFilterType _selectedFilter = StockFilterType.All;
         [ObservableProperty] private StockBatch? _selectedLot;
@@ -174,6 +175,13 @@ namespace XDonation.ViewModels
             var filtered = _allBatches.AsEnumerable();
 
             // Text filters
+            if (!string.IsNullOrWhiteSpace(NameFilter))
+            {
+                var term = NameFilter.Trim().ToLower();
+                filtered = filtered.Where(b =>
+                    b.Drug?.Name != null && b.Drug.Name.ToLower().Contains(term));
+            }
+
             if (!string.IsNullOrWhiteSpace(CodeBarreFilter))
             {
                 var term = CodeBarreFilter.Trim().ToLower();

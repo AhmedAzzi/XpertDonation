@@ -97,7 +97,7 @@ namespace XDonation.ViewModels
         private string _inputBatchNumber = string.Empty;
 
         [ObservableProperty]
-        private DateTime? _inputExpirationDate = DateTime.Today.AddYears(1);
+        private DateTime? _inputExpirationDate;
 
         [ObservableProperty]
         private int _inputQuantity = 1;
@@ -258,6 +258,12 @@ namespace XDonation.ViewModels
             InputBarcode = drug.Barcode ?? string.Empty;
             IsSuggestionOpen = false;
             _suppressTextChanged = false;
+        }
+
+        [RelayCommand]
+        private void CreateNewDrug()
+        {
+            RequestDrugEdit?.Invoke(null);
         }
 
         [RelayCommand]
@@ -742,7 +748,7 @@ namespace XDonation.ViewModels
             InputDrugName = string.Empty;
             InputDci = string.Empty;
             InputBatchNumber = string.Empty;
-            InputExpirationDate = DateTime.Today.AddYears(1);
+            InputExpirationDate = null;
             InputQuantity = 1;
             InputDrugId = null;
         }

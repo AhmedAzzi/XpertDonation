@@ -29,6 +29,7 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>  <!-- Filtrer label -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Nom Produit -->
                         <ColumnDefinition Width="Auto"/>  <!-- Code Barre -->
                         <ColumnDefinition Width="Auto"/>  <!-- DCI -->
                         <ColumnDefinition Width="*"/>     <!-- Spacer -->
@@ -43,8 +44,19 @@
                                Foreground="{StaticResource TextPrimaryBrush}"
                                VerticalAlignment="Top" Margin="0,4,20,0"/>
 
-                    <!-- Code Barre -->
+                    <!-- Nom Produit -->
                     <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                        <TextBlock Text="Nom Produit" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
+                        <TextBox MinWidth="170" MinHeight="26" Padding="6,2"
+                                 FontFamily="Segoe UI" FontSize="12"
+                                 Background="White"
+                                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                 Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="OnFilterTextChanged"/>
+                    </StackPanel>
+
+                    <!-- Code Barre -->
+                    <StackPanel Grid.Column="2" Margin="0,0,16,0">
                         <TextBlock Text="Code Barre" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
                         <TextBox MinWidth="170" MinHeight="26" Padding="6,2"
                                  FontFamily="Segoe UI" FontSize="12"
@@ -55,7 +67,7 @@
                     </StackPanel>
 
                     <!-- DCI -->
-                    <StackPanel Grid.Column="2" Margin="0,0,16,0">
+                    <StackPanel Grid.Column="3" Margin="0,0,16,0">
                         <TextBlock Text="DCI" Style="{StaticResource LabelStyle}" Margin="0,0,0,3"/>
                         <TextBox MinWidth="170" MinHeight="26" Padding="6,2"
                                  FontFamily="Segoe UI" FontSize="12"
@@ -66,7 +78,7 @@
                     </StackPanel>
 
                     <!-- Left Radio Column -->
-                    <StackPanel Grid.Column="4" Margin="0,0,0,0">
+                    <StackPanel Grid.Column="5" Margin="0,0,0,0">
                         <RadioButton Content="Tous" GroupName="StockFilter"
                                      IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=All}"
                                      FontFamily="Segoe UI" FontSize="11"
@@ -103,7 +115,7 @@
                     </StackPanel>
 
                     <!-- Right Radio Column -->
-                    <StackPanel Grid.Column="6" Margin="0,0,0,0">
+                    <StackPanel Grid.Column="7" Margin="0,0,0,0">
                         <RadioButton GroupName="StockFilter"
                                      IsChecked="{Binding SelectedFilter, Converter={StaticResource EnumBool}, ConverterParameter=Exp90Days}"
                                      FontFamily="Segoe UI" FontSize="11"

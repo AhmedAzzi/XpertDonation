@@ -114,6 +114,8 @@
             </Grid>
         </Border>
 
+        <GridSplitter Grid.Row="3" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#E2E8F0" Margin="0,4"/>
+
         <!-- ═══ DETAIL GRID ══════════════════════════════════════════════ -->
         <Border Grid.Row="4" Background="White" CornerRadius="6" ClipToBounds="True" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
             <Grid>
