@@ -236,7 +236,6 @@
                     <DataGridTextColumn Header="N° Bon / Facture" Width="1.5*" Binding="{Binding VoucherNumber}"/>
                     <DataGridTextColumn Header="Type" Width="1*" Binding="{Binding EntryType}"/>
                     <DataGridTextColumn Header="Date" Width="1.2*" Binding="{Binding Date, StringFormat=dd/MM/yyyy}"/>
-                    <DataGridTextColumn Header="Tiers (Donneur)" Width="2*" Binding="{Binding DonorName}"/>
                     <DataGridTextColumn Header="Qté Reçue" Width="1*" Binding="{Binding QuantityReceived}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">

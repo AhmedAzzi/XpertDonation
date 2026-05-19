@@ -21,9 +21,6 @@ namespace XDonation.Models
         [Required, MaxLength(30)]
         public string VoucherNumber { get; set; } = string.Empty;
 
-        /// <summary>Nom du donneur (particulier, association, institution…)</summary>
-        [MaxLength(200)]
-        public string DonorName { get; set; } = string.Empty;
 
         /// <summary>Type de donneur : Particulier, Association, Institution, Autre</summary>
         [MaxLength(100)]

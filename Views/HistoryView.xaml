@@ -88,7 +88,7 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource SectionHeaderBorderStyle}">
-                    <TextBlock Text="Journal de Sorteé (Historique des dispensations)" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
+                    <TextBlock Text="Journal de Sortie (Historique des dispensations)" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
                 </Border>
 
                 <DataGrid Grid.Row="1" x:Name="SessionsGrid"

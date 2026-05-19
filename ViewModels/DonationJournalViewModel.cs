@@ -69,7 +69,6 @@ namespace XDonation.ViewModels
         // ── Filters ──────────────────────────────────────────────────────────
         [ObservableProperty] private DateTime? _filterDateFrom;
         [ObservableProperty] private DateTime? _filterDateTo;
-        [ObservableProperty] private string _filterDonor = string.Empty;
         [ObservableProperty] private string _filterStatus = "Tous"; // Tous, Validé
 
         // ── Stats ─────────────────────────────────────────────────────────────
@@ -98,8 +97,6 @@ namespace XDonation.ViewModels
                 if (FilterDateTo.HasValue)
                     query = query.Where(v => v.ReceiptDate <= FilterDateTo.Value.Date.AddDays(1).AddSeconds(-1));
 
-                if (!string.IsNullOrWhiteSpace(FilterDonor))
-                    query = query.Where(v => v.DonorName.Contains(FilterDonor.Trim()));
 
                 if (!string.IsNullOrWhiteSpace(FilterBarcode))
                 {
@@ -127,7 +124,7 @@ namespace XDonation.ViewModels
                     .Where(v => v.Status == VoucherStatus.Validated)
                     .Sum(v => v.TotalUnits);
 
-                StatusMessage = $"{TotalVouchers} Entreé(s) trouvée(s).";
+                StatusMessage = $"{TotalVouchers} Entrée(s) trouvée(s).";
                 IsStatusError = false;
             }
             catch (Exception ex) { StatusMessage = ex.Message; IsStatusError = true; }
@@ -139,7 +136,6 @@ namespace XDonation.ViewModels
         {
             FilterDateFrom = null;
             FilterDateTo = null;
-            FilterDonor = string.Empty;
             FilterBarcode = string.Empty;
             FilterStatus = "Tous";
             _ = LoadAsync();
@@ -164,7 +160,7 @@ namespace XDonation.ViewModels
         {
             if (SelectedVoucher == null) return;
             
-            var result = MessageBox.Show($"Voulez-vous vraiment supprimer l'Entreé n° {SelectedVoucher.VoucherNumber} ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show($"Voulez-vous vraiment supprimer l'entrée n° {SelectedVoucher.VoucherNumber} ?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
                 _db.DonationVouchers.Remove(SelectedVoucher);
@@ -177,7 +173,7 @@ namespace XDonation.ViewModels
         private void PrintVoucher()
         {
             if (SelectedVoucher == null) return;
-            MessageBox.Show("Impression de l'Entreé " + SelectedVoucher.VoucherNumber);
+            MessageBox.Show("Impression de l'entrée " + SelectedVoucher.VoucherNumber);
         }
     }
 }

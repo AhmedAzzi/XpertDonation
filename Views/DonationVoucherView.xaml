@@ -43,7 +43,7 @@
                 FontFamily="Segoe UI Semibold"
                 FontSize="15"
                 Foreground="{StaticResource AccentBrush}"
-                Text="NOUVELLE ENTREÉ" />
+                Text="NOUVELLE ENTRÉE" />
 
             <!--  Header Fields Box  -->
             <Border
@@ -56,9 +56,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*" />
                         <ColumnDefinition Width="12" />
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="12" />
-                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="8*" />
                     </Grid.ColumnDefinitions>
 
                     <!--  Date de réception  -->
@@ -75,29 +73,8 @@
                             IsEnabled="{Binding CanEdit}" />
                     </StackPanel>
 
-                    <!--  Donneur  -->
-                    <StackPanel Grid.Column="2">
-                        <TextBlock
-                            Margin="0,0,0,4"
-                            FontFamily="Segoe UI"
-                            FontSize="11"
-                            Foreground="#666"
-                            Text="Donneur :" />
-                        <TextBox
-                            MinHeight="28"
-                            Padding="8,4"
-                            VerticalContentAlignment="Center"
-                            Background="White"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            IsEnabled="{Binding CanEdit}"
-                            Text="{Binding DonorName, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-
                     <!--  Notes / Observations  -->
-                    <StackPanel Grid.Column="4">
+                    <StackPanel Grid.Column="2">
                         <TextBlock
                             Margin="0,0,0,4"
                             FontFamily="Segoe UI"
@@ -291,6 +268,7 @@
                                     <Style TargetType="ListBoxItem">
                                         <Setter Property="Padding" Value="8,4" />
                                         <Setter Property="Cursor" Value="Hand" />
+                                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_PreviewMouseLeftButtonDown" />
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ListBoxItem">

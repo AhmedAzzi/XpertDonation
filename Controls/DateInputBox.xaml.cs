@@ -356,6 +356,11 @@ namespace XDonation.Controls
                 // ── Enter → validate and commit ──
                 case Key.Return:
                     TryCommitDate();
+                    if (tb == YearBox)
+                    {
+                        var request = new TraversalRequest(FocusNavigationDirection.Next);
+                        tb.MoveFocus(request);
+                    }
                     e.Handled = true;
                     break;
 

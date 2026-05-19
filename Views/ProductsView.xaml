@@ -89,6 +89,11 @@
                           HeadersVisibility="Column" SelectionMode="Single"
                           MinRowHeight="32" BorderThickness="0" Background="Transparent"
                           Style="{StaticResource AppDataGridStyle}">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Produit" Binding="{Binding Name}" Width="2*"/>
                         <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="1.5*"/>

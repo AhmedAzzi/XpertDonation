@@ -100,7 +100,7 @@ namespace XDonation.ViewModels
                 TotalSessions = Sessions.Count;
                 TotalUnits = Sessions.Sum(s => s.TotalUnits);
 
-                StatusMessage = $"{Sessions.Count} session(s) de Sorteé trouvée(s).";
+                StatusMessage = $"{Sessions.Count} session(s) de Sortie trouvée(s).";
                 IsStatusError = false;
                 DetailItems.Clear();
             }

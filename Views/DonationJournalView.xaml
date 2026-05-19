@@ -40,10 +40,6 @@
                             <ctrl:DateInputBox Date="{Binding FilterDateTo, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
-                        <StackPanel Margin="0,0,10,0">
-                            <TextBlock Text="Donneur :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
-                            <TextBox Text="{Binding FilterDonor, UpdateSourceTrigger=PropertyChanged}" Width="150" MinHeight="28" VerticalContentAlignment="Center" BorderBrush="#DDD"/>
-                        </StackPanel>
 
                         <StackPanel Margin="0,0,10,0">
                             <TextBlock Text="Code-barres :" FontSize="11" Foreground="#444" Margin="0,0,0,4"/>
@@ -70,7 +66,7 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
                     <Border Background="White" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="8" MinWidth="90" Margin="0,0,10,0" Padding="8">
                         <StackPanel HorizontalAlignment="Center">
-                            <TextBlock Text="Total Entreés" FontSize="11" Foreground="#0066CC" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Total Entrées" FontSize="11" Foreground="#0066CC" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding TotalVouchers}" FontSize="20" FontWeight="Bold" Foreground="#0066CC" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Border>
@@ -93,7 +89,7 @@
                 </Grid.RowDefinitions>
                 
                 <Border Style="{StaticResource SectionHeaderBorderStyle}">
-                    <TextBlock Text="Journal des Entreés" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
+                    <TextBlock Text="Journal des Entrées" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
                 </Border>
 
                 <DataGrid Grid.Row="1" ItemsSource="{Binding Vouchers}" SelectedItem="{Binding SelectedVoucher}"
@@ -107,10 +103,9 @@
                                       CommandParameter="{Binding SelectedVoucher}"/>
                     </DataGrid.InputBindings>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="N° Entreé" Binding="{Binding VoucherNumber}" Width="120"/>
+                        <DataGridTextColumn Header="N° Entrée" Binding="{Binding VoucherNumber}" Width="120"/>
                         <DataGridTextColumn Header="Type" Binding="{Binding DonorType}" Width="100"/>
                         <DataGridTextColumn Header="Date" Binding="{Binding ReceiptDate, StringFormat=dd/MM/yyyy}" Width="100"/>
-                        <DataGridTextColumn Header="Donneur" Binding="{Binding DonorName}" Width="2*"/>
                         <DataGridTextColumn Header="Nb Lignes" Binding="{Binding Lines.Count}" Width="80">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -145,8 +140,8 @@
 
                 <Border Style="{StaticResource SectionHeaderBorderStyle}">
                     <Grid>
-                        <TextBlock Text="Détail — Lignes de l'Entreé" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
-                        <TextBlock Text="Sélectionnez une Entreé ▲" Foreground="#CBD5E1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="11"/>
+                        <TextBlock Text="Détail — Lignes de l'Entrée" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="12"/>
+                        <TextBlock Text="Sélectionnez une entrée ▲" Foreground="#CBD5E1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="11"/>
                     </Grid>
                 </Border>
 
@@ -186,7 +181,7 @@
                 <!-- Placeholder when no voucher is selected -->
                 <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"
                             Visibility="{Binding SelectedVoucher, Converter={StaticResource NullVis}}">
-                    <TextBlock Text="⚠ Sélectionnez une Entreé dans la liste ci-dessus pour voir ses lignes." 
+                    <TextBlock Text="⚠ Sélectionnez une entrée dans la liste ci-dessus pour voir ses lignes." 
                                Foreground="#64748B" FontSize="14" FontFamily="Segoe UI"/>
                 </StackPanel>
             </Grid>

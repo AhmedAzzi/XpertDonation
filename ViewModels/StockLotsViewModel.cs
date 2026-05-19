@@ -30,7 +30,6 @@ namespace XDonation.ViewModels
         public string VoucherNumber { get; set; } = string.Empty;
         public string EntryType { get; set; } = string.Empty;
         public DateTime? Date { get; set; }
-        public string DonorName { get; set; } = string.Empty;
         public int QuantityReceived { get; set; }
     }
 
@@ -251,7 +250,6 @@ namespace XDonation.ViewModels
                         VoucherNumber = line.DonationVoucher?.VoucherNumber ?? "-",
                         EntryType = "Réception Don",
                         Date = line.DonationVoucher?.ReceiptDate,
-                        DonorName = line.DonationVoucher?.DonorName ?? "-",
                         QuantityReceived = line.Quantity
                     });
                 }

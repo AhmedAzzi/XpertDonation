@@ -57,7 +57,6 @@ namespace XDonation.Data
                 e.HasKey(v => v.Id);
                 e.Property(v => v.VoucherNumber).IsRequired().HasMaxLength(30);
                 e.HasIndex(v => v.VoucherNumber).IsUnique();
-                e.Property(v => v.DonorName).HasMaxLength(200);
                 e.Property(v => v.DonorType).HasMaxLength(100);
                 e.Property(v => v.Notes).HasMaxLength(1000);
                 e.Property(v => v.Status).HasConversion<int>();

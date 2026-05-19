@@ -49,6 +49,16 @@ namespace XDonation.Views
             }
         }
 
+        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListBoxItem item && item.DataContext is Drug selected && DataContext is DonationVoucherViewModel vm)
+            {
+                vm.SelectDrugSuggestionCommand.Execute(selected);
+                SuggestionsPopup.IsOpen = false;
+                e.Handled = true;
+            }
+        }
+
         private void DrugTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Down)

@@ -43,5 +43,17 @@ namespace XDonation.Views
                 e.Handled = true;
             }
         }
+
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row && row.Item is Drug drug)
+            {
+                if (DataContext is ManageDonationsViewModel vm)
+                {
+                    vm.SelectedDrug = drug;
+                    vm.ShowEditDrugFormCommand.Execute(null);
+                }
+            }
+        }
     }
 }

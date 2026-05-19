@@ -6,26 +6,28 @@
     Background="{StaticResource WorkspaceBrush}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="220"/>
         </Grid.ColumnDefinitions>
 
         <!--  ═══ MAIN CONTENT ══════════════════════════════════════════════  -->
-        <DockPanel Grid.Column="0" Margin="12,10,12,10">
+        <DockPanel Grid.Column="0"
+                   Margin="12,10,12,10">
 
             <!--  Title block — docked top  -->
-            <StackPanel Margin="0,0,0,8" DockPanel.Dock="Top">
-                 <TextBlock
-                     Margin="0,0,0,4"
-                     FontFamily="Segoe UI Light"
-                     FontSize="22"
-                     Foreground="{StaticResource TextPrimaryBrush}"
-                     Text="Bienvenue dans XDonation" />
+            <StackPanel Margin="0,0,0,8"
+                        DockPanel.Dock="Top">
+                <TextBlock
+                    Margin="0,0,0,4"
+                    FontFamily="Segoe UI Light"
+                    FontSize="22"
+                    Foreground="{StaticResource TextPrimaryBrush}"
+                    Text="Bienvenue dans XDonation"/>
                 <TextBlock
                     FontFamily="Segoe UI"
                     FontSize="13"
                     Foreground="{StaticResource TextSecondaryBrush}"
-                    Text="Système de dispensation de médicaments donnés" />
+                    Text="Système de dispensation de médicaments donnés"/>
             </StackPanel>
 
             <!--  Summary stats bar — docked bottom  -->
@@ -42,7 +44,7 @@
                         BlurRadius="8"
                         Opacity="0.06"
                         ShadowDepth="2"
-                        Color="#000000" />
+                        Color="#000000"/>
                 </Border.Effect>
                 <UniformGrid Columns="3">
                     <StackPanel HorizontalAlignment="Center">
@@ -51,13 +53,13 @@
                             FontFamily="Segoe UI Semibold"
                             FontSize="26"
                             Foreground="{StaticResource AccentBrush}"
-                            Text="{Binding TotalDonations}" />
+                            Text="{Binding TotalDonations}"/>
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="Références en stock" />
+                            Text="Produits"/>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock
@@ -65,13 +67,13 @@
                             FontFamily="Segoe UI Semibold"
                             FontSize="26"
                             Foreground="{StaticResource SuccessBrush}"
-                            Text="{Binding TotalDrugs}" />
+                            Text="{Binding TotalDrugs}"/>
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="Unités disponibles" />
+                            Text="Stock"/>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock
@@ -79,19 +81,20 @@
                             FontFamily="Segoe UI Semibold"
                             FontSize="26"
                             Foreground="{StaticResource DangerBrush}"
-                            Text="{Binding ExpiredLots}" />
+                            Text="{Binding ExpiredLots}"/>
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="Lots périmés" />
+                            Text="Lots périmés"/>
                     </StackPanel>
                 </UniformGrid>
             </Border>
 
             <!--  6 Tiles — fill remaining space with UniformGrid 2×3  -->
-            <UniformGrid Columns="3" Rows="2">
+            <UniformGrid Columns="3"
+                         Rows="2">
 
                 <!--  Tile 1: Comptoir Don  -->
                 <Border
@@ -104,7 +107,7 @@
                             BlurRadius="8"
                             Opacity="0.12"
                             ShadowDepth="2"
-                            Color="#000000" />
+                            Color="#000000"/>
                     </Border.Effect>
                     <Button
                         x:Name="BtnGoComptoir"
@@ -113,26 +116,27 @@
                         Click="BtnGoComptoir_Click"
                         Foreground="White"
                         Style="{StaticResource TileButtonStyle}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="36"
-                                    Text="💊" />
-                                <TextBlock
-                                    Margin="0,6,0,3"
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Sorteé" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI"
-                                    FontSize="12.5"
-                                    Foreground="White"
-                                    Opacity="0.85"
-                                    Text="Dispensation de médicaments" />
-                            </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="💊"/>
+                            <TextBlock
+                                Margin="0,6,0,3"
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Sortie"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI"
+                                FontSize="12.5"
+                                Foreground="White"
+                                Opacity="0.85"
+                                Text="Dispensation de médicaments"/>
+                        </StackPanel>
                     </Button>
                 </Border>
 
@@ -147,7 +151,7 @@
                             BlurRadius="8"
                             Opacity="0.12"
                             ShadowDepth="2"
-                            Color="#000000" />
+                            Color="#000000"/>
                     </Border.Effect>
                     <Button
                         x:Name="BtnGoStock"
@@ -156,32 +160,33 @@
                         Click="BtnGoStock_Click"
                         Foreground="White"
                         Style="{StaticResource TileButtonStyle}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="36"
-                                    Text="📦" />
-                                <TextBlock
-                                    Margin="0,6,0,3"
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Stock" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI"
-                                    FontSize="12.5"
-                                    Foreground="White"
-                                    Opacity="0.85"
-                                    Text="Lots périmés" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="17"
-                                    Foreground="White"
-                                    Text="{Binding ExpiredLots}" />
-                            </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="📦"/>
+                            <TextBlock
+                                Margin="0,6,0,3"
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Stock"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI"
+                                FontSize="12.5"
+                                Foreground="White"
+                                Opacity="0.85"
+                                Text="Lots périmés"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="17"
+                                Foreground="White"
+                                Text="{Binding ExpiredLots}"/>
+                        </StackPanel>
                     </Button>
                 </Border>
 
@@ -196,7 +201,7 @@
                             BlurRadius="8"
                             Opacity="0.12"
                             ShadowDepth="2"
-                            Color="#000000" />
+                            Color="#000000"/>
                     </Border.Effect>
                     <Button
                         x:Name="BtnGoHistory"
@@ -205,26 +210,27 @@
                         Click="BtnGoHistory_Click"
                         Foreground="White"
                         Style="{StaticResource TileButtonStyle}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="36"
-                                    Text="📋" />
-                                <TextBlock
-                                    Margin="0,6,0,3"
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Historique" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI"
-                                    FontSize="12.5"
-                                    Foreground="White"
-                                    Opacity="0.85"
-                                    Text="Journal des dispensations" />
-                            </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="📋"/>
+                            <TextBlock
+                                Margin="0,6,0,3"
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Historique"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI"
+                                FontSize="12.5"
+                                Foreground="White"
+                                Opacity="0.85"
+                                Text="Journal des dispensations"/>
+                        </StackPanel>
                     </Button>
                 </Border>
 
@@ -239,7 +245,7 @@
                             BlurRadius="8"
                             Opacity="0.12"
                             ShadowDepth="2"
-                            Color="#000000" />
+                            Color="#000000"/>
                     </Border.Effect>
                     <Button
                         x:Name="BtnGoVouchers"
@@ -248,26 +254,27 @@
                         Click="BtnGoVouchers_Click"
                         Foreground="White"
                         Style="{StaticResource TileButtonStyle}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="36"
-                                    Text="📄" />
-                                <TextBlock
-                                    Margin="0,6,0,3"
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Entreé" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI"
-                                    FontSize="12.5"
-                                    Foreground="White"
-                                    Opacity="0.85"
-                                    Text="Créer et gérer les bons" />
-                            </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="📄"/>
+                            <TextBlock
+                                Margin="0,6,0,3"
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Entrée"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI"
+                                FontSize="12.5"
+                                Foreground="White"
+                                Opacity="0.85"
+                                Text="Créer et gérer les bons"/>
+                        </StackPanel>
                     </Button>
                 </Border>
 
@@ -282,7 +289,7 @@
                             BlurRadius="8"
                             Opacity="0.12"
                             ShadowDepth="2"
-                            Color="#000000" />
+                            Color="#000000"/>
                     </Border.Effect>
                     <Button
                         x:Name="BtnGoJournal"
@@ -291,26 +298,27 @@
                         Click="BtnGoJournal_Click"
                         Foreground="White"
                         Style="{StaticResource TileButtonStyle}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="36"
-                                    Text="📑" />
-                                <TextBlock
-                                    Margin="0,6,0,3"
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Journal des Entreés" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI"
-                                    FontSize="12.5"
-                                    Foreground="White"
-                                    Opacity="0.85"
-                                    Text="Historique des validations" />
-                            </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="📑"/>
+                            <TextBlock
+                                Margin="0,6,0,3"
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Journal des Entrées"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI"
+                                FontSize="12.5"
+                                Foreground="White"
+                                Opacity="0.85"
+                                Text="Historique des validations"/>
+                        </StackPanel>
                     </Button>
                 </Border>
 
@@ -325,7 +333,7 @@
                             BlurRadius="8"
                             Opacity="0.12"
                             ShadowDepth="2"
-                            Color="#000000" />
+                            Color="#000000"/>
                     </Border.Effect>
                     <Button
                         x:Name="BtnGoProducts"
@@ -334,26 +342,27 @@
                         Click="BtnGoProducts_Click"
                         Foreground="White"
                         Style="{StaticResource TileButtonStyle}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontSize="36"
-                                    Text="🗃️" />
-                                <TextBlock
-                                    Margin="0,6,0,3"
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI Semibold"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    Text="Produits" />
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    FontFamily="Segoe UI"
-                                    FontSize="12.5"
-                                    Foreground="White"
-                                    Opacity="0.85"
-                                    Text="Catalogue médicaments" />
-                            </StackPanel>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="🗃️"/>
+                            <TextBlock
+                                Margin="0,6,0,3"
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI Semibold"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Produits"/>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe UI"
+                                FontSize="12.5"
+                                Foreground="White"
+                                Opacity="0.85"
+                                Text="Catalogue médicaments"/>
+                        </StackPanel>
                     </Button>
                 </Border>
 
@@ -375,117 +384,13 @@
                     DockPanel.Dock="Top">
                     <TextBlock
                         FontFamily="Segoe UI Semibold"
-                        FontSize="15"
+                        FontSize="16"
                         Foreground="White"
-                        Text="Indicateurs" />
+                        Text="Notification"/>
                 </Border>
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-
-                        <!-- Références totales → All -->
-                        <Button Command="{Binding NavigateWithFilterCommand}"
-                                CommandParameter="{x:Static vm:StockFilterType.All}"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Cursor="Hand"
-                                HorizontalContentAlignment="Stretch">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="Border"
-                                                        BorderBrush="#E2E8F0"
-                                                        BorderThickness="0,0,0,1"
-                                                        Background="Transparent">
-                                                    <ContentPresenter />
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Border Width="48" Height="48" Background="#DBEAFE">
-                                    <TextBlock HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="20"
-                                               Text="📦" />
-                                </Border>
-                                <StackPanel Grid.Column="1" Margin="10,6">
-                                    <TextBlock FontFamily="Segoe UI"
-                                               FontSize="12"
-                                               Foreground="{StaticResource AccentBrush}"
-                                               Text="Références totales" />
-                                    <TextBlock FontFamily="Segoe UI Semibold"
-                                               FontSize="19"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               Text="{Binding TotalDonations}" />
-                                </StackPanel>
-                            </Grid>
-                        </Button>
-
-                        <!-- Unités disponibles → NonExpired -->
-                        <Button Command="{Binding NavigateWithFilterCommand}"
-                                CommandParameter="{x:Static vm:StockFilterType.NonExpired}"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Cursor="Hand"
-                                HorizontalContentAlignment="Stretch">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="Border"
-                                                        BorderBrush="#E2E8F0"
-                                                        BorderThickness="0,0,0,1"
-                                                        Background="Transparent">
-                                                    <ContentPresenter />
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Border Width="48" Height="48" Background="#DCFCE7">
-                                    <TextBlock HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="20"
-                                               Text="💊" />
-                                </Border>
-                                <StackPanel Grid.Column="1" Margin="10,6">
-                                    <TextBlock FontFamily="Segoe UI"
-                                               FontSize="12"
-                                               Foreground="{StaticResource SuccessBrush}"
-                                               Text="Unités disponibles" />
-                                    <TextBlock FontFamily="Segoe UI Semibold"
-                                               FontSize="19"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               Text="{Binding TotalDrugs}" />
-                                </StackPanel>
-                            </Grid>
-                        </Button>
 
                         <!-- Lots périmés → Expired -->
                         <Button Command="{Binding NavigateWithFilterCommand}"
@@ -503,11 +408,14 @@
                                                         BorderBrush="#E2E8F0"
                                                         BorderThickness="0,0,0,1"
                                                         Background="Transparent">
-                                                    <ContentPresenter />
+                                                    <ContentPresenter/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC"/>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter TargetName="Border"
+                                                                Property="Background"
+                                                                Value="#F8FAFC"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -517,24 +425,27 @@
                             </Button.Style>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="48"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Width="48" Height="48" Background="#FEE2E2">
+                                <Border Width="48"
+                                        Height="48"
+                                        Background="#FEE2E2">
                                     <TextBlock HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="20"
-                                               Text="🗑" />
+                                               Text="🗑"/>
                                 </Border>
-                                <StackPanel Grid.Column="1" Margin="10,6">
+                                <StackPanel Grid.Column="1"
+                                            Margin="10,6">
                                     <TextBlock FontFamily="Segoe UI"
                                                FontSize="12"
                                                Foreground="{StaticResource DangerBrush}"
-                                               Text="Lots périmés" />
+                                               Text="Lots périmés"/>
                                     <TextBlock FontFamily="Segoe UI Semibold"
                                                FontSize="19"
                                                Foreground="{StaticResource TextPrimaryBrush}"
-                                               Text="{Binding ExpiredLots}" />
+                                               Text="{Binding ExpiredLots}"/>
                                 </StackPanel>
                             </Grid>
                         </Button>
@@ -555,11 +466,14 @@
                                                         BorderBrush="#E2E8F0"
                                                         BorderThickness="0,0,0,1"
                                                         Background="Transparent">
-                                                    <ContentPresenter />
+                                                    <ContentPresenter/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC"/>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter TargetName="Border"
+                                                                Property="Background"
+                                                                Value="#F8FAFC"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -569,24 +483,27 @@
                             </Button.Style>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="48"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Width="48" Height="48" Background="#FEF3C7">
+                                <Border Width="48"
+                                        Height="48"
+                                        Background="#FEF3C7">
                                     <TextBlock HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="20"
-                                               Text="⏰" />
+                                               Text="⏰"/>
                                 </Border>
-                                <StackPanel Grid.Column="1" Margin="10,6">
+                                <StackPanel Grid.Column="1"
+                                            Margin="10,6">
                                     <TextBlock FontFamily="Segoe UI"
                                                FontSize="12"
                                                Foreground="{StaticResource WarningBrush}"
-                                               Text="Périmés dans 30 jours" />
+                                               Text="Périmés dans 30 jours"/>
                                     <TextBlock FontFamily="Segoe UI Semibold"
                                                FontSize="19"
                                                Foreground="{StaticResource TextPrimaryBrush}"
-                                               Text="{Binding ExpiringSoon30}" />
+                                               Text="{Binding ExpiringSoon30}"/>
                                 </StackPanel>
                             </Grid>
                         </Button>
@@ -607,11 +524,14 @@
                                                         BorderBrush="#E2E8F0"
                                                         BorderThickness="0,0,0,1"
                                                         Background="Transparent">
-                                                    <ContentPresenter />
+                                                    <ContentPresenter/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC"/>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter TargetName="Border"
+                                                                Property="Background"
+                                                                Value="#F8FAFC"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -621,24 +541,27 @@
                             </Button.Style>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="48"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Width="48" Height="48" Background="#FEF3C7">
+                                <Border Width="48"
+                                        Height="48"
+                                        Background="#FEF3C7">
                                     <TextBlock HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="20"
-                                               Text="⏰" />
+                                               Text="⏰"/>
                                 </Border>
-                                <StackPanel Grid.Column="1" Margin="10,6">
+                                <StackPanel Grid.Column="1"
+                                            Margin="10,6">
                                     <TextBlock FontFamily="Segoe UI"
                                                FontSize="12"
                                                Foreground="{StaticResource WarningBrush}"
-                                               Text="Périmés dans 60 jours" />
+                                               Text="Périmés dans 60 jours"/>
                                     <TextBlock FontFamily="Segoe UI Semibold"
                                                FontSize="19"
                                                Foreground="{StaticResource TextPrimaryBrush}"
-                                               Text="{Binding ExpiringSoon60}" />
+                                               Text="{Binding ExpiringSoon60}"/>
                                 </StackPanel>
                             </Grid>
                         </Button>
@@ -659,11 +582,14 @@
                                                         BorderBrush="#E2E8F0"
                                                         BorderThickness="0,0,0,1"
                                                         Background="Transparent">
-                                                    <ContentPresenter />
+                                                    <ContentPresenter/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC"/>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter TargetName="Border"
+                                                                Property="Background"
+                                                                Value="#F8FAFC"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -673,24 +599,27 @@
                             </Button.Style>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="48" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="48"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border Width="48" Height="48" Background="#FEF3C7">
+                                <Border Width="48"
+                                        Height="48"
+                                        Background="#FEF3C7">
                                     <TextBlock HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="20"
-                                               Text="⏰" />
+                                               Text="⏰"/>
                                 </Border>
-                                <StackPanel Grid.Column="1" Margin="10,6">
+                                <StackPanel Grid.Column="1"
+                                            Margin="10,6">
                                     <TextBlock FontFamily="Segoe UI"
                                                FontSize="12"
                                                Foreground="{StaticResource WarningBrush}"
-                                               Text="Périmés dans 90 jours" />
+                                               Text="Périmés dans 90 jours"/>
                                     <TextBlock FontFamily="Segoe UI Semibold"
                                                FontSize="19"
                                                Foreground="{StaticResource TextPrimaryBrush}"
-                                               Text="{Binding ExpiringSoon90}" />
+                                               Text="{Binding ExpiringSoon90}"/>
                                 </StackPanel>
                             </Grid>
                         </Button>

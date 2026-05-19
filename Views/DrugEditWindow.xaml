@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="520" Width="520"
+        Title="{Binding Title}" Height="540" Width="520"
         WindowStartupLocation="CenterOwner"
         Style="{StaticResource ModernDialogStyle}">
 
@@ -58,11 +58,6 @@
                 <StackPanel Grid.Row="4" Margin="0,0,0,16">
                     <TextBlock Text="Forme (ex: Gélule, Sirop...)" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
                     <TextBox Text="{Binding Form, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource SearchBoxStyle}"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="6" Margin="0,0,0,16">
-                    <TextBlock Text="Code-barres Interne (Généré)" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
-                    <TextBox Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource BarcodeInputStyle}" IsEnabled="False" Opacity="0.7" ToolTip="Généré automatiquement si laissé vide"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="7" Margin="0,0,0,16">

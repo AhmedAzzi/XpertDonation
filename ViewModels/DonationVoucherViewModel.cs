@@ -55,8 +55,6 @@ namespace XDonation.ViewModels
         [ObservableProperty]
         private string _voucherNumber = string.Empty;
 
-        [ObservableProperty]
-        private string _donorName = string.Empty;
 
         [ObservableProperty]
         private string _donorType = "Particulier";
@@ -75,7 +73,7 @@ namespace XDonation.ViewModels
         public bool CanEdit => true;
         public string StatusLabel => IsValidated ? "Validé" : "Nouveau";
         public string ValidateActionLabel => IsValidated ? "RE-VALIDER (F8)" : "VALIDER (F8)";
-        public string VoucherModeLabel => IsValidated ? "Entreé validée" : "Entreé en cours";
+        public string VoucherModeLabel => IsValidated ? "Entrée validée" : "Entrée en cours";
 
         // ── Lines ────────────────────────────────────────────────────────────
         public ObservableCollection<DonationVoucherLine> Lines { get; }
@@ -150,11 +148,11 @@ namespace XDonation.ViewModels
         [RelayCommand]
         public void NewVoucher()
         {
-            if (Lines.Count > 0 || !string.IsNullOrWhiteSpace(DonorName))
+            if (Lines.Count > 0)
             {
                 var r = MessageBox.Show(
-                    "Créer une nouvelle Entreé ?\nLes données non enregistrées seront perdues.",
-                    "Nouvelle Entreé",
+                    "Créer une nouvelle entrée ?\nLes données non enregistrées seront perdues.",
+                    "Nouvelle Entrée",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question
                 );
@@ -270,36 +268,43 @@ namespace XDonation.ViewModels
                     var duplicate = await _db.Drugs.FirstOrDefaultAsync(d => d.CodeBarresFabricant == manufacturerBarcode && d.Id != drug.Id);
                     if (duplicate != null)
                     {
-                        MessageBox.Show($"Ce code fabricant '{manufacturerBarcode}' est déjà associé au produit '{duplicate.Name}'.", 
-                            "Doublon détecté", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        SetStatus($"⚠ Le code fabricant '{manufacturerBarcode}' est déjà associé à '{duplicate.Name}'.", true);
                     }
                     else
                     {
-                        var res = MessageBox.Show(
-                            $"Voulez-vous associer le code fabricant '{manufacturerBarcode}' à '{drug.Name}' ?",
-                            "Associer le code fabricant",
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Question);
-
-                        if (res == MessageBoxResult.Yes)
+                        if (string.IsNullOrWhiteSpace(drug.CodeBarresFabricant))
                         {
-                            drug.CodeBarresFabricant = manufacturerBarcode;
-                            if (string.IsNullOrWhiteSpace(drug.Barcode))
-                            {
-                                drug.Barcode = await _db.GenerateUniqueProductSystemBarcodeAsync();
-                            }
-                            _db.Drugs.Update(drug);
-                            await _db.SaveChangesAsync();
-                            
-                            // Update cache
-                            var cachedDrug = _allDrugsCache.FirstOrDefault(d => d.Id == drug.Id);
-                            if (cachedDrug != null)
-                            {
-                                cachedDrug.CodeBarresFabricant = drug.CodeBarresFabricant;
-                                cachedDrug.Barcode = drug.Barcode;
-                            }
+                            var res = MessageBox.Show(
+                                $"Voulez-vous associer le code fabricant '{manufacturerBarcode}' à '{drug.Name}' ?",
+                                "Associer le code fabricant",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question);
 
-                            InputBarcode = drug.Barcode;
+                            if (res == MessageBoxResult.Yes)
+                            {
+                                drug.CodeBarresFabricant = manufacturerBarcode;
+                                if (string.IsNullOrWhiteSpace(drug.Barcode))
+                                {
+                                    drug.Barcode = await _db.GenerateUniqueProductSystemBarcodeAsync();
+                                }
+                                _db.Drugs.Update(drug);
+                                await _db.SaveChangesAsync();
+                                
+                                // Update cache
+                                var cachedDrug = _allDrugsCache.FirstOrDefault(d => d.Id == drug.Id);
+                                if (cachedDrug != null)
+                                {
+                                    cachedDrug.CodeBarresFabricant = drug.CodeBarresFabricant;
+                                    cachedDrug.Barcode = drug.Barcode;
+                                }
+
+                                InputBarcode = drug.Barcode;
+                                SetStatus($"✓ Code fabricant '{manufacturerBarcode}' associé à '{drug.Name}'.", false);
+                            }
+                        }
+                        else
+                        {
+                            SetStatus($"⚠ Ce produit a déjà le code fabricant '{drug.CodeBarresFabricant}'. Le code '{manufacturerBarcode}' n'a pas été associé.", true);
                         }
                     }
                 }
@@ -423,22 +428,7 @@ namespace XDonation.ViewModels
             }
             else
             {
-                var res = MessageBox.Show(
-                    $"Le code fabricant '{manufacturerBarcode}' n'est associé à aucun produit.\n\n" +
-                    "Voulez-vous créer un NOUVEAU produit (Oui) ou l'ASSOCIER à un produit existant (Non) ?",
-                    "Code fabricant inconnu",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question);
-
-                if (res == MessageBoxResult.Yes)
-                {
-                    var newDrug = new Drug { CodeBarresFabricant = manufacturerBarcode };
-                    RequestDrugEdit?.Invoke(newDrug);
-                }
-                else if (res == MessageBoxResult.No)
-                {
-                    SetStatus($"Sélectionnez le produit dans la liste pour associer le code '{manufacturerBarcode}'.", false);
-                }
+                SetStatus($"⚠ Code fabricant '{manufacturerBarcode}' inconnu. Recherchez et sélectionnez un produit pour l'associer.", true);
             }
         }
 
@@ -627,15 +617,15 @@ namespace XDonation.ViewModels
                 return;
             if (Lines.Count == 0)
             {
-                SetStatus("L'Entreé ne contient aucune ligne.", true);
+                SetStatus("L'entrée ne contient aucune ligne.", true);
                 return;
             }
 
             var confirm = MessageBox.Show(
-                $"{(IsValidated ? "Re-valider" : "Valider")} l'Entreé {VoucherNumber} ?\n\n"
+                $"{(IsValidated ? "Re-valider" : "Valider")} l'entrée {VoucherNumber} ?\n\n"
                     + $"• {TotalLines} ligne(s)  — {TotalUnits} unité(s)\n\n"
                     + "Le stock par lot sera synchronisé automatiquement.",
-                "Validation de l'Entreé",
+                "Validation de l'Entrée",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question
             );
@@ -671,13 +661,12 @@ namespace XDonation.ViewModels
 
                 if (voucher == null)
                 {
-                    SetStatus("Entreé introuvable.", true);
+                    SetStatus("Entrée introuvable.", true);
                     return;
                 }
 
                 VoucherId = voucher.Id;
                 VoucherNumber = voucher.VoucherNumber;
-                DonorName = voucher.DonorName;
                 DonorType = voucher.DonorType ?? "Particulier";
                 ReceiptDate = voucher.ReceiptDate;
                 Notes = voucher.Notes ?? string.Empty;
@@ -692,7 +681,7 @@ namespace XDonation.ViewModels
                 OnPropertyChanged(nameof(CanEdit));
                 OnPropertyChanged(nameof(TotalLines));
                 OnPropertyChanged(nameof(TotalUnits));
-                SetStatus($"Entreé {voucher.VoucherNumber} chargée.", false);
+                SetStatus($"Entrée {voucher.VoucherNumber} chargée.", false);
             }
             catch (Exception ex)
             {
@@ -738,7 +727,6 @@ namespace XDonation.ViewModels
                 }
 
                 // Update header
-                voucher.DonorName = DonorName.Trim();
                 voucher.DonorType = string.IsNullOrWhiteSpace(DonorType) ? null : DonorType.Trim();
                 voucher.ReceiptDate = ReceiptDate;
                 voucher.Notes = string.IsNullOrWhiteSpace(Notes) ? null : Notes.Trim();
@@ -853,11 +841,6 @@ namespace XDonation.ViewModels
 
         private bool ValidateHeader()
         {
-            if (string.IsNullOrWhiteSpace(DonorName))
-            {
-                SetStatus("Le nom du donneur est obligatoire.", true);
-                return false;
-            }
             return true;
         }
 
@@ -874,7 +857,6 @@ namespace XDonation.ViewModels
         {
             VoucherId = 0;
             VoucherNumber = "(nouveau)";
-            DonorName = string.Empty;
             DonorType = "Particulier";
             ReceiptDate = DateTime.Today;
             Notes = string.Empty;
