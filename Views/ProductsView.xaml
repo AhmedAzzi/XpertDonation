@@ -27,11 +27,11 @@
 
                 <!-- Search & Refresh -->
                 <StackPanel Orientation="Horizontal">
-                    <TextBox x:Name="SearchBox" MinWidth="300" MinHeight="34" Margin="0,0,10,0"
-                              Padding="8,2"
-                              Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              KeyDown="SearchBox_KeyDown"
-                              ToolTip="Tapez le nom ou le code-barres pour filtrer automatiquement"/>
+                    <TextBox x:Name="SearchBox" MinWidth="300" Margin="0,0,10,0"
+                             Style="{StaticResource SearchBoxStyle}"
+                             Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             KeyDown="SearchBox_KeyDown"
+                             ToolTip="Tapez le nom ou le code-barres pour filtrer automatiquement"/>
 
                     <Button Command="{Binding LoadCommand}" MinWidth="120" MinHeight="32"
                             Style="{StaticResource GhostButtonStyle}">

@@ -26,7 +26,7 @@ namespace XDonation.Views
                     Owner = Window.GetWindow(this)
                 };
                 win.ShowDialog();
-                _ = vm.LoadCommand.ExecuteAsync(null);
+                _ = vm.SearchCommand.ExecuteAsync(null);
             };
 
             Loaded += async (_, _) => await vm.LoadCommand.ExecuteAsync(null);
