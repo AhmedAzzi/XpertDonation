@@ -290,66 +290,24 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <StackPanel Grid.Row="0" Margin="0,0,0,20" VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Text="Aperçu de l'étiquette" />
+                            <Border
+                                Margin="12,0,0,0"
+                                Padding="8,2"
+                                Background="{StaticResource AccentBrush}"
+                                CornerRadius="10">
                                 <TextBlock
-                                    FontSize="14"
+                                    FontSize="10"
                                     FontWeight="Bold"
-                                    Foreground="{StaticResource TextPrimaryBrush}"
-                                    Text="Aperçu de l'étiquette" />
-                                <Border
-                                    Margin="12,0,0,0"
-                                    Padding="8,2"
-                                    Background="{StaticResource AccentBrush}"
-                                    CornerRadius="10">
-                                    <TextBlock
-                                        FontSize="10"
-                                        FontWeight="Bold"
-                                        Foreground="White"
-                                        Text="Temps Réel" />
-                                </Border>
-                            </StackPanel>
-
-                            <StackPanel
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="0,0,12,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="11"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="ZOOM" />
-                                <Button
-                                    Command="{Binding ZoomOutCommand}"
-                                    Content="−"
-                                    Style="{StaticResource IconButton}" />
-                                <Slider
-                                    Width="120"
-                                    Margin="10,0"
-                                    VerticalAlignment="Center"
-                                    Maximum="2.5"
-                                    Minimum="0.5"
-                                    Value="{Binding PreviewZoom}" />
-                                <Button
-                                    Command="{Binding ZoomInCommand}"
-                                    Content="+"
-                                    Style="{StaticResource IconButton}" />
-                                <Button
-                                    Width="50"
-                                    Margin="8,0,0,0"
-                                    Command="{Binding ResetZoomCommand}"
-                                    Content="100%"
-                                    FontSize="11"
-                                    Style="{StaticResource IconButton}" />
-                            </StackPanel>
-                        </Grid>
+                                    Foreground="White"
+                                    Text="Temps Réel" />
+                            </Border>
+                        </StackPanel>
 
                         <!--  Preview Card  -->
                         <Border
@@ -398,9 +356,7 @@
                                                     Opacity="0.1"
                                                     ShadowDepth="2" />
                                             </Border.Effect>
-                                            <Border.LayoutTransform>
-                                                <ScaleTransform ScaleX="{Binding PreviewZoom}" ScaleY="{Binding PreviewZoom}" />
-                                            </Border.LayoutTransform>
+
                                             <local:BarcodeLabelPreview DataContext="{Binding}" />
                                         </Border>
                                     </Grid>

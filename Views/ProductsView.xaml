@@ -98,6 +98,8 @@
                         <DataGridTextColumn Header="Produit" Binding="{Binding Name}" Width="2*"/>
                         <DataGridTextColumn Header="DCI" Binding="{Binding Dci}" Width="1.5*"/>
                         <DataGridTextColumn Header="Forme" Binding="{Binding Form}" Width="1*"/>
+                        <DataGridTextColumn Header="Code-barres" Binding="{Binding Barcode}" Width="1.2*"/>
+                        <DataGridTextColumn Header="Code fabricant" Binding="{Binding CodeBarresFabricant}" Width="1.2*"/>
                         <DataGridTextColumn Header="Nb Lots" Binding="{Binding StockBatches.Count}" Width="0.6*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">

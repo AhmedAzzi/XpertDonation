@@ -165,9 +165,16 @@ namespace XDonation.ViewModels
                     .ThenInclude(b => b.Dispensations).AsQueryable();
 
                 if (!string.IsNullOrEmpty(term))
-                    query = query.Where(d => d.Name.ToLower().Contains(term) || d.StockBatches.Any(b => b.Barcode != null && b.Barcode.Contains(term)));
+                    query = query.Where(d =>
+                        d.Name.ToLower().Contains(term) ||
+                        (d.Dci != null && d.Dci.ToLower().Contains(term)) ||
+                        (d.Form != null && d.Form.ToLower().Contains(term)) ||
+                        (d.Barcode != null && d.Barcode.ToLower().Contains(term)) ||
+                        (d.CodeBarresFabricant != null && d.CodeBarresFabricant.ToLower().Contains(term)) ||
+                        d.StockBatches.Any(b => b.Barcode != null && b.Barcode.ToLower().Contains(term))
+                    );
 
-                var list = await query.OrderBy(d => d.Name).Take(60).ToListAsync(ct);
+                var list = await query.OrderBy(d => d.Name).ToListAsync(ct);
                 Drugs.Clear();
                 foreach (var d in list) Drugs.Add(d);
                 IsStatusError = false;
