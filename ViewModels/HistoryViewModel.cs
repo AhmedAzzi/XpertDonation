@@ -21,6 +21,16 @@ namespace XDonation.ViewModels
             DetailItems = [];
             StartDate = DateTime.Today.AddDays(-30);
             EndDate = DateTime.Today;
+
+            XDonation.Helpers.StockSync.StockChanged += OnStockChanged;
+        }
+
+        private void OnStockChanged()
+        {
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await LoadAsync();
+            });
         }
 
         public ObservableCollection<SessionGroup> Sessions { get; }
@@ -63,6 +73,7 @@ namespace XDonation.ViewModels
             IsBusy = true;
             try
             {
+                _db.ChangeTracker.Clear();
                 var query = _db.Dispensations
                     .Include(u => u.StockBatch)
                     .ThenInclude(b => b.Drug)

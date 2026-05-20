@@ -25,6 +25,22 @@ namespace XDonation.ViewModels
             CartItems = [];
             DrugSuggestions = [];
             _ = LoadDrugCacheAsync();
+
+            XDonation.Helpers.StockSync.StockChanged += OnStockChanged;
+        }
+
+        private void OnStockChanged()
+        {
+            Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await LoadDrugCacheAsync();
+                
+                // If a drug is currently selected, refresh it as well to update stock info panel
+                if (SelectedDrug != null)
+                {
+                    await SelectDrugAsync(SelectedDrug);
+                }
+            });
         }
 
         partial void OnSearchTextChanged(string value)
@@ -134,6 +150,7 @@ namespace XDonation.ViewModels
         {
             try
             {
+                _db.ChangeTracker.Clear();
                 _allDrugsCache = await _db.Drugs
                     .Include(d => d.StockBatches)
                     .ThenInclude(b => b.Dispensations)
@@ -332,6 +349,9 @@ namespace XDonation.ViewModels
 
                 _db.Dispensations.AddRange(dispensations);
                 await _db.SaveChangesAsync();
+
+                // Broadcast stock change to all active views
+                XDonation.Helpers.StockSync.NotifyStockChanged();
 
                 CartItems.Clear();
                 SelectedDrug = null;

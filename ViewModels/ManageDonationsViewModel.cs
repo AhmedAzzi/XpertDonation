@@ -10,12 +10,26 @@ using XDonation.Models;
 
 namespace XDonation.ViewModels
 {
-    public partial class ManageDonationsViewModel(AppDbContext db) : ObservableObject
+    public partial class ManageDonationsViewModel : ObservableObject
     {
-        private readonly AppDbContext _db = db;
+        private readonly AppDbContext _db;
         private readonly SemaphoreSlim _dbLock = new(1, 1);
         private CancellationTokenSource? _batchLoadCts;
         private CancellationTokenSource? _searchCts;
+
+        public ManageDonationsViewModel(AppDbContext db)
+        {
+            _db = db;
+            XDonation.Helpers.StockSync.StockChanged += OnStockChanged;
+        }
+
+        private void OnStockChanged()
+        {
+            Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await LoadAsync();
+            });
+        }
 
         public ObservableCollection<Drug> Drugs { get; } = [];
         public ObservableCollection<StockBatch> SelectedDrugStockBatches { get; } = [];
@@ -77,6 +91,7 @@ namespace XDonation.ViewModels
             await _dbLock.WaitAsync(ct);
             try
             {
+                _db.ChangeTracker.Clear();
                 var batches = await _db.StockBatches
                     .Include(b => b.Dispensations)
                     .Where(b => b.DrugId == SelectedDrug.Id)
@@ -103,6 +118,7 @@ namespace XDonation.ViewModels
             await _dbLock.WaitAsync();
             try
             {
+                _db.ChangeTracker.Clear();
                 var list = await _db.Drugs
                     .Include(d => d.StockBatches)
                     .ThenInclude(b => b.Dispensations)
@@ -142,6 +158,7 @@ namespace XDonation.ViewModels
                 await _dbLock.WaitAsync(ct);
                 lockTaken = true;
 
+                _db.ChangeTracker.Clear();
                 var term = SearchText?.Trim().ToLower() ?? string.Empty;
                 var query = _db.Drugs
                     .Include(d => d.StockBatches)
@@ -273,6 +290,10 @@ namespace XDonation.ViewModels
                 }
 
                 await _db.SaveChangesAsync();
+                
+                // Notify all active views of stock change
+                XDonation.Helpers.StockSync.NotifyStockChanged();
+
                 IsStatusError = false;
                 IsStockFormVisible = false;
             }
@@ -329,6 +350,10 @@ namespace XDonation.ViewModels
 
                 _db.Drugs.Remove(SelectedDrug);
                 await _db.SaveChangesAsync();
+
+                // Notify all active views of stock change
+                XDonation.Helpers.StockSync.NotifyStockChanged();
+
                 StatusMessage = "Médicament et tous ses lots supprimés.";
                 IsStatusError = false;
                 SelectedDrug = null;
@@ -397,6 +422,10 @@ namespace XDonation.ViewModels
 
                 _db.StockBatches.Remove(dbBatch);
                 await _db.SaveChangesAsync();
+                
+                // Notify all active views of stock change
+                XDonation.Helpers.StockSync.NotifyStockChanged();
+
                 StatusMessage = "Lot supprimé.";
                 IsStatusError = false;
             }
@@ -471,6 +500,9 @@ namespace XDonation.ViewModels
 
                 _db.StockBatches.RemoveRange(stockBatches);
                 await _db.SaveChangesAsync();
+
+                // Notify all active views of stock change
+                XDonation.Helpers.StockSync.NotifyStockChanged();
 
                 StatusMessage = "Le stock du produit a ete retire. La fiche produit reste disponible dans le catalogue.";
                 IsStatusError = false;

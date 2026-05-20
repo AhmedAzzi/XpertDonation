@@ -68,6 +68,19 @@ namespace XDonation.ViewModels
         public StockLotsViewModel(AppDbContext db)
         {
             _db = db;
+            XDonation.Helpers.StockSync.StockChanged += OnStockChanged;
+        }
+
+        private void OnStockChanged()
+        {
+            Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await LoadAsync();
+                if (SelectedLot != null)
+                {
+                    await LoadLotHistoryAsync();
+                }
+            });
         }
 
         partial void OnSelectedFilterChanged(StockFilterType value) => ApplyFilters();
@@ -94,6 +107,7 @@ namespace XDonation.ViewModels
             await _dbLock.WaitAsync();
             try
             {
+                _db.ChangeTracker.Clear();
                 _allBatches = await _db.StockBatches
                     .Include(b => b.Drug)
                     .Include(b => b.Dispensations)
@@ -236,6 +250,7 @@ namespace XDonation.ViewModels
             await _dbLock.WaitAsync();
             try
             {
+                _db.ChangeTracker.Clear();
                 var lines = await _db.DonationVoucherLines
                     .Include(l => l.DonationVoucher)
                     .Where(l => l.StockBatchId == SelectedLot.Id)

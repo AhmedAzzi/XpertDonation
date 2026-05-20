@@ -492,17 +492,27 @@ namespace XDonation.ViewModels
 
             if (IsLineEditMode && EditingLineIndex >= 0 && EditingLineIndex < Lines.Count)
             {
-                // Copy values into the existing line (preserve Id/StockBatchId)
+                // Create a new instance to force WPF DataGrid row to refresh completely
                 var existing = Lines[EditingLineIndex];
-                existing.DrugId = line.DrugId;
-                existing.DrugName = line.DrugName;
-                existing.Dci = line.Dci;
-                existing.Barcode = line.Barcode;
-                existing.CodeBarresFabricant = line.CodeBarresFabricant;
-                existing.BatchNumber = line.BatchNumber;
-                existing.ExpirationDate = line.ExpirationDate;
-                existing.Quantity = line.Quantity;
-                Lines[EditingLineIndex] = existing; // force UI refresh
+                var updatedLine = new DonationVoucherLine
+                {
+                    Id = existing.Id,
+                    DonationVoucherId = existing.DonationVoucherId,
+                    DonationVoucher = existing.DonationVoucher,
+                    DrugId = line.DrugId,
+                    DrugName = line.DrugName,
+                    Dci = line.Dci,
+                    Barcode = line.Barcode,
+                    CodeBarresFabricant = line.CodeBarresFabricant,
+                    BatchNumber = line.BatchNumber,
+                    ExpirationDate = line.ExpirationDate,
+                    Quantity = line.Quantity,
+                    Notes = existing.Notes,
+                    StockBatchId = existing.StockBatchId,
+                    StockBatch = existing.StockBatch
+                };
+
+                Lines[EditingLineIndex] = updatedLine;
                 IsLineEditMode = false;
                 EditingLineIndex = -1;
                 SetStatus("Ligne mise à jour.", false);
@@ -545,6 +555,8 @@ namespace XDonation.ViewModels
             OnPropertyChanged(nameof(TotalUnits));
             SetStatus("Ligne supprimée.", false);
         }
+
+
 
         private void OnPrintBarcode(DonationVoucherLine? line)
         {
@@ -823,6 +835,9 @@ namespace XDonation.ViewModels
                 OnPropertyChanged(nameof(ValidateActionLabel));
                 OnPropertyChanged(nameof(VoucherModeLabel));
 
+                // Notify all view models to refresh in real-time
+                XDonation.Helpers.StockSync.NotifyStockChanged();
+
                 var action = wasValidated ? "re-validé et stock resynchronisé" : "validé";
                 SetStatus($"✅ Bon {VoucherNumber} {action}.", false);
 
@@ -831,7 +846,8 @@ namespace XDonation.ViewModels
             }
             catch (Exception ex)
             {
-                SetStatus($"Erreur : {ex.Message}", true);
+                var innerMsg = ex.InnerException != null ? ex.InnerException.Message : "";
+                SetStatus($"Erreur DB : {ex.Message} | Détails : {innerMsg}", true);
             }
             finally
             {

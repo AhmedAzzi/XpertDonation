@@ -137,5 +137,51 @@ namespace XDonation.Views
                 btn.ContextMenu.IsOpen = true;
             }
         }
+
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row && row.Item is DonationVoucherLine line)
+            {
+                if (DataContext is DonationVoucherViewModel vm)
+                {
+                    if (vm.EditLineCommand.CanExecute(line))
+                    {
+                        vm.EditLineCommand.Execute(line);
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        private void DataGridCell_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridCell cell)
+            {
+                cell.Focus();
+                LinesDataGrid.CurrentCell = new DataGridCellInfo(cell);
+            }
+        }
+
+        private void CopyCellMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var cellInfo = LinesDataGrid.CurrentCell;
+            if (cellInfo.IsValid)
+            {
+                var content = cellInfo.Column.GetCellContent(cellInfo.Item);
+                if (content is TextBlock tb && !string.IsNullOrWhiteSpace(tb.Text))
+                {
+                    try
+                    {
+                        System.Windows.Clipboard.SetText(tb.Text);
+                        if (DataContext is DonationVoucherViewModel vm)
+                        {
+                            vm.StatusMessage = "Copié : " + tb.Text;
+                            vm.IsStatusError = false;
+                        }
+                    }
+                    catch { }
+                }
+            }
+        }
     }
 }

@@ -9,9 +9,23 @@ using XDonation.ViewModels;
 
 namespace XDonation.ViewModels
 {
-    public partial class HomeViewModel(AppDbContext db) : ObservableObject
+    public partial class HomeViewModel : ObservableObject
     {
-        private readonly AppDbContext _db = db;
+        private readonly AppDbContext _db;
+
+        public HomeViewModel(AppDbContext db)
+        {
+            _db = db;
+            XDonation.Helpers.StockSync.StockChanged += OnStockChanged;
+        }
+
+        private void OnStockChanged()
+        {
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await LoadDashboardAsync();
+            });
+        }
         [ObservableProperty] private int _totalDonations; // Multi-Product refs
         [ObservableProperty] private int _totalDrugs;     // Total Units
         [ObservableProperty] private int _expiredLots;    // Count of expired lots
@@ -43,6 +57,7 @@ namespace XDonation.ViewModels
             IsBusy = true;
             try
             {
+                _db.ChangeTracker.Clear();
                 // 1. Total unique drug references
                 TotalDonations = await _db.Drugs.CountAsync();
 

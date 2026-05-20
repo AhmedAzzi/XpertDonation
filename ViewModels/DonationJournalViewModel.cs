@@ -23,6 +23,16 @@ namespace XDonation.ViewModels
         {
             _db = db;
             Vouchers = [];
+
+            XDonation.Helpers.StockSync.StockChanged += OnStockChanged;
+        }
+
+        private void OnStockChanged()
+        {
+            Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                await LoadAsync();
+            });
         }
 
         public ObservableCollection<DonationVoucher> Vouchers { get; }
@@ -87,6 +97,7 @@ namespace XDonation.ViewModels
             IsBusy = true;
             try
             {
+                _db.ChangeTracker.Clear();
                 var query = _db.DonationVouchers
                     .Include(v => v.Lines)
                     .AsQueryable();
@@ -165,6 +176,9 @@ namespace XDonation.ViewModels
             {
                 _db.DonationVouchers.Remove(SelectedVoucher);
                 await _db.SaveChangesAsync();
+                
+                XDonation.Helpers.StockSync.NotifyStockChanged();
+                
                 await LoadAsync();
             }
         }
