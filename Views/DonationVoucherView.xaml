@@ -346,6 +346,7 @@
                         Foreground="#888"
                         Text="N° Lot" />
                     <TextBox
+                        x:Name="LotTextBox"
                         MinHeight="26"
                         Padding="4,2"
                         BorderBrush="{StaticResource BorderBrush}"

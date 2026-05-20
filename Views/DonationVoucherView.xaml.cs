@@ -25,6 +25,14 @@ namespace XDonation.Views
                     viewModel.SelectDrugSuggestionCommand.Execute(dialogVm.SavedDrug);
                 }
             };
+
+            viewModel.FocusLotRequested += () =>
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    LotTextBox.Focus();
+                }));
+            };
         }
 
         private void SuggestionsList_KeyDown(object sender, KeyEventArgs e)

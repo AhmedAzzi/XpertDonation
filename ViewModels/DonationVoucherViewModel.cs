@@ -23,6 +23,7 @@ namespace XDonation.ViewModels
         /// <summary>Fired when the user wants to view the journal (after save)</summary>
         public event Action? NavigateToJournal;
         public event Action<Drug?>? RequestDrugEdit;
+        public event Action? FocusLotRequested;
 
         public DonationVoucherViewModel(AppDbContext db)
         {
@@ -300,6 +301,7 @@ namespace XDonation.ViewModels
 
                                 InputBarcode = drug.Barcode;
                                 SetStatus($"✓ Code fabricant '{manufacturerBarcode}' associé à '{drug.Name}'.", false);
+                                FocusLotRequested?.Invoke();
                             }
                         }
                         else
@@ -825,21 +827,30 @@ namespace XDonation.ViewModels
                     await _db.SaveChangesAsync();
                 }
 
-                VoucherId = voucher.Id;
-                VoucherNumber = voucher.VoucherNumber;
-                VoucherStatus = voucher.Status;
-                OnPropertyChanged(nameof(IsEditMode));
-                OnPropertyChanged(nameof(IsValidated));
-                OnPropertyChanged(nameof(CanEdit));
-                OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(ValidateActionLabel));
-                OnPropertyChanged(nameof(VoucherModeLabel));
+                var savedVoucherNumber = voucher.VoucherNumber;
+                var action = wasValidated ? "re-validé et stock resynchronisé" : "validé";
+
+                if (validate)
+                {
+                    InitNewVoucher();
+                }
+                else
+                {
+                    VoucherId = voucher.Id;
+                    VoucherNumber = voucher.VoucherNumber;
+                    VoucherStatus = voucher.Status;
+                    OnPropertyChanged(nameof(IsEditMode));
+                    OnPropertyChanged(nameof(IsValidated));
+                    OnPropertyChanged(nameof(CanEdit));
+                    OnPropertyChanged(nameof(StatusLabel));
+                    OnPropertyChanged(nameof(ValidateActionLabel));
+                    OnPropertyChanged(nameof(VoucherModeLabel));
+                }
 
                 // Notify all view models to refresh in real-time
                 XDonation.Helpers.StockSync.NotifyStockChanged();
 
-                var action = wasValidated ? "re-validé et stock resynchronisé" : "validé";
-                SetStatus($"✅ Bon {VoucherNumber} {action}.", false);
+                SetStatus($"✅ Bon {savedVoucherNumber} {action}.", false);
 
                 if (validate)
                     NavigateToJournal?.Invoke();
