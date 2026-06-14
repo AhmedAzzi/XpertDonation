@@ -206,6 +206,16 @@ namespace XDonation
                             ALTER TABLE StockBatches ADD IsPsychotrope BIT NOT NULL DEFAULT 0;
                         END
                     ");
+                    db.Database.ExecuteSqlRaw(@"
+                        IF OBJECT_ID(N'[VoucherCounter]', N'U') IS NULL
+                        BEGIN
+                            CREATE TABLE [VoucherCounter] (
+                                [Year] INT NOT NULL PRIMARY KEY,
+                                [LastValue] INT NOT NULL DEFAULT 0
+                            );
+                            INSERT [VoucherCounter] ([Year], [LastValue]) VALUES (2026, 0);
+                        END
+                    ");
                 } 
                 catch (Exception sqlEx)
                 {
