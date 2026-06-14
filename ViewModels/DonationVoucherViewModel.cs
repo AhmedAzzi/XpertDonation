@@ -18,6 +18,7 @@ namespace XDonation.ViewModels
             new RelayCommand<DonationVoucherLine>(OnPrintBarcode);
 
         private readonly AppDbContext _db;
+        private readonly SemaphoreSlim _saveLock = new(1, 1);
 
         // ── Events ───────────────────────────────────────────────────────────
         /// <summary>Fired when the user wants to view the journal (after save)</summary>
@@ -713,6 +714,7 @@ namespace XDonation.ViewModels
 
         private async Task SaveVoucherAsync(bool validate)
         {
+            await _saveLock.WaitAsync();
             IsBusy = true;
             try
             {
@@ -862,6 +864,7 @@ namespace XDonation.ViewModels
             }
             finally
             {
+                _saveLock.Release();
                 IsBusy = false;
             }
         }
@@ -874,10 +877,18 @@ namespace XDonation.ViewModels
         private async Task<string> GenerateVoucherNumberAsync()
         {
             var year = DateTime.Now.Year;
-            var lastNum = await _db
-                .DonationVouchers.Where(v => v.VoucherNumber.StartsWith($"BON-{year}-"))
-                .CountAsync();
-            return $"BON-{year}-{(lastNum + 1):D4}";
+            var sql = @"
+                DECLARE @newVal INT;
+                UPDATE [VoucherCounter] SET @newVal = [LastValue] = [LastValue] + 1 WHERE [Year] = {0};
+                IF @@ROWCOUNT = 0
+                BEGIN
+                    INSERT [VoucherCounter] ([Year], [LastValue]) VALUES ({0}, 1);
+                    SET @newVal = 1;
+                END
+                SELECT @newVal;";
+            var result = await _db.Database.SqlQueryRaw<int>(sql, year).FirstOrDefaultAsync();
+            var seq = result > 0 ? result : 1;
+            return $"BON-{year}-{seq:D4}";
         }
 
         private void InitNewVoucher()

@@ -1,6 +1,6 @@
 [Setup]
 AppName=XDonation
-AppVersion=1.0
+AppVersion=1.1
 AppPublisher=Ahmed Azzi
 AppPublisherURL=mailto:mrahmedazzi@gmail.com
 DefaultDirName={pf}\XDonation
