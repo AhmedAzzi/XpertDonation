@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -93,7 +94,8 @@ namespace XDonation
 
             // Run EF ensure created and seed data
             var dbInitialized = false;
-            while (!dbInitialized)
+            var retryCount = 0;
+            while (!dbInitialized && retryCount < 2)
             {
                 try
                 {
@@ -107,6 +109,7 @@ namespace XDonation
                 }
                 catch (Exception ex)
                 {
+                    retryCount++;
                     var alreadyExists = ex.Message.Contains("already exists");
                     var msg = alreadyExists
                         ? $"La base de données existe déjà avec une structure incompatible.\n\n{ex.Message}\n\n" +
@@ -122,14 +125,24 @@ namespace XDonation
                     {
                         try
                         {
-                            using var deleteScope = _serviceProvider.CreateScope();
-                            var delDb = deleteScope.ServiceProvider.GetRequiredService<AppDbContext>();
-                            _logger.LogInformation("Deleting and recreating database...");
-                            delDb.Database.EnsureDeleted();
-                            continue; // Retry the loop
+                            _logger.LogInformation("Force deleting database...");
+                            SqlConnection.ClearAllPools();
+                            using var delConn = new SqlConnection(
+                                config.GetConnectionString("DefaultConnection"));
+                            delConn.Open();
+                            using var cmd = delConn.CreateCommand();
+                            cmd.CommandText = @"
+                                DECLARE @sql NVARCHAR(MAX);
+                                SET @sql = 'ALTER DATABASE [XpertDonationDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE';
+                                EXEC sp_executesql @sql;
+                                SET @sql = 'DROP DATABASE [XpertDonationDB]';
+                                EXEC sp_executesql @sql;";
+                            try { cmd.ExecuteNonQuery(); } catch { /* DB might not exist in a clean state */ }
+                            continue;
                         }
                         catch (Exception deleteEx)
                         {
+                            _logger.LogError(deleteEx, "Auto-delete failed.");
                             MessageBox.Show(
                                 $"Impossible de supprimer automatiquement la base de données.\n\n{deleteEx.Message}\n\n" +
                                 "Veuillez fermer l'application, supprimer manuellement le fichier .mdf " +
@@ -141,6 +154,17 @@ namespace XDonation
                     Shutdown();
                     return;
                 }
+            }
+            if (!dbInitialized)
+            {
+                MessageBox.Show(
+                    "Impossible d'initialiser la base de données après plusieurs tentatives.\n" +
+                    "Veuillez fermer l'application, supprimer manuellement le fichier .mdf " +
+                    "dans %LOCALAPPDATA%\\Microsoft\\Microsoft SQL Server LocalDB\\Instances\\MSSQLLocalDB " +
+                    "puis relancer.",
+                    "Erreur critique", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown();
+                return;
             }
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
