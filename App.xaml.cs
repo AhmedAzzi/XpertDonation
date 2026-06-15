@@ -92,156 +92,188 @@ namespace XDonation
             _logger.LogInformation("═══════════════════════════════════════════════════════════");
 
             // Run EF ensure created and seed data
-            try
+            var dbInitialized = false;
+            while (!dbInitialized)
             {
-                using var scope = _serviceProvider.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                
-                _logger.LogInformation("Initializing database...");
-                if (!db.Database.CanConnect())
+                try
                 {
-                    db.Database.EnsureCreated();
-                }
-                
-                // Check if we need to seed
-                if (!System.Linq.Enumerable.Any(db.Drugs))
-                {
-                    _logger.LogInformation("Database is empty. Starting seeding process...");
+                    using var scope = _serviceProvider.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                     
-                    var medicamentFilePath = System.IO.Path.Combine(AppContext.BaseDirectory, "medicament.json");
-                    if (System.IO.File.Exists(medicamentFilePath))
+                    _logger.LogInformation("Initializing database...");
+                    TryInitializeDatabase(db);
+                    
+                    dbInitialized = true;
+                }
+                catch (Exception ex)
+                {
+                    var alreadyExists = ex.Message.Contains("already exists");
+                    var msg = alreadyExists
+                        ? $"La base de données existe déjà avec une structure incompatible.\n\n{ex.Message}\n\n" +
+                          "Voulez-vous la supprimer et la recréer automatiquement ?\n" +
+                          "⚠ Cela effacera TOUTES les données existantes."
+                        : $"Erreur d'initialisation de la base de données :\n\n{ex.Message}\n\n" +
+                          "Voulez-vous réessayer ?";
+                    var result = MessageBox.Show(msg, "Erreur de base de données",
+                        MessageBoxButton.YesNo, MessageBoxImage.Error);
+                    _logger.LogError(ex, "Database initialization failed.");
+
+                    if (result == MessageBoxResult.Yes && alreadyExists)
                     {
-                        _logger.LogInformation("Seeding drugs from {FilePath}...", medicamentFilePath);
-                        var jsonText = System.IO.File.ReadAllText(medicamentFilePath);
-                        using var doc = System.Text.Json.JsonDocument.Parse(jsonText);
-                        var root = doc.RootElement;
-                        
-                        if (root.ValueKind == System.Text.Json.JsonValueKind.Array && root.GetArrayLength() >= 2)
+                        try
                         {
-                            var dataNode = root[1].GetProperty("data");
-                            var drugs = new System.Collections.Generic.List<Drug>();
-                            
-                            string? GetStringSafe(System.Text.Json.JsonElement el, string propName)
-                            {
-                                return el.TryGetProperty(propName, out var prop) && prop.ValueKind != System.Text.Json.JsonValueKind.Null ? prop.GetString() : null;
-                            }
-
-                            foreach (var item in dataNode.EnumerateArray())
-                            {
-                                var dci = GetStringSafe(item, "DENOMINATION_COMMUNE_INTERNATIONALE");
-                                var nomMarque = GetStringSafe(item, "NOM_DE_MARQUE");
-                                var forme = GetStringSafe(item, "FORME");
-                                var dosage = GetStringSafe(item, "DOSAGE");
-                                
-                                var drugName = string.IsNullOrWhiteSpace(nomMarque) ? "Unknown" : nomMarque;
-                                if (!string.IsNullOrWhiteSpace(dosage))
-                                {
-                                    drugName += $" {dosage}";
-                                }
-
-                                drugs.Add(new Drug
-                                {
-                                    Name = drugName.Length > 300 ? drugName.Substring(0, 300) : drugName,
-                                    Dci = dci?.Length > 300 ? dci.Substring(0, 300) : dci,
-                                    Form = forme?.Length > 100 ? forme.Substring(0, 100) : forme,
-                                    Barcode = null 
-                                });
-                            }
-                            
-                            var distinctDrugs = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Select(System.Linq.Enumerable.GroupBy(drugs, d => d.Name), g => g.First()));
-                            
-                            db.Drugs.AddRange(distinctDrugs);
-                            db.SaveChanges();
-                            _logger.LogInformation("Successfully seeded {Count} unique drugs.", distinctDrugs.Count);
+                            using var deleteScope = _serviceProvider.CreateScope();
+                            var delDb = deleteScope.ServiceProvider.GetRequiredService<AppDbContext>();
+                            _logger.LogInformation("Deleting and recreating database...");
+                            delDb.Database.EnsureDeleted();
+                            continue; // Retry the loop
+                        }
+                        catch (Exception deleteEx)
+                        {
+                            MessageBox.Show(
+                                $"Impossible de supprimer automatiquement la base de données.\n\n{deleteEx.Message}\n\n" +
+                                "Veuillez fermer l'application, supprimer manuellement le fichier .mdf " +
+                                "dans %LOCALAPPDATA%\\Microsoft\\Microsoft SQL Server LocalDB\\Instances\\MSSQLLocalDB " +
+                                "puis relancer.",
+                                "Erreur de suppression", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
-                }
-
-                // Dynamic schema updates (Barcode column, etc.)
-                try 
-                {
-                    db.Database.ExecuteSqlRaw(@"
-                        IF COL_LENGTH('Drugs', 'Barcode') IS NULL
-                        BEGIN
-                            ALTER TABLE Drugs ADD Barcode NVARCHAR(100) NULL;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Drugs_Barcode' AND object_id = OBJECT_ID('Drugs'))
-                        BEGIN
-                            CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_Barcode ON Drugs(Barcode) WHERE Barcode IS NOT NULL;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF COL_LENGTH('Drugs', 'CodeBarresFabricant') IS NULL
-                        BEGIN
-                            ALTER TABLE Drugs ADD CodeBarresFabricant NVARCHAR(100) NULL;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Drugs_CodeBarresFabricant' AND object_id = OBJECT_ID('Drugs'))
-                        BEGIN
-                            CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_CodeBarresFabricant ON Drugs(CodeBarresFabricant) WHERE CodeBarresFabricant IS NOT NULL;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF COL_LENGTH('DonationVoucherLines', 'CodeBarresFabricant') IS NULL
-                        BEGIN
-                            ALTER TABLE DonationVoucherLines ADD CodeBarresFabricant NVARCHAR(100) NULL;
-                        END
-                    ");
-
-                    db.Database.ExecuteSqlRaw(@"
-                        IF COL_LENGTH('StockBatches', 'IsBlocked') IS NULL
-                        BEGIN
-                            ALTER TABLE StockBatches ADD IsBlocked BIT NOT NULL DEFAULT 0;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF COL_LENGTH('StockBatches', 'Store') IS NULL
-                        BEGIN
-                            ALTER TABLE StockBatches ADD Store NVARCHAR(100) NULL;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF COL_LENGTH('StockBatches', 'IsPsychotrope') IS NULL
-                        BEGIN
-                            ALTER TABLE StockBatches ADD IsPsychotrope BIT NOT NULL DEFAULT 0;
-                        END
-                    ");
-                    db.Database.ExecuteSqlRaw(@"
-                        IF OBJECT_ID(N'[VoucherCounter]', N'U') IS NULL
-                        BEGIN
-                            CREATE TABLE [VoucherCounter] (
-                                [Year] INT NOT NULL PRIMARY KEY,
-                                [LastValue] INT NOT NULL DEFAULT 0
-                            );
-                        END
-                    ");
-                } 
-                catch (Exception sqlEx)
-                {
-                    _logger.LogWarning(sqlEx, "Non-critical schema update warning.");
-                }
-            }
-            catch (Exception ex)
-            {
-                var result = MessageBox.Show(
-                    $"Erreur d'initialisation de la base de données :\n\n{ex.Message}\n\n" +
-                    "Voulez-vous réessayer ?\n\n" +
-                    "Si le problème persiste, fermez l'application, " +
-                    "supprimez le fichier XpertDonationDB.mdf dans %LOCALAPPDATA%\\Microsoft\\Microsoft SQL Server LocalDB\\Instances\\MSSQLLocalDB " +
-                    "et relancez l'application.",
-                    "Erreur de base de données",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Error);
-                _logger.LogError(ex, "Database initialization failed.");
-                if (result == MessageBoxResult.No)
                     Shutdown();
+                    return;
+                }
             }
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
+        }
+
+        private void TryInitializeDatabase(AppDbContext db)
+        {
+            if (!db.Database.CanConnect())
+            {
+                db.Database.EnsureCreated();
+            }
+
+            // Check if we need to seed
+            if (!System.Linq.Enumerable.Any(db.Drugs))
+            {
+                _logger!.LogInformation("Database is empty. Starting seeding process...");
+
+                var medicamentFilePath = System.IO.Path.Combine(AppContext.BaseDirectory, "medicament.json");
+                if (System.IO.File.Exists(medicamentFilePath))
+                {
+                    _logger.LogInformation("Seeding drugs from {FilePath}...", medicamentFilePath);
+                    var jsonText = System.IO.File.ReadAllText(medicamentFilePath);
+                    using var doc = System.Text.Json.JsonDocument.Parse(jsonText);
+                    var root = doc.RootElement;
+
+                    if (root.ValueKind == System.Text.Json.JsonValueKind.Array && root.GetArrayLength() >= 2)
+                    {
+                        var dataNode = root[1].GetProperty("data");
+                        var drugs = new System.Collections.Generic.List<Drug>();
+
+                        string? GetStringSafe(System.Text.Json.JsonElement el, string propName)
+                        {
+                            return el.TryGetProperty(propName, out var prop) && prop.ValueKind != System.Text.Json.JsonValueKind.Null ? prop.GetString() : null;
+                        }
+
+                        foreach (var item in dataNode.EnumerateArray())
+                        {
+                            var dci = GetStringSafe(item, "DENOMINATION_COMMUNE_INTERNATIONALE");
+                            var nomMarque = GetStringSafe(item, "NOM_DE_MARQUE");
+                            var forme = GetStringSafe(item, "FORME");
+                            var dosage = GetStringSafe(item, "DOSAGE");
+
+                            var drugName = string.IsNullOrWhiteSpace(nomMarque) ? "Unknown" : nomMarque;
+                            if (!string.IsNullOrWhiteSpace(dosage))
+                            {
+                                drugName += $" {dosage}";
+                            }
+
+                            drugs.Add(new Drug
+                            {
+                                Name = drugName.Length > 300 ? drugName.Substring(0, 300) : drugName,
+                                Dci = dci?.Length > 300 ? dci.Substring(0, 300) : dci,
+                                Form = forme?.Length > 100 ? forme.Substring(0, 100) : forme,
+                                Barcode = null
+                            });
+                        }
+
+                        var distinctDrugs = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Select(System.Linq.Enumerable.GroupBy(drugs, d => d.Name), g => g.First()));
+
+                        db.Drugs.AddRange(distinctDrugs);
+                        db.SaveChanges();
+                        _logger.LogInformation("Successfully seeded {Count} unique drugs.", distinctDrugs.Count);
+                    }
+                }
+            }
+
+            // Dynamic schema updates (Barcode column, etc.)
+            try
+            {
+                db.Database.ExecuteSqlRaw(@"
+                    IF COL_LENGTH('Drugs', 'Barcode') IS NULL
+                    BEGIN
+                        ALTER TABLE Drugs ADD Barcode NVARCHAR(100) NULL;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Drugs_Barcode' AND object_id = OBJECT_ID('Drugs'))
+                    BEGIN
+                        CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_Barcode ON Drugs(Barcode) WHERE Barcode IS NOT NULL;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF COL_LENGTH('Drugs', 'CodeBarresFabricant') IS NULL
+                    BEGIN
+                        ALTER TABLE Drugs ADD CodeBarresFabricant NVARCHAR(100) NULL;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Drugs_CodeBarresFabricant' AND object_id = OBJECT_ID('Drugs'))
+                    BEGIN
+                        CREATE UNIQUE NONCLUSTERED INDEX IX_Drugs_CodeBarresFabricant ON Drugs(CodeBarresFabricant) WHERE CodeBarresFabricant IS NOT NULL;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF COL_LENGTH('DonationVoucherLines', 'CodeBarresFabricant') IS NULL
+                    BEGIN
+                        ALTER TABLE DonationVoucherLines ADD CodeBarresFabricant NVARCHAR(100) NULL;
+                    END
+                ");
+
+                db.Database.ExecuteSqlRaw(@"
+                    IF COL_LENGTH('StockBatches', 'IsBlocked') IS NULL
+                    BEGIN
+                        ALTER TABLE StockBatches ADD IsBlocked BIT NOT NULL DEFAULT 0;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF COL_LENGTH('StockBatches', 'Store') IS NULL
+                    BEGIN
+                        ALTER TABLE StockBatches ADD Store NVARCHAR(100) NULL;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF COL_LENGTH('StockBatches', 'IsPsychotrope') IS NULL
+                    BEGIN
+                        ALTER TABLE StockBatches ADD IsPsychotrope BIT NOT NULL DEFAULT 0;
+                    END
+                ");
+                db.Database.ExecuteSqlRaw(@"
+                    IF OBJECT_ID(N'[VoucherCounter]', N'U') IS NULL
+                    BEGIN
+                        CREATE TABLE [VoucherCounter] (
+                            [Year] INT NOT NULL PRIMARY KEY,
+                            [LastValue] INT NOT NULL DEFAULT 0
+                        );
+                    END
+                ");
+            }
+            catch (Exception sqlEx)
+            {
+                _logger!.LogWarning(sqlEx, "Non-critical schema update warning.");
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
