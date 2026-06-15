@@ -877,18 +877,29 @@ namespace XDonation.ViewModels
         private async Task<string> GenerateVoucherNumberAsync()
         {
             var year = DateTime.Now.Year;
-            var sql = @"
-                DECLARE @newVal INT;
-                UPDATE [VoucherCounter] SET @newVal = [LastValue] = [LastValue] + 1 WHERE [Year] = {0};
-                IF @@ROWCOUNT = 0
-                BEGIN
-                    INSERT [VoucherCounter] ([Year], [LastValue]) VALUES ({0}, 1);
-                    SET @newVal = 1;
-                END
-                SELECT @newVal;";
-            var result = await _db.Database.SqlQueryRaw<int>(sql, year).FirstOrDefaultAsync();
-            var seq = result > 0 ? result : 1;
-            return $"BON-{year}-{seq:D4}";
+            var connection = _db.Database.GetDbConnection();
+            await connection.OpenAsync();
+            try
+            {
+                using var cmd = connection.CreateCommand();
+                cmd.CommandText = @"
+                    DECLARE @newVal INT;
+                    UPDATE [VoucherCounter] SET @newVal = [LastValue] = [LastValue] + 1 WHERE [Year] = @year;
+                    IF @@ROWCOUNT = 0
+                    BEGIN
+                        INSERT [VoucherCounter] ([Year], [LastValue]) VALUES (@year, 1);
+                        SET @newVal = 1;
+                    END
+                    SELECT @newVal;";
+                cmd.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@year", year));
+                var result = await cmd.ExecuteScalarAsync();
+                return $"BON-{year}-{Convert.ToInt32(result ?? 1):D4}";
+            }
+            finally
+            {
+                if (_db.Database.CurrentTransaction == null)
+                    await connection.CloseAsync();
+            }
         }
 
         private void InitNewVoucher()
