@@ -98,7 +98,10 @@ namespace XDonation
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 
                 _logger.LogInformation("Initializing database...");
-                db.Database.EnsureCreated();
+                if (!db.Database.CanConnect())
+                {
+                    db.Database.EnsureCreated();
+                }
                 
                 // Check if we need to seed
                 if (!System.Linq.Enumerable.Any(db.Drugs))
@@ -223,15 +226,18 @@ namespace XDonation
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Erreur de connexion à la base de données :\n\n{ex.Message}\n\n" +
-                    "Vérifiez que SQL Server LocalDB est installé.\n\n" +
-                    $"Connexion utilisée : {config.GetConnectionString("DefaultConnection")}",
+                var result = MessageBox.Show(
+                    $"Erreur d'initialisation de la base de données :\n\n{ex.Message}\n\n" +
+                    "Voulez-vous réessayer ?\n\n" +
+                    "Si le problème persiste, fermez l'application, " +
+                    "supprimez le fichier XpertDonationDB.mdf dans %LOCALAPPDATA%\\Microsoft\\Microsoft SQL Server LocalDB\\Instances\\MSSQLLocalDB " +
+                    "et relancez l'application.",
                     "Erreur de base de données",
-                    MessageBoxButton.OK,
+                    MessageBoxButton.YesNo,
                     MessageBoxImage.Error);
-                Shutdown(1);
-                return;
+                _logger.LogError(ex, "Database initialization failed.");
+                if (result == MessageBoxResult.No)
+                    Shutdown();
             }
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
