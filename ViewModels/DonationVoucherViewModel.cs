@@ -887,8 +887,10 @@ namespace XDonation.ViewModels
                     UPDATE [VoucherCounter] SET @newVal = [LastValue] = [LastValue] + 1 WHERE [Year] = @year;
                     IF @@ROWCOUNT = 0
                     BEGIN
-                        INSERT [VoucherCounter] ([Year], [LastValue]) VALUES (@year, 1);
-                        SET @newVal = 1;
+                        SELECT @newVal = ISNULL(MAX(CAST(SUBSTRING(VoucherNumber, 10, 4) AS INT)), 0) + 1
+                        FROM [DonationVouchers]
+                        WHERE VoucherNumber LIKE 'BON-' + CAST(@year AS NVARCHAR(4)) + '-%';
+                        INSERT [VoucherCounter] ([Year], [LastValue]) VALUES (@year, @newVal);
                     END
                     SELECT @newVal;";
                 cmd.Parameters.Add(new Microsoft.Data.SqlClient.SqlParameter("@year", year));
