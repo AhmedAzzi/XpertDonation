@@ -127,17 +127,19 @@ namespace XDonation
                         {
                             _logger.LogInformation("Force deleting database...");
                             SqlConnection.ClearAllPools();
-                            using var delConn = new SqlConnection(
-                                config.GetConnectionString("DefaultConnection"));
+                            var masterConnStr = new SqlConnectionStringBuilder(
+                                config.GetConnectionString("DefaultConnection"))
+                            { InitialCatalog = "master" }.ConnectionString;
+                            using var delConn = new SqlConnection(masterConnStr);
                             delConn.Open();
                             using var cmd = delConn.CreateCommand();
                             cmd.CommandText = @"
                                 DECLARE @sql NVARCHAR(MAX);
                                 SET @sql = 'ALTER DATABASE [XpertDonationDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE';
                                 EXEC sp_executesql @sql;
-                                SET @sql = 'DROP DATABASE [XpertDonationDB]';
+                                SET @sql = 'DROP DATABASE IF EXISTS [XpertDonationDB]';
                                 EXEC sp_executesql @sql;";
-                            try { cmd.ExecuteNonQuery(); } catch { /* DB might not exist in a clean state */ }
+                            try { cmd.ExecuteNonQuery(); } catch { /* May not exist */ }
                             continue;
                         }
                         catch (Exception deleteEx)
