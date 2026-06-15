@@ -578,7 +578,7 @@
                     Command="{Binding ValidateVoucherCommand}"
                     Style="{StaticResource PrimaryButtonStyle}"
                     Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisConverter}}">
-                    <TextBlock FontFamily="Segoe UI Semibold" Text="{Binding ValidateActionLabel, StringFormat='{}{0} (F8)'}" />
+                    <TextBlock FontFamily="Segoe UI Semibold" Text="{Binding ValidateActionLabel, StringFormat='{}{0}'}" />
                 </Button>
             </Grid>
         </Border>
